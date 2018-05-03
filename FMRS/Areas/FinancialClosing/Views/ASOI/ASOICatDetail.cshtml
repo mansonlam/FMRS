@@ -1,0 +1,87 @@
+﻿@model FMRS.Model.DTO.ASOIModel
+@using System.Globalization;
+@{
+    ViewBag.Title = Resource.ListOfASOIProgrammes;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title Detail
+</h4>
+<div class="box box-default">
+    <form id="ASOICatDetailForm" asp-action="ASOICatUpdate" asp-controller="ASOI">
+        <div class="box-header">
+            <b>
+                @Model.Detail.Hosp_code<br />
+                @Model.Detail.Cat_name<br />
+                @Resource.Analytical: @Model.Detail.Analytical - @Resource.Section: @Model.Detail.Section
+                @Resource.AsAt @Model.Detail.Period<br />
+            </b>
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <thead class="bg-purple">
+                    <tr>
+                        <td><b>@Resource.ProgramDescriptionLocation</b></td>
+                        <td><b>@Resource.ProgramOrganizerDepartment</b></td>
+                        <td><b>@Resource.StartDate</b></td>
+                        <td><b>@Resource.EndDate</b></td>
+                        <td><b>@Resource.Income</b></td>
+                        <td><b>@Resource.PE</b></td>
+                        <td><b>@Resource.OC</b></td>
+                        <td><b>@Resource.Remarks</b></td>
+                    </tr>
+                    </thead>
+                <tbody>
+                    @foreach (var m in Model.Detail.Detail_list)
+                    {
+                        <tr>
+                            <td>@m.Prog_desc</td>
+                            <td>@m.Prog_organizer</td>
+                            <td>@m.Start_date</td>
+                            <td>@m.End_date</td>
+                            <td>@(m.Income == 0 ? "" : (((decimal)m.Income).ToString("N2", CultureInfo.InvariantCulture)).ToString()) </td>
+                            <td>@(m.Pe == 0 ? "" : (((decimal)m.Pe).ToString("N2", CultureInfo.InvariantCulture)).ToString()) </td>
+                            <td>@(m.Oc == 0 ? "" : (((decimal)m.Oc).ToString("N2", CultureInfo.InvariantCulture)).ToString()) </td>
+                            <td>@m.Remarks</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="box-footer">
+            <div class="dt-buttons form-horizontal ">
+                @if (ViewBag.PrivilegeAsoiInput == "I")
+                {
+                    <input type="button" id="btnCreate" class="dt-button btn btn-primary" onclick="edit_button();" value="@Resource.Edit">
+                    <input type="button" id="btnDetail" class="dt-button btn btn-primary" onclick="add_button();" value="@Resource.AddItems">
+                }
+                <input type="button" id="btnClose" class="dt-button btn btn-primary" onclick="window.close();" value="@Resource.CloseWindow">
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+    })
+
+    function edit_button() {
+        var url = '@Url.Action("ASOICatDetailEdit", "ASOI")'
+            + "?rp_id=" + '@Model.List_id';
+        location.href = url;
+    }
+
+    function add_button() {
+        var url = '@Url.Action("ASOICatDetailNew", "ASOI")'
+            + "?rp_id=" + '@Model.List_id';
+        location.href = url;
+    }
+
+</script>

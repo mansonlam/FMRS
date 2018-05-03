@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@ViewBag.Title</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Theme Style -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/AdminLTE.min.css" />
+    <!-- AdminLTE Skins -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/skins/_all-skins.min.css" />
+    
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <style type="text/css">
+        body {
+            /*background-image: url('/images/background-2.jpg');*/
+            /* Server Dev */
+            background-image: url('/FMRS_REAVMP/images/background-2.jpg');
+        }
+    </style>
+</head>
+<body class="hold-transition">
+    <div>
+
+        <img src="~/images/logo.gif" style="POSITION: absolute; LEFT: 10px; TOP: 10px;" />
+        <img src="~/images/frms_1.gif" style="POSITION: absolute; LEFT: 80px; TOP: 12px;" />
+        <div style="POSITION: absolute; LEFT: 90px; TOP: 58px;">
+            <font style="FONT-SIZE: 7pt; FONT-FAMILY: verdana; FONT-WEIGHT: bolder; COLOR: black; FONT-STYLE: normal">A module of Financial & Materials Management System</font>
+        </div>
+
+        <div>
+            @RenderBody()
+            <br /><br /><br /><br /><br /><hr style="border-top-color:lightgray" />
+            <footer><p>&copy; 2017 - FMRS</p></footer>
+        </div>
+    </div>
+
+    <!-- /.login-box -->
+    
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- AdminLTE App -->
+    <script src="~/AdminLTE/dist/js/adminlte.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+    
+</body>
+</html>

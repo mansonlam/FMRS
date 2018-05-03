@@ -1,0 +1,67 @@
+﻿@using FMRS.Common.Resources;
+@using Microsoft.Extensions.Configuration;
+@model FMRS.Models.Account.LoginModel
+@{
+    ViewBag.Title = Resource.Login;
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="login-box">
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">@Resource.FMRS @Resource.SignIn!</p>
+        <div><span class="alert-danger">@Html.ValidationSummary(true)</span></div>
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @role = "form", id = "login-form" }))
+        {
+            <div class="form-group has-feedback">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = Resource.UserName })
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = Resource.Password })
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+
+                <div class="form-group has-feedback">
+                    @Html.TextBoxFor(m => m.Domain, new { @class = "form-control", placeholder = ViewBag.Domain })
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+
+            <div class="row">
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">@Resource.SignIn</button>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    
+                </div>
+                <div class="col-xs-4">
+                    <button id="Help" title=@Resource.HelpMsg class="btn btn-primary btn-block btn-info">Help</button>
+                </div>
+            </div>
+            @Html.Hidden("ReturnUrl", (string)ViewBag.ReturnUrl);
+            
+        }
+        
+    </div>
+    <!-- /.login-box-body -->
+    <div class="bg-light-blue">
+        <p style="padding:8px;" class="text-center">If you encounter any problems, please use<br/> <a href="@ViewBag.HOTLINE_HOME" title="Quick and easy way to report a problem" class="text-bold text-danger"> Business Support Desk</a> for assistance</p>
+    </div>
+</div>
+
+    <script type='text/javascript'>
+        $(document).ready(function () {
+            $('#Help').on('click', function () {
+                window.open('/Account/Help', '_blank', 'height=250, width=500, toolbar=no,menubar=no,titlebar=no');
+            });
+        });
+        function keypressHandler(e) {
+            if (e.which == 13) {
+                e.preventDefault(); //stops default action
+                $('#login-form').submit();
+            }
+        }
+        $(document).keypress(keypressHandler);
+    </script>

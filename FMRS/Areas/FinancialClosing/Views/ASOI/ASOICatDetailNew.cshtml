@@ -1,0 +1,187 @@
+﻿@model FMRS.Model.DTO.ASOIModel
+@using System.Globalization;
+@{
+    ViewBag.Title = Resource.ListOfASOIProgrammes;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title Detail
+</h4>
+<div class="box box-default">
+    <form id="ASOICatDetailForm" asp-action="ASOICatDetailUpdate" asp-controller="ASOI">
+        <div class="box-header">
+            <b>
+                @Model.Detail.Hosp_code<br />
+                @Model.Detail.Cat_name<br />
+                @Resource.Analytical: @Model.Detail.Analytical - @Resource.Section: @Model.Detail.Section
+                @Resource.AsAt @Model.Detail.Period<br />
+            </b>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Update_type" value="new" />
+            <input type="hidden" asp-for="List_id" value="@Model.List_id" />
+            <input type="hidden" asp-for="Detail.CountRp" value="@Model.Detail.CountRp" />
+            <table class="table table-striped">
+                <thead class="bg-purple">
+                    <tr>
+                        <td><b>@Resource.ProgramDescriptionLocation</b></td>
+                        <td><b>@Resource.ProgramOrganizerDepartment</b></td>
+                        <td><b>@Resource.StartDate</b></td>
+                        <td><b>@Resource.EndDate</b></td>
+                        <td><b>@Resource.Income</b></td>
+                        <td><b>@Resource.PE</b></td>
+                        <td><b>@Resource.OC</b></td>
+                        <td><b>@Resource.Remarks</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @for (int i = 0; i < Model.Detail.CountRp; i++)
+                    {
+                        <tr>
+                            <td>@Model.Detail.Detail_list[i].Prog_desc <input type="hidden" asp-for="@Model.Detail.Detail_list[i].Prog_desc" value="@Model.Detail.Detail_list[i].Prog_desc"/></td>
+                            <td>@Model.Detail.Detail_list[i].Prog_organizer<input type="hidden" asp-for="@Model.Detail.Detail_list[i].Prog_organizer" value="@Model.Detail.Detail_list[i].Prog_organizer"></td>
+                            <td>@Model.Detail.Detail_list[i].Start_date</td>
+                            <td>@Model.Detail.Detail_list[i].End_date</td>
+                            <td>@(Model.Detail.Detail_list[i].Income == 0 ? "" : (((decimal)Model.Detail.Detail_list[i].Income).ToString("N2", CultureInfo.InvariantCulture)).ToString()) </td>
+                            <td>@(Model.Detail.Detail_list[i].Pe == 0 ? "" : (((decimal)Model.Detail.Detail_list[i].Pe).ToString("N2", CultureInfo.InvariantCulture)).ToString()) </td>
+                            <td>@(Model.Detail.Detail_list[i].Oc == 0 ? "" : (((decimal)Model.Detail.Detail_list[i].Oc).ToString("N2", CultureInfo.InvariantCulture)).ToString()) </td>
+                            <td>@Model.Detail.Detail_list[i].Remarks</td>
+                        </tr>
+                        
+                    }
+                    @for (int i = Model.Detail.CountRp; i < Model.Detail.CountRp + 10; i++)
+                    {
+                        <tr>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Prog_desc" class="form-control"  /></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Prog_organizer" class="form-control" ></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Start_date" class="form-control datepicker" /></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].End_date" class="form-control datepicker" /></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Income" class="form-control" /></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Pe" class="form-control" /></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Oc" class="form-control" /></td>
+                            <td><input type="text" asp-for="@Model.Detail.Detail_list[i].Remarks" class="form-control" /></td>
+                        </tr>
+                    }
+                   
+                </tbody>
+            </table>
+
+        </div>
+        <div class=" box-footer">
+            <div class="dt-buttons form-horizontal ">
+                <input type="button" id="btnSave" class="dt-button btn btn-primary" onclick="submit_button();" value="@Resource.Save">
+                @if (Model.Detail.CountRp != 0)
+                {
+                    <input type="button" id="btnCancel" class="dt-button btn btn-primary" onclick="cancel_button();" value="@Resource.Cancel">
+                }
+                else
+                { 
+                    <input type="button" id="btnClose" class="dt-button btn btn-primary" onclick="window.close();" value="@Resource.CloseWindow">
+                }
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".datepicker").datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        })
+    })
+
+    function submit_button() {
+        if (!check_required())
+            return false;
+        else{
+            $("#ASOICatDetailForm").submit();
+        }
+    }
+
+    function cancel_button() {
+        var url = '@Url.Action("ASOICatDetail", "ASOI")'
+            + "?rp_id=" + '@Model.List_id';
+        location.href = url;
+    }
+
+    function check_required() {
+
+        for (var i = '@Model.Detail.CountRp'; i < '@(Model.Detail.CountRp + 10)'; i++){
+            var date_reg = /^([1-9]|0[1-9]|[12][0-9]|3[01])[/]([1-9]|0[1-9]|1[012])[/](19|20)\d\d/;
+            var start_date_name = "#Detail_Detail_list_" + i.toString() +"__Start_date";
+            if ($(start_date_name).val() != '' && !$(start_date_name).val().match(date_reg)) {
+                alert('@Resource.StartDateBeginFormat');
+                return false;
+            }
+            var end_date_name = "#Detail_Detail_list_" + i.toString() + "__End_date";
+            if ($(end_date_name).val() != '' && !$(end_date_name).val().match(date_reg)) {
+                alert('@Resource.StartDateUntilFormat');
+                return false;
+            }
+
+            var get_start_day = $(start_date_name).val().split('/');
+            var start_day = new Date(get_start_day[2], get_start_day[1], get_start_day[0]);
+            var get_end_day = $(end_date_name).val().split('/');
+            var end_day = new Date(get_end_day[2], get_end_day[1], get_end_day[0]);
+            if (start_day > end_day) {
+                alert('@Resource.StartDateEndDateOrder');
+                return false;
+            }
+            var income_name = "#Detail_Detail_list_" + i.toString() + "__Income";
+            var income_value = $(income_name).val().replace(/,/g, "");
+            $(income_name).val(income_value);
+            if (income_value != '' && !is2dp(income_value)) {
+                alert('@Resource.IncomeNotNumber');
+                return false;
+            }
+            var pe_name = "#Detail_Detail_list_" + i.toString() + "__Pe";
+            var pe_value = $(pe_name).val().replace(/,/g, "");
+            $(pe_name).val(pe_value);
+            if (pe_value != '' && !is2dp(pe_value)) {
+                alert('@Resource.PENotNumber');
+                return false;
+            }
+            var oc_name = "#Detail_Detail_list_" + i.toString() + "__Oc";
+            var oc_value = $(oc_name).val().replace(/,/g, "");
+            $(oc_name).val(oc_value);
+            if (oc_value != '' && !is2dp(oc_value)) {
+                alert('@Resource.OCNotNumber');
+                return false;
+            }
+        };
+        return true;
+    }
+
+    function is2dp(num) {
+        if (isNaN(num)) {
+            return false;
+        }
+
+        var isn = num.toString();
+        if (isn.indexOf('.') == -1) {
+            return true;
+        }
+
+        var splitValue = isn.split(".", 2);
+        if (!isNaN(splitValue[0]) && !isNaN(splitValue[1])) {
+            if (splitValue[1] != null) {
+                if (splitValue[1].length == 1 || splitValue[1].length == 2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+</script>

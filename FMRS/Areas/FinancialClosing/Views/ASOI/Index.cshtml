@@ -1,0 +1,330 @@
+﻿@model FMRS.Model.DTO.ASOISearchModel
+@{
+    ViewBag.Title = Resource.ListOfASOIProgrammes;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .dataRow:hover {
+        background-color: lightgreen !important;
+    }
+</style>
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+<div class="box box-default">
+    <form id="SearchASOIForm" asp-action="Index" asp-controller="ASOI" asp-route-search_corp="search" asp-route-cat_no="@Model.Cat_no" asp-route-hosp_code="@Model.Hosp_code">
+        <div class="box-header">
+            <b>
+                @Model.Hosp_code<br />
+                @Model.Cat_name<br />
+                @Resource.AsAt @Model.Period<br />
+            </b>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Hosp_code" value="@Model.Hosp_code" />
+            <input type="hidden" asp-for="Cat_no" value="@Model.Cat_no" />
+            <table class="table">
+                <tr>
+                    <td>@Resource.Analytical</td>
+                    <td>
+                        <span style="width:20px"> @Resource.From </span>
+                        <input type="text" asp-for="Sch_analytical_start" class="form-control" style="width:40%;display:initial" value="@Model.Sch_analytical_start">
+                        <span style="width:10px"> @Resource.To </span>
+                        <input type="text" asp-for="Sch_analytical_end" class="form-control" style="width:40%;display:initial" value="@Model.Sch_analytical_end">
+                    </td>
+                    <td>@Resource.Section</td>
+                    <td>
+                        <input type="text" asp-for="Sch_section" class="form-control" value="@Model.Sch_section">
+                    </td>
+                    @if (Model.Cat_no != "10")
+                    {
+                        <td>@Resource.ProgramCode</td>
+                        <td>
+                            <input type="text" asp-for="Sch_program_code" class="form-control" value="@Model.Sch_program_code">
+                        </td>
+                    }
+
+                </tr>
+                <tr>
+                    @if (Model.Cat_no != "10")
+                    {
+                        <td>@Resource.ProgramSubCat</td>
+                        <td>
+                            <select class="form-control" asp-for="Sch_prog_subcat" asp-items="@(new SelectList(ViewBag.SubCatByCatNo, "Value", "Text", Model.Sch_prog_subcat??""))"></select>
+                        </td>
+                    }
+                    <td>@Resource.ProgramDescriptionLocation</td>
+                    <td>
+                        <input type="text" asp-for="Sch_description_location" class="form-control" value="@Model.Sch_description_location">
+                    </td>
+                    <td>@Resource.ProgramOrganizerDepartment</td>
+                    <td>
+                        <input type="text" asp-for="Sch_organizer_department" class="form-control" value="@Model.Sch_organizer_department">
+                    </td>
+                </tr>
+                <tr>
+                    <td>@Resource.NatureOfIncome</td>
+                    <td>
+                        <select class="form-control" asp-for="Sch_nature_income" asp-items="@(new SelectList(ViewBag.NatureIncomeByCatNo, "Value", "Text", Model.Sch_nature_income??""))"></select>
+                    </td>
+                    @if (Model.Cat_no != "10")
+                    {
+                        <td>@Resource.ServiceProvidedToCollaboratedWith</td>
+                        <td>
+                            <select class="form-control" asp-for="Sch_service_provided" asp-items="@(new SelectList(ViewBag.ServiceProvidedByCatNo, "Value", "Text", Model.Sch_service_provided??""))"></select>
+                        </td>
+                    }
+                    <td>@Resource.StartDate</td>
+                    <td>
+                        <span style="width:20px"> @Resource.From </span>
+                        <input type="text" class="form-control datepicker" style="text-align:center;width:40%;display:initial;" asp-for="Sch_start_date_begin" value="@Model.Sch_start_date_begin">
+                        <span style="width:10px"> @Resource.To </span>
+                        <input type="text" class="form-control datepicker" style="text-align:center;width:40%;display:initial;" asp-for="Sch_start_date_until" value="@Model.Sch_start_date_until">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="box-footer">
+            <div class="dt-buttons form-horizontal ">
+                <input type="button" id="btnSearch" class="dt-button btn btn-primary" onclick="index_submit();" value="@Resource.Search">
+                @if (ViewBag.PrivilegeAsoiInput == "I")
+                {
+                    <input type="button" id="btnNew" class="dt-button btn btn-primary" onclick="asoi_cat_new();" value="@Resource.New">
+                }
+                <input type="button" id="btnReset" class="dt-button btn btn-primary" onclick="index_reset();" value="@Resource.Reset">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="Sch_allcat_chkbox" onclick="update_sch_allcat()" />&nbsp;&nbsp;@Resource.SearchAllcategories<br />
+                        <input type="hidden" asp-for="Sch_allcat" value="@Model.Sch_allcat"/>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@if (Model.Search_corp != "")
+{ 
+    <div class="box box-default">
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <thead class="bg-purple">
+                    <tr>
+                        @if (Model.Sch_allcat == "all")
+                        {
+                            <td><b>@Resource.Cat</b></td>
+                        }
+                        <td><b>@Resource.Analytical</b></td>
+                        <td><b>@Resource.Section</b></td>
+                        @if(Model.Sch_allcat == "all" || Model.Cat_no != "10")
+                        { 
+                            <td><b>@Resource.ProgramCode</b></td>
+                            <td><b>@Resource.NoOfProjects</b></td>
+                        }
+                        @if (Model.Sch_allcat == "all" || Model.Subcat_check != "none")
+                        {
+                            <td><b>@Resource.ProgramSubCat</b></td>
+                        }
+                        <td><b>@Resource.ProgramDescriptionLocation</b></td>
+                        @if (Model.Sch_allcat == "all" || Model.Nat_inc_check != "0")
+                        {
+                            <td><b>@Resource.NatureOfIncome</b></td>
+                        }
+                        <td><b>@Resource.ProgramOrganizerDepartment</b></td>
+                        @if (Model.Sch_allcat == "all" || Model.Ser_prov_check != "0")
+                        {
+                            <td><b>@Resource.ServiceProvidedToCollaboratedWith</b></td>
+                        }
+                        <td><b>@Resource.StartDate</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var result in Model.Result_list)
+                    {
+                        <tr onclick="asoi_cat_edit('@result.Id');" style="cursor:pointer;"  class="dataRow">
+                            @if (Model.Sch_allcat == "all")
+                            {
+                                <td><b>@result.Cat</b></td>
+                            }
+                            <td>@result.Analytical</td>
+                            <td>@result.Section</td>
+                            @if (Model.Sch_allcat == "all" || Model.Cat_no != "10")
+                            { 
+                                <td>@result.Program_code</td>
+                                <td>@result.No_project</td>
+                            }
+                            @if (Model.Sch_allcat == "all" || Model.Subcat_check != "none")
+                            {
+                                <td>@result.Prog_sub_cat</td>
+                            }
+                            <td>@result.Prog_desc</td>
+                            @if (Model.Sch_allcat == "all" || Model.Nat_inc_check != "0")
+                            {
+                                <td>@result.Nature_income</td>
+                            }
+                            <td>@result.Prog_organizer</td>
+                            @if (Model.Sch_allcat == "all" || Model.Ser_prov_check != "0")
+                            {
+                                <td><b>@result.Service_provided</b></td>
+                            }
+                            <td>@result.Start_date</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        if ($("#Sch_prog_subcat").find("option:first-child").text() == "(None)") {
+            $("#Sch_prog_subcat").attr("disabled", true);
+        }
+        if ($("#Sch_nature_income").find("option:first-child").text() == "(None)") {
+            $("#Sch_nature_income").attr("disabled", true);
+        }
+        if ($("#Sch_service_provided").find("option:first-child").text() == "(None)") {
+            $("#Sch_service_provided").attr("disabled", true);
+        }
+        $(".datepicker").datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        })
+        if ('@Model.Sch_allcat' == "all") {
+            $("#Sch_allcat_chkbox").prop("checked", true);
+        }
+
+    })
+
+    function update_sch_allcat(element) {
+        if ($("#Sch_allcat_chkbox").is(':checked')) {
+            $("#Sch_allcat").val("all");
+        }
+        else {
+            $("#Sch_allcat").val("");
+        }
+    }
+
+    function asoi_cat_new() {
+        var url = '@Url.Action("ASOICatNew", "ASOI")'
+            + "?hosp_code=" + '@Model.Hosp_code'
+            + "&cat_no=" + '@Model.Cat_no';
+        location.href = url;
+    }
+
+    function index_submit() {
+        if (!check_required())
+            return false;
+        else{
+            $("#SearchASOIForm").submit();
+        }
+    }
+
+    function check_required() {
+
+        var analy_reg = /^[0-9]{5}$/;
+        var Sch_analytical_start = $("#Sch_analytical_start").val().toUpperCase();
+        var Sch_analytical_end = $("#Sch_analytical_end").val().toUpperCase();
+        if (Sch_analytical_start == ''){
+            alert('@Resource.AnalyticalBeginNotBlank');
+            return false;
+        }
+        else if (Sch_analytical_end == ''){
+            alert('@Resource.AnalyticalUntilNotBlank');
+            return false;
+        }
+        else if (!Sch_analytical_start.match(analy_reg) && Sch_analytical_start != 'ZZZZZ'){
+            alert('@Resource.AnalyticalBeginNotNumber');
+            return false;
+        } else if (!Sch_analytical_end.match(analy_reg) && Sch_analytical_end != 'ZZZZZ'){
+            alert('@Resource.AnalyticalUntilNotNumber');
+            return false;
+        }
+
+        var sect_reg = /^[0-9]{7}$/;
+        var Sch_section = $("#Sch_section").val().toUpperCase();
+        if (Sch_section != '' && !Sch_section.match(sect_reg) && Sch_section != "ZZZZZZZ") {
+            alert('@Resource.SectionNotNumber');
+            $("#Sch_section").focus();
+            return false;
+        }
+
+        if ($("#Sch_start_date_begin").val() == '' && $("#Sch_start_date_until").val() != '' ||
+            $("#Sch_start_date_begin").val() != '' && $("#Sch_start_date_until").val() == '') {
+            alert('@Resource.StartDateNotBlank');
+            return false;
+        }
+
+        var date_reg = /^([1-9]|0[1-9]|[12][0-9]|3[01])[/]([1-9]|0[1-9]|1[012])[/](19|20)\d\d/;
+        if ($("#Sch_start_date_begin").val() != '' && !$("#Sch_start_date_begin").val().match(date_reg)) {
+            alert('@Resource.StartDateBeginFormat');
+            return false;
+        }
+        if ($("#Sch_start_date_until").val() != '' && !$("#Sch_start_date_until").val().match(date_reg)) {
+            alert('@Resource.StartDateUntilFormat');
+            return false;
+        }
+
+        var get_start_begin = $("#Sch_start_date_begin").val().split('/');
+        var start_begin = new Date(get_start_begin[2], get_start_begin[1], get_start_begin[0]);
+        var get_start_until = $("#Sch_start_date_until").val().split('/');
+        var start_until = new Date(get_start_until[2], get_start_until[1], get_start_until[0]);
+        if (start_begin > start_until) {
+            alert('@Resource.StartDateOrder');
+            return false;
+        }
+
+        return true;
+    }
+
+    function index_reset(){
+        $("#Sch_analytical_start").val("00000");
+        $("#Sch_analytical_end").val("ZZZZZ");
+        $("#Sch_section").val('');
+        $("#Sch_program_code").val('');
+        $("#Sch_prog_subcat").val('');
+        $("#Sch_description_location").val('');
+        $("#Sch_organizer_department").val('');
+        $("#Sch_nature_income").val('');
+        $("#Sch_service_provided").val('');
+        $("#Sch_start_date_begin").val('');
+        $("#Sch_start_date_until").val('');
+    }
+
+    function asoi_cat_edit(list_id) {
+        var cat_no = '@Model.Cat_no';
+
+        var para_url = "&sch_cat_no=" + cat_no
+            + "&sch_analytical_start=" + $("#Sch_analytical_start").val()
+            + "&sch_analytical_end=" + $("#Sch_analytical_end").val()
+            + "&sch_section=" + $("#Sch_section").val()
+            + "&sch_description_location=" + $("#Sch_description_location").val().replace("\"", "&quot;")
+            + "&sch_nature_income=" + $("#Sch_nature_income").val()
+            + "&sch_organizer_department=" + $("#Sch_organizer_department").val().replace("\"", "&quot;")
+            + "&sch_start_date_begin=" + $("#Sch_start_date_begin").val()
+            + "&sch_start_date_until=" + $("#Sch_start_date_until").val();
+
+        if ($("#Sch_allcat_chkbox").is(':checked')) {
+            para_url = para_url + "&sch_allcat=" + $("#Sch_allcat").val();
+        }
+
+        if (cat_no != 10) {
+            para_url = para_url
+            + "&sch_service_provided=" + $("#Sch_service_provided").val()
+            + "&sch_program_code=" + $("#Sch_program_code").val()
+            + "&sch_prog_subcat=" + $("#Sch_prog_subcat").val();
+        }
+
+        var url = '@Url.Action("ASOICatEdit", "ASOI")'
+            + "?hosp_code=" + '@Model.Hosp_code'
+            + "&list_id=" + list_id
+            + para_url;
+        location.href = url;
+    }
+
+</script>

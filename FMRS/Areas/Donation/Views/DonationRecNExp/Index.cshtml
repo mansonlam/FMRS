@@ -1,0 +1,305 @@
+﻿@model FMRS.Model.DTO.DonationRecNExpModelCollectionSet
+@using System.Globalization;
+
+@{
+    ViewBag.Title = Resource.DonationReceivedExp;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var numberFormat = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+    numberFormat.CurrencyNegativePattern = 2;
+}
+<style type="text/css">
+    .dataRow:hover {
+        background-color: lightgreen !important;
+    }
+</style>
+<script type="text/javascript">
+    function show_detail(list_name) {
+        var name = '[name=' + list_name + ']';
+        if ($(name).is(":visible"))
+            $(name).hide();
+        else
+            $(name).show();
+    };
+
+    function show_designated() {
+        if (($('[name=ListC]').is(":visible") || !($('[name=ListC]').length)) && ($('[name=ListD]').is(":visible") || !($('[name=ListD]').length))) {
+            $('[name=ListC]').hide();
+            $('[name=ListD]').hide();
+        }
+        else {
+            $('[name=ListC]').show();
+            $('[name=ListD]').show();
+        }
+    };
+
+    function show_general() {
+        if (($('[name=ListF]').is(":visible") || !($('[name=ListF]').length)) && ($('[name=ListG]').is(":visible") || !($('[name=ListG]').length))) {
+            $('[name="ListF"]').hide();
+            $('[name="ListG"]').hide();
+        }
+        else {
+            $('[name="ListF"]').show();
+            $('[name="ListG"]').show();
+        }
+    };
+
+    function show_all() {
+        if (($('[name=ListC]').is(":visible") || !($('[name=ListC]').length)) && ($('[name=ListD]').is(":visible") || !($('[name=ListD]').length))
+            && ($('[name=ListF]').is(":visible") || !($('[name=ListF]').length)) && ($('[name=ListG]').is(":visible") || !($('[name=ListG]').length))) {
+            $('[name="ListC"]').hide();
+            $('[name="ListD"]').hide();
+            $('[name="ListF"]').hide();
+            $('[name="ListG"]').hide();
+        }
+        else {
+            $('[name="ListC"]').show();
+            $('[name="ListD"]').show();
+            $('[name="ListF"]').show();
+            $('[name="ListG"]').show();
+        }
+    };
+
+    function formSubmit(element, id, type, inst_code, fund, section, analytical, don_inc_exp) {
+        var url = '@Url.Action("Input", "DonationRecNExp")';
+        url = url + "?id=" + id;
+        url = url + "&type=" + type;
+        url = url + "&inst_code=" + inst_code;
+        url = url + "&fund=" + fund;
+        url = url + "&section=" + section;
+        url = url + "&analytical=" + analytical;
+        url = url + "&don_inc_exp=" + don_inc_exp;
+        location.href = url;
+    }
+
+    function show_year(don_date) {
+        var url = '@Url.Action("Index", "DonationRecNExp", new { inst_code = ViewBag.InstCode })';
+        url = url + "&donor_name=" + encodeURIComponent($("#donor_name").val());
+        url = url + "&show_year=" + don_date;
+        location.href = url;
+    }
+    $(document).keypress(function (e) {
+        if (e.which == 13) {
+            var url = '@Url.Action("Index", "DonationRecNExp", new { inst_code = ViewBag.InstCode })';
+            url = url + "&donor_name=" + encodeURIComponent($("#donor_name").val());
+            url = url + "&show_year=" + @ViewBag.ShowYear;
+            location.href = url;
+        }
+    });
+</script>
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title (@ViewBag.HospDesc) <br />
+    For the Year @ViewBag.ShowYear/ @(ViewBag.ShowYear+1)
+</h4>
+
+<div class="box box-default">
+    <div class="box-header">
+        <input type="button" class="dt-button btn btn-default" value="Designated" onclick="javascript: show_designated();" />
+        <input type="button" class="dt-button btn btn-default" value="General" onclick="javascript: show_general();" />
+        <input type="button" class="dt-button btn btn-default" value="All" onclick="javascript: show_all();" />
+        <input type="button" class="dt-button btn btn-default" id="showDialog" value="Donation Brought Forward" onclick="javascript:$('#donationByYr').modal('show');"/>
+    </div>
+    <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+            <tbody>
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <th>@Resource.Hospital</th>
+                    <th>@Resource.FundCode</th>
+                    <th>@Resource.SectionCode</th>
+                    <th>@Resource.AnalyticalCode</th>
+                    <th>@Resource.Donor
+                    <input type="text" id="donor_name" value="@ViewBag.InDonorName" style="color:black;"/>
+                    </th>
+                    <th>@Resource.DonationType</th>
+                    <th>@Resource.DonationPurpose</th>
+                    <th>@Resource.DonationCategory</th>
+                    <th>@Resource.DonationDesc</th>
+                    <th>@Resource.CMAmount</th>
+                    <th>@Resource.YTDAmount</th>
+                </tr>
+                <tr>
+                    <td colspan="10"><b>@Resource.DonationListA</b></td>
+                    <td align="right"><b>@(((decimal)ViewBag.CostA).ToString("C2", numberFormat))</b></td>
+                </tr>
+                <tr>
+                    <td colspan="10"><b>@Resource.DonationListB</b></td>
+                    <td align="right"><b>@(((decimal)ViewBag.CostB).ToString("C2", numberFormat))</b></td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td colspan="11"  style="cursor:pointer;" onclick="javascript:show_detail('ListC')"><b>@Resource.DonationListC @ViewBag.ShowYear/@(ViewBag.ShowYear + 1)</b></td>
+                </tr>
+                
+                @foreach (var m in Model.Set[0].Collection)
+                {
+                    <form id="EditForm_@m.Id" asp-action="Input" asp-controller="DonationRecNExp">
+                        <tr class="dataRow" style="background-color:aquamarine;display:none;cursor:pointer;" name="ListC" onclick="formSubmit(this,'@m.Id','Edit','@m.Hospital','@m.Fund','@m.Section','@m.Analytical','@m.Don_inc_exp');">
+                            <td>@m.Hospital @(m.Trust == 1 ? "-" + Resource.Trust : "")</td>
+                            <td >@m.Fund</td>
+                            <td >@m.Section</td>
+                            <td >@m.Analytical</td>
+                            <td >@m.Donor_name</td>
+                            <td >@m.Don_type_desc</td>
+                            <td >@m.Don_purpose_desc</td>
+                            <td >@m.Don_cat_desc</td>
+                            <td >@m.Don_kind_desc</td>
+                            <td align="right">@(((decimal)m.Don_cur_mth).ToString("C2", numberFormat))</td>
+                            <td align="right">@(((decimal)m.Don_YTD).ToString("C2", numberFormat))</td>
+                        </tr>
+                    </form>
+                }
+                
+                <tr  style="cursor:pointer;" onclick="javascript:show_detail('ListC')">
+                        <td colspan="8">@Resource.DonationListCTotal</td>
+                        <td align="right"><b>@Model.Set[0].Total_cnt</b></td>
+                        <td align="right"><b>@(((decimal)Model.Set[0].Total_don_cur_mth).ToString("C2", numberFormat))</b></td>
+                        <td align="right"><b>@(((decimal)Model.Set[0].Total_don_ytd).ToString("C2", numberFormat))</b></td>
+                    </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td colspan="11"  style="cursor:pointer;" onclick="javascript:show_detail('ListD')"><b>@Resource.DonationListD @ViewBag.ShowYear/@(ViewBag.ShowYear + 1)</b></td>
+                </tr>
+                @foreach (var m in Model.Set[1].Collection)
+                {
+                    <form id="EditForm_@m.Id" asp-action="Input" asp-controller="DonationRecNExp">
+                        <tr class="dataRow" style="background-color:aquamarine;display:none;cursor:pointer;" name="ListD" onclick="formSubmit(this,'@m.Id','Edit','@m.Hospital','@m.Fund','@m.Section','@m.Analytical','@m.Don_inc_exp');">
+                            <td>@m.Hospital @(m.Trust == 1 ? "-" + Resource.Trust : "")</td>
+                            <td>@m.Fund</td>
+                            <td>@m.Section</td>
+                            <td>@m.Analytical</td>
+                            <td>@m.Donor_name</td>
+                            <td>@m.Don_type_desc</td>
+                            <td>@m.Don_purpose_desc</td>
+                            <td>@m.Don_cat_desc</td>
+                            <td>@m.Don_kind_desc</td>
+                            <td align="right">@(((decimal)m.Don_cur_mth).ToString("C2", numberFormat))</td>
+                            <td align="right">@(((decimal)m.Don_YTD).ToString("C2", numberFormat))</td>
+                        </tr>
+                     </form>
+                }
+                <tr  style="cursor:pointer;" onclick="javascript:show_detail('ListD')">
+                    <td colspan="8">@Resource.DonationListDTotal</td>
+                    <td align="right"><b>@Model.Set[1].Total_cnt</b></td>
+                    <td align="right"><b>@(((decimal)Model.Set[1].Total_don_cur_mth).ToString("C2", numberFormat))</b></td>
+                    <td align="right"><b>@(((decimal)Model.Set[1].Total_don_ytd).ToString("C2", numberFormat))</b></td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td colspan="10"><b>@Resource.DonationListE</b></td>
+                    <td align="right"><b>@(((decimal)Model.Net_designated_ytd).ToString("C2", numberFormat))</b></td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td colspan="11"  style="cursor:pointer;" onclick="javascript:show_detail('ListF')"><b>@Resource.DonationListF @ViewBag.ShowYear/@(ViewBag.ShowYear + 1)</b></td>
+                </tr>
+                @foreach (var m in Model.Set[2].Collection)
+                {
+                    <form id="EditForm_@m.Id" asp-action="Input" asp-controller="DonationRecNExp">
+                        <tr class="dataRow" style="background-color:aquamarine;display:none;cursor:pointer;" name="ListF" onclick="formSubmit(this,'@m.Id','Edit','@m.Hospital','@m.Fund','@m.Section','@m.Analytical','@m.Don_inc_exp');">
+                            <td>@m.Hospital @(m.Trust == 1 ? "-" + Resource.Trust : "")</td>
+                            <td>@m.Fund</td>
+                            <td>@m.Section</td>
+                            <td>@m.Analytical</td>
+                            <td>@m.Donor_name</td>
+                            <td>@m.Don_type_desc</td>
+                            <td>@m.Don_purpose_desc</td>
+                            <td>@m.Don_cat_desc</td>
+                            <td>@m.Don_kind_desc</td>
+                            <td align="right">@(((decimal)m.Don_cur_mth).ToString("C2", numberFormat))</td>
+                            <td align="right">@(((decimal)m.Don_YTD).ToString("C2", numberFormat))</td>
+                        </tr>
+                    </form>
+                }
+                <tr  style="cursor:pointer;" onclick="javascript:show_detail('ListF')">
+                    <td colspan="8">@Resource.DonationListFTotal</td>
+                    <td align="right"><b>@Model.Set[2].Total_cnt</b></td>
+                    <td align="right"><b>@(((decimal)Model.Set[2].Total_don_cur_mth).ToString("C2", numberFormat))</b></td>
+                    <td align="right"><b>@(((decimal)Model.Set[2].Total_don_ytd).ToString("C2", numberFormat))</b></td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr>
+                    <td style="cursor:pointer;" colspan="11" onclick="javascript:show_detail('ListG')"><b>@Resource.DonationListG @ViewBag.ShowYear/@(ViewBag.ShowYear + 1)</b></td>
+                </tr>
+                @foreach (var m in Model.Set[3].Collection)
+                {
+                    <form id="EditForm_@m.Id" asp-action="Input" asp-controller="DonationRecNExp">
+                         <tr class="dataRow" style="background-color:aquamarine;display:none;cursor:pointer;" name="ListG" onclick="formSubmit(this,'@m.Id','Edit','@m.Hospital','@m.Fund','@m.Section','@m.Analytical','@m.Don_inc_exp');">
+                             <td>@m.Hospital @(m.Trust == 1 ? "-" + Resource.Trust : "")</td>
+                             <td>@m.Fund</td>
+                             <td>@m.Section</td>
+                             <td>@m.Analytical</td>
+                             <td>@m.Donor_name</td>
+                             <td>@m.Don_type_desc</td>
+                             <td>@m.Don_purpose_desc</td>
+                             <td>@m.Don_cat_desc</td>
+                             <td>@m.Don_kind_desc</td>
+                             <td align="right">@(((decimal)m.Don_cur_mth).ToString("C2", numberFormat))</td>
+                             <td align="right">@(((decimal)m.Don_YTD).ToString("C2", numberFormat))</td>
+                         </tr>
+                     </form>
+                }
+                 <tr style="cursor:pointer;" onclick="javascript:show_detail('ListG')">
+                     <td colspan="8">@Resource.DonationListGTotal</td>
+                     <td align="right"><b>@Model.Set[3].Total_cnt</b></td>
+                     <td align="right"><b>@(((decimal)Model.Set[3].Total_don_cur_mth).ToString("C2", numberFormat))</b></td>
+                     <td align="right"><b>@(((decimal)Model.Set[3].Total_don_ytd).ToString("C2", numberFormat))</b></td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                     <td colspan="10"><b>@Resource.DonationListH</b></td>
+                     <td align="right"><b>@(((decimal)Model.Net_general_ytd).ToString("C2", numberFormat))</b></td>
+                 </tr>
+                 <tr><td>&nbsp;</td></tr>
+                 <tr>
+                     <td colspan="10"><b>@Resource.UnspentBalance @ViewBag.ShowYear/@(ViewBag.ShowYear + 1) (E) + (H)</b></td>
+                     <td align="right"><b>@(((decimal)Model.Grand_total_don_ytd).ToString("C2", numberFormat))</b></td>
+                 </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Donation Brought Forward  Section -->
+<div class="modal fade" id="donationByYr" tabindex="-1" style="display:none;padding-top:120px;">
+    <div class="modal-dialog box box-default" style="width:40%;">
+
+        <div class="box-header">
+            <h4>@ViewBag.Title (@ViewBag.HospDesc)
+            @if (!string.IsNullOrEmpty(""))
+            {
+                <br/><span>@Resource.DonorNameStartsWith</span>
+            }
+             </h4>
+        </div>
+        <div class="box-body">
+            <table class="table table-hover">
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <th>@Resource.Year</th>
+                    <th>@Resource.Amount</th>
+                </tr>
+                @foreach (var m in Model.Donation_by_year_list)
+                {
+                    if (m.Don_date > 2014)
+                    {
+                        <tr onclick="javascript:show_year(@m.Don_date)" style="cursor:pointer;">
+                            <td>@m.Don_date/@(m.Don_date + 1)</td>
+                            <td align="right">@(((decimal)m.Cost).ToString("N2", numberFormat))</td>
+                        </tr>
+                    }
+                    else
+                    {
+                    <tr>
+                        <td>@m.Don_date/@(m.Don_date + 1)</td>
+                        <td align="right">@(((decimal)m.Cost).ToString("N2", numberFormat))</td>
+                    </tr>
+                    }
+                }
+                <tr>
+                    <td><b>@Resource.UnspentBalance @ViewBag.ShowYear/@(ViewBag.ShowYear + 1) (E) + (H)</b></td>
+                    <td align="right"><b>@(((decimal)Model.Total_cost).ToString("N2", numberFormat))</b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+

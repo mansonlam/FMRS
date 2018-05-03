@@ -1,0 +1,1592 @@
+﻿<aside class="main-sidebar">
+    <section class="sidebar">
+        <div class="user-panel" style="display:none;">           
+           <span id="CURRENT_SYSTEM" style="color:white;font-weight:bold;"> Currnet System: </span>
+        </div>
+        
+        @*Side Menu for Financial Closing*@
+        @if (HttpContextAccessor.HttpContext.Session.GetString("current_sys") == "Y")
+        {
+            <div class="form-group" id="hospital_drop_down" style="display:none;">
+                <label style="color:white">Hospital</label>
+                @*@Html.Action("GetHospital", "Menu", new { user_group = ViewBag.HospitalExHAHOList, name = "Hospital", list_name = "hospital_drop_down_list" })*@
+                <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))"></select>
+            </div>
+            <ul id="sidebar-menu" class="sidebar-menu tree"  data-widget="tree" >
+                <li id="input" class="header" style="white-space:normal;" >@Resource.Input<i class="fa fa-angle-left pull-right"></i></li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Closing_Report_Y") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Input") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                {
+                    if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode") == "HAHO")
+                    {
+                        if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") == "ALL")
+                        {
+                            if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Input") != "N")
+                            {
+                                <li id="left-sidebar-menu-asoi" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> 
+                                        <span>@Resource.ListOfASOIProgrammes</span><span class="pull-right-container"></span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu" style="display:none;">
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat1</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="1" onclick="addHosp_CodeWithParam(this,'ASOICat1_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat1_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat2</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="2" onclick="addHosp_CodeWithParam(this,'ASOICat2_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat2_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat3 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat3Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="3" onclick="addHosp_CodeWithParam(this,'ASOICat3_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat3_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat4<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat4Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="4" onclick="addHosp_CodeWithParam(this,'ASOICat4_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat4_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat5<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat5Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="5" onclick="addHosp_CodeWithParam(this,'ASOICat5_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat5_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat6</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="6" onclick="addHosp_CodeWithParam(this,'ASOICat6_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat6_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat7</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="7" onclick="addHosp_CodeWithParam(this,'ASOICat7_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat7_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat8<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat8Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="8" onclick="addHosp_CodeWithParam(this,'ASOICat8_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat8_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat9</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="9" onclick="addHosp_CodeWithParam(this,'ASOICat9_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat9_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat10<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat10Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="10" onclick="addHosp_CodeWithParam(this,'ASOICat10_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat10_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-rentalincome" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Rental Income<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from Premises</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>Other than Hydrotherapy<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>Hydrotherapy Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Closing_Report_Y") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                            {
+                                <li id="left-sidebar-menu-designateddonation" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Designated Donation <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reserve</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-capitalsubvention" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Capital Subvention <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and Donation</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-stock" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Stock</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i>
+                                                <span> View/Input Data</span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i><span> Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i>
+                                                <span>Amend Location</span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-annualcapitalcommitments" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Annual and <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Capital Commitments</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-listoffinancelease" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>List of Finance Lease <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transactions</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-contingentliabilities" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Contingent Liabilities</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-bankdeposit" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Bank Deposit Maturity</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-bankrecon" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Bank Reconciliation</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-prepayment" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>List of Prepayment</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-breakdownofcapitalprojects" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Breakdown of Capital <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Projects Accrued Charges</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-relatedpartytran" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Related Party Transactions</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-relatedpartytranhacm" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Related Party Transactions <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- HACM Ltd</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-donationrecieiptanexp" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Donation Receipts and <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expenditure (Fund 22 & 52)</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i>
+                                                <span>Fund 22 Expenditure</span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i>
+                                                <span>Fund 52 Expenditure </span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-finnacialvetting">
+                                    <a href="#">
+                                        <i class="fa fa-th"></i><span>Financial Vetting</span>
+                                    </a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Input") != "N")
+                            {
+                                <li id="left-sidebar-menu-asoi" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>@Resource.ListOfASOIProgrammes</span> <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") != "HOSP")
+                                    {
+                                        <ul class="treeview-menu">
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat1</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="1" onclick="addHosp_CodeWithParam(this,'ASOICat1_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat1_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat2</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="2" onclick="addHosp_CodeWithParam(this,'ASOICat2_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat2_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat3<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat3Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="3" onclick="addHosp_CodeWithParam(this,'ASOICat3_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat3_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat4<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat4Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="4" onclick="addHosp_CodeWithParam(this,'ASOICat4_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat4_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat5<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat5Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="5" onclick="addHosp_CodeWithParam(this,'ASOICat5_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat5_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat6</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="6" onclick="addHosp_CodeWithParam(this,'ASOICat6_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat6_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat7</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="7" onclick="addHosp_CodeWithParam(this,'ASOICat7_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat7_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat8<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat8Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="8" onclick="addHosp_CodeWithParam(this,'ASOICat8_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat8_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat9</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="9" onclick="addHosp_CodeWithParam(this,'ASOICat9_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat9_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control" class="treeview">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat10<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat10Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li>
+                                                        <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="10" onclick="addHosp_CodeWithParam(this,'ASOICat10_dropdown')">
+                                                            <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                        </a>
+                                                        <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat10_dropdown"></select>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <ul class="treeview-menu">
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="1" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat1</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="2" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat2</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="3" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat3<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat3Desc</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="4" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat4<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat4Desc</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="5" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat5<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat5Desc</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="6" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat6</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="7" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat7</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="8" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat8<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat8Desc</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="9" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat9</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="10" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                    <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat10<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat10Desc<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Privacy) Ordinance</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    }
+                                </li>
+                                <li id="left-sidebar-menu-rentalincome" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Rental Income<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from Premises</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") != "HOSP")
+                                    {
+                                        <ul class="treeview-menu">
+                                            <li name="hospital_drop_down_control">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>Other than Hydrotherapy<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                                </ul>
+                                            </li>
+                                            <li name="hospital_drop_down_control">
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>Hydrotherapy Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu">
+                                                    <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <ul class="treeview-menu">
+                                            <li>
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>Other than Hydrotherapy<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu"></ul>
+                                            </li>
+                                            <li>
+                                                <a href="#"><i class="fa fa-circle-o"></i> <span>Hydrotherapy Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                                <ul class="treeview-menu"></ul>
+                                            </li>
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                            if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Closing_Report_Y") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                            {
+                                <li id="left-sidebar-menu-designateddonation" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Designated Donation <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reserve</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-capitalsubvention" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Capital Subvention <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and Donation</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-stock" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i> <span>Stock</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i><span> View/Input Data</span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i><span> Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i><span>Amend Location</span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-annualcapitalcommitments" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Annual and <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Capital Commitments</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-listoffinancelease" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>List of Finance Lease <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transactions</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-contingentliabilities" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Contingent Liabilities</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-bankdeposit" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Bank Deposit Maturity</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-bankrecon" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Bank Reconciliation</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-prepayment" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>List of Prepayment</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-breakdownofcapitalprojects" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Breakdown of Capital <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Projects Accrued Charges</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-relatedpartytran" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Related Party Transactions</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-relatedpartytranhacm" name="hospital_drop_down_control" class="treeview">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Related Party Transactions <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- HACM Ltd</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-donationrecieiptanexp" class="treeview" name="layer1">
+                                    <a href="#">
+                                        <i class="fa fa-share"></i>
+                                        <span>Donation Receipts and <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expenditure (Fund 22 & 52)</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i>
+                                                <span>Fund 22 Expenditure</span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i>
+                                                <span>Fund 52 Expenditure </span>
+                                                <i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="left-sidebar-menu-finnacialvetting">
+                                    <a href="#">
+                                        <i class="fa fa-th"></i><span>Financial Vetting</span>
+                                    </a>
+                                </li>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Input") != "N")
+                        {
+                            <li id="left-sidebar-menu-asoi" class="treeview" name="layer1">
+                                <a href="#">
+                                    <i class="fa fa-share"></i> <span>@Resource.ListOfASOIProgrammes</span> <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") != "HOSP")
+                                {
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat1</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="1" onclick="addHosp_CodeWithParam(this,'ASOICat1_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat1_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat2</span> <i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="2" onclick="addHosp_CodeWithParam(this,'ASOICat2_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat2_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat3<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat3Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="3" onclick="addHosp_CodeWithParam(this,'ASOICat3_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat3_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat4<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat4Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="4" onclick="addHosp_CodeWithParam(this,'ASOICat4_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat4_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat5<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat5Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="5" onclick="addHosp_CodeWithParam(this,'ASOICat5_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat5_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat6</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="6" onclick="addHosp_CodeWithParam(this,'ASOICat6_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat6_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat7</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="7" onclick="addHosp_CodeWithParam(this,'ASOICat7_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat7_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat8<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat8Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="8" onclick="addHosp_CodeWithParam(this,'ASOICat8_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat8_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat9</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="9" onclick="addHosp_CodeWithParam(this,'ASOICat9_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat9_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control" class="treeview">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>@Resource.ASOICat10<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat10Desc</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li>
+                                                    <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="10" onclick="addHosp_CodeWithParam(this,'ASOICat10_dropdown')">
+                                                        <i class="fa fa-circle-o"></i> <span>@Resource.Hospital</span>
+                                                    </a>
+                                                    <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" id="ASOICat10_dropdown"></select>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <ul class="treeview-menu">
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="1" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat1</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="2" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat2</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="3" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat3<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat3Desc</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="4" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat4<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat4Desc</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="5" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat5<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat5Desc</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="6" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat6</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="7" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat7</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="8" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat8<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat8Desc</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="9" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat9</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-area="" asp-controller="ASOI" asp-action="Index" asp-route-cat_no="10" asp-route-hosp_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "HospCode_Y")">
+                                                <i class="fa fa-circle-o"></i> <span>@Resource.ASOICat10<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.ASOICat10Desc</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                }
+                            </li>
+                            <li id="left-sidebar-menu-rentalincome" class="treeview" name="layer1">
+                                <a href="#">
+                                    <i class="fa fa-share"></i> <span>Rental Income<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from Premises</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") != "HOSP")
+                                {
+                                    <ul class="treeview-menu">
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>Other than Hydrotherapy<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                        <li name="hospital_drop_down_control">
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>Hydrotherapy Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                }
+                                else
+                                {
+                                    <ul class="treeview-menu">
+                                        <li>
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>Other than Hydrotherapy<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu"></ul>
+                                        </li>
+                                        <li>
+                                            <a href="#"><i class="fa fa-circle-o"></i> <span>Hydrotherapy Pool</span><i class="fa fa-angle-left pull-right"></i></a>
+                                            <ul class="treeview-menu"></ul>
+                                        </li>
+                                    </ul>
+
+                                }
+                            </li>
+                        }
+                        if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Closing_Report_Y") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                        {
+                            <li id="left-sidebar-menu-designateddonation" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i> <span>Designated Donation <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reserve</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-capitalsubvention" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i> <span>Capital Subvention <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and Donation</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-stock" class="treeview" name="layer1">
+                                <a href="#">
+                                    <i class="fa fa-share"></i> <span>Stock</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li name="hospital_drop_down_control">
+                                        <a href="#">
+                                            <i class="fa fa-circle-o"></i><span> View/Input Data</span>
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </a><ul class="treeview-menu"></ul>
+                                    </li>
+                                    <li name="hospital_drop_down_control">
+                                        <a href="#">
+                                            <i class="fa fa-circle-o"></i><span>Amend Location</span>
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </a><ul class="treeview-menu"></ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li id="left-sidebar-menu-annualcapitalcommitments" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Annual and <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Capital Commitments</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-listoffinancelease" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>List of Finance Lease <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transactions</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-contingentliabilities" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Contingent Liabilities</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-bankdeposit" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Bank Deposit Maturity</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-bankrecon" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Bank Reconciliation</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-prepayment" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>List of Prepayment</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-breakdownofcapitalprojects" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Breakdown of Capital <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Projects Accrued Charges</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-relatedpartytran" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Related Party Transactions</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-relatedpartytranhacm" name="hospital_drop_down_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Related Party Transactions <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- HACM Ltd</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a><ul class="treeview-menu"></ul>
+                            </li>
+                            <li id="left-sidebar-menu-donationrecieiptanexp" class="treeview" name="layer1">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Donation Receipts and <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expenditure (Fund 22 & 52)</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li name="hospital_drop_down_control">
+                                        <a href="#">
+                                            <i class="fa fa-circle-o"></i><span>Fund 22 Expenditure</span>
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </a>
+                                        <ul class="treeview-menu">
+                                            <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                        </ul>
+                                    </li>
+                                    <li name="hospital_drop_down_control">
+                                        <a href="#">
+                                            <i class="fa fa-circle-o"></i><span>Fund 52 Expenditure </span>
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </a>
+                                        <ul class="treeview-menu">
+                                            <li><a href="#"><i class="fa fa-circle-o"></i> <span>Hospital</span></a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li id="left-sidebar-menu-finnacialvetting">
+                                <a href="#">
+                                    <i class="fa fa-th"></i><span>Financial Vetting</span>
+                                </a>
+                            </li>
+                        }
+                    }
+                }
+                <li class="header">@Resource.Print</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Report_Y") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Rpt_Y") == "R" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                {
+                    <li id="left-sidebar-menu-printreport">
+                        <a asp-area="" asp-controller="Report" asp-action="Index" asp-route-modules="Y">
+                            <i class="fa fa-book"></i><span>Print Report</span>
+                        </a>
+                    </li>
+                }
+                <li class="header">@Resource.Admin</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Admin_Y") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cluster_Admin") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_User_Admin") == "edit")
+                {
+                    <li id="left-sidebar-menu-useradmin">
+                        <a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-modules="Y">
+                            <i class="fa fa-folder"></i><span>@Resource.UserAdmin</span>
+                        </a>
+                    </li>
+                }
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Admin_Y") != "N" && (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") == "ALL" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") == "CLUSTER" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_Y") == "FP2"))
+                {
+                    <li id="left-sidebar-menu-schedulesetting">
+                        <a href="@Url.Action("Schedule", "Schedule")">
+                            <i class="fa fa-folder"></i><span>Schedule Setting</span>
+                        </a>
+                    </li>
+                }
+                <li id="left-sidebar-menu-fvadmtenderer">
+                    <a href="#">
+                        <i class="fa fa-folder"></i><span>FV Admin - Tenderer</span>
+                    </a>
+                </li>
+                <li id="left-sidebar-menu-fvadmindustry">
+                    <a href="#">
+                        <i class="fa fa-folder"></i><span>FV Admin - Industry</span>
+                    </a>
+                </li>
+                <li id="left-sidebar-menu-fvadmconclusion">
+                    <a href="#">
+                        <i class="fa fa-folder"></i>
+                        <span>FV Admin - <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Conclusion Template</span>
+                    </a>
+                </li>
+                <li class="header">Help</li>
+                <li id="left-sidebar-menu-maphaho">
+                    <a href="#">
+                        <i class="fa fa-book"></i><span>Mapping (HAHO)</span>
+                    </a>
+                </li>
+                <li id="left-sidebar-menu-maphaha">
+                    <a href="#">
+                        <i class="fa fa-book"></i><span>Mapping (HAHA)</span>
+                    </a>
+                </li>
+            </ul>
+        }
+        @*Side Menu for Project Management*@
+        else if (HttpContextAccessor.HttpContext.Session.GetString("current_sys") == "M")
+        {
+            <div class="form-group" id="hospital_drop_down" style="display:none;">
+                <label style="color:white">Hospital</label>
+                @*@Html.Action("GetHospital", "Menu", new { user_group = ViewBag.HospitalExHAHOList, name = "Hospital", list_name = "hospital_drop_down_list" })*@
+                <select class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))"></select>
+            </div>
+            <div class="form-group" id="cluster_list" style="display:none;">
+                <label style="color:white">Cluster</label>
+                @*@Html.Action("GetCluster", "Menu", new { user_group = ViewBag.ClusterExHAHOList, list_name = "cluster_list" })*@
+                <select class="form-control" asp-items="@(new SelectList(ViewBag.ClusterExHAHOList, "Value", "Text"))"></select>
+            </div>
+            <div class="form-group" id="cluster_include_all_list" style="display:none;">
+                <label style="color:white">Cluster</label>
+                @*@Html.Action("GetCluster", "Menu", new { user_group = ViewBag.ClusterList, list_name = "cluster_include_all_list" })*@
+                <select class="form-control" asp-items="@(new SelectList(ViewBag.ClusterList, "Value", "Text"))"></select>
+            </div>
+            <ul class="sidebar-menu tree" data-widget="tree">
+                <li class="header">@Resource.Input</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf") == "R")
+                {
+                    <li id="left-sidebar-menu-capitalproject" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-share"></i> <span>Capital Project</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf") == "R")
+                            {
+                                <li><a href="#"><i class="fa fa-circle-o"></i> <span>View Project</span></a></li>
+                                @*@Html.Action("GetCapitalProjSubMenu", "Menu", new { user_name = ViewBag.user_domain_name })*@
+                            }
+                             @if ((UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf_Submenu") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf_Submenu") == "A") && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode") == "HAHO")
+                             {
+                                 <li><a href="#"><i class="fa fa-circle-o"></i> <span>Executive Summary for <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CWRF SH8083MM-Minor Works</span></a></li>
+                             }
+                        </ul>
+                    </li>
+                }
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf_Funding") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cwrf_Funding") == "R")
+                {
+                    if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") == "ALL")
+                    {
+                        @*Url.Action(view,controller, new {cat=cwrf_funding,Corp=ALL})*@
+
+                        @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") == "ALL" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M").Substring(1, 3) == "CWD" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M").Substring(1, 3) == "CBV")
+                        {
+                        <li id="left-sidebar-menu-capitalprojectfunding" name="cluster_include_all_list_control" class="treeview">
+                            <a href="#">
+                                <i class="fa fa-share"></i>
+                                <span>Capital Project Funding <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;& Approval Stutas</span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#"><i class="fa fa-circle-o"></i><span>Cluster</span></a><ul class="treeview-menu"></ul></li>
+                            </ul>
+                        </li>
+                        }
+                        else
+                        {
+                        <li id="left-sidebar-menu-capitalprojectfunding" name="cluster_list_control" class="treeview">
+                            <a href="#">
+                                <i class="fa fa-share"></i>
+                                <span>Capital Project Funding <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;& Approval Stutas</span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#"><i class="fa fa-circle-o"></i><span>Cluster</span></a><ul class="treeview-menu"></ul></li>
+                            </ul>
+                        </li>
+                        }
+
+                    }
+                    else if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") != "HOSP")
+                    {
+                       @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") == "ALL" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M").Substring(1, 3) == "CWD" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M").Substring(1, 3) == "CBV")
+                       {
+                            <li id="left-sidebar-menu-capitalprojectfunding" name="cluster_include_all_list_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Capital Project Funding <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;& Approval Stutas</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#"><i class="fa fa-circle-o"></i><span>Cluster</span></a></li>
+                                </ul>
+                            </li>
+                       }
+                       else
+                       {
+                            <li id="left-sidebar-menu-capitalprojectfunding" name="cluster_list_control" class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-share"></i>
+                                    <span>Capital Project Funding <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;& Approval Stutas</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#"><i class="fa fa-circle-o"></i><span>Cluster</span></a></li>
+                                </ul>
+                            </li>
+                       }
+
+                    }
+                }
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cbv_Report") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cbv_Report") == "R")
+                {
+                    <li id="left-sidebar-menu-cbvproject" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-share"></i><span>CBV Project</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-circle-o"></i><span>View Project</span></a></li>
+                            @*@Html.Action("GetCBVProjSubMenu", "Menu", new { user_name = ViewBag.user_domain_name })*@
+                        </ul>
+                    </li>
+                    if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cbv_Funding") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cbv_Funding") == "R")
+                    {
+                        <li id="left-sidebar-menu-cbvgovfunding">
+                            <a href="#">
+                                <i class="fa fa-book"></i><span>CBV Government Funding</span>
+                            </a>
+                        </li>
+                    }
+                    <li id="left-sidebar-menu-cbvminorlampsum" name="hospital_drop_down_control" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-share"></i><span>CBV Minor Lamp Sum</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            @*@Html.Action("GetCBVMinLumpSumSubMenu", "Menu", new { user_name = ViewBag.user_domain_name })*@
+                            <li>
+                                    <a href="#"><i class="fa fa-circle-o"></i><span>View Project</span>
+                                    <i class="fa fa-angle-left pull-right"></i></a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="#"><i class="fa fa-circle-o"></i><span>@Resource.HospCluster</span></a></li>
+                                    </ul>
+                                </li>
+                        </ul>
+                    </li>
+                }
+                <li class="header">@Resource.Print</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Report_M") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Rpt_M") == "R" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                {
+                    <li id="left-sidebar-menu-printreport">
+                        <a asp-area="" asp-controller="Report" asp-action="Index" asp-route-modules="M">
+                            <i class="fa fa-book"></i><span>Print Report</span>
+                        </a>
+                    </li>
+                }
+                <li class="header">@Resource.Admin</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Admin_M") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cluster_Admin") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_User_Admin") == "edit")
+                {
+                    <li id="left-sidebar-menu-useradmin">
+                        <a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-modules="M">
+                            <i class="fa fa-folder"></i><span>@Resource.UserAdmin</span>
+                        </a>
+                    </li>
+                }
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Admin_M") != "N" && (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") == "ALL" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") == "CLUSTER" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_M") == "FP2"))
+                {
+                    <li id="left-sidebar-menu-schedulesetting">
+                        <a href="@Url.Action("Schedule", "Schedule")">
+                            <i class="fa fa-folder"></i><span>Schedule Setting</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        @*Side Menu for Donation*@
+        else if (HttpContextAccessor.HttpContext.Session.GetString("current_sys") == "D")
+        {
+            <div class="form-group" id="hosp_cluster_list" style="display:none;margin-bottom:0;">
+                @*<label style="color:white">@Resource.HospCluster</label>
+                <select class="form-control" asp-items="@(new SelectList(ViewBag.HospClusterList,"Value","Text"))" id="hosp_cluster_dropdown" onchange="alert($('#hosp_cluster_dropdown').val());"></select>*@
+            </div>
+            <div class="form-group" id="hosp_cluster_exclude_all_list" style="display:none;margin-bottom:0;">
+                @*<label style="color:white">@Resource.HospCluster</label>
+                <select class="form-control" asp-items="@(new SelectList(ViewBag.HospClusterExAllList,"Value","Text"))" id="hosp_cluster_exclude_all_dropdown" ></select>*@
+            </div>
+            <ul class="sidebar-menu tree" data-widget="tree">
+                <li class="header">@Resource.Input</li>
+                @*if User_Group = HOSP, get user_inst_code and redirect to result page*@
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserGroup_D") == "HOSP")
+                {
+                    @*Url.Action(view,controller, new {user_inst_code=Session["user_inst_code"].ToString()})*@
+                    <li id="left-sidebar-menu-donationrecevied" class="treeview">
+                        <a asp-area="" asp-controller="DonationRecNExp" asp-action="Index" asp-route-inst_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode")">
+                            <i class="fa fa-dashboard"></i>
+                            <span> @Resource.DonationReceived/<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.Expenditure</span>
+                        </a>
+                    </li>
+                    <li id="left-sidebar-menu-donationreserve" class="treeview">
+                        <a asp-area="" asp-controller="DonationReserve" asp-action="Index" asp-route-inst_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode")">
+                            <i class="fa fa-th"></i><span>@Resource.DonationReserve</span>
+                        </a>
+                    </li>
+                    <li id="left-sidebar-menu-reconofdonationreceipts" class="treeview">
+                        <a asp-area="" asp-controller="DonationRecNExpRecon" asp-action="Index" asp-route-recon_type='1' asp-route-inst_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode")">
+                            <i class="fa fa-th"></i><span>@Resource.ReconOfDonationReceipts</span>
+                        </a>
+                    </li>
+                    <li id="left-sidebar-menu-reconofdonationexp" class="treeview">
+                        <a asp-area="" asp-controller="DonationRecNExpRecon" asp-action="Index" asp-route-recon_type='2' asp-route-inst_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode")">
+                            <i class="fa fa-th"></i><span>@Resource.ReconOfDonationExp</span>
+                        </a>
+                    </li>
+                    <li id="left-sidebar-menu-remark" class="treeview">
+                        <a asp-area="" asp-controller="DonationRemark" asp-action="Index" asp-route-inst_code="@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "InstCode")">
+                            <i class="fa fa-th"></i><span>@Resource.Remark</span>
+                        </a>
+                    </li>
+                }
+                @*if User_Group != HOSP, display dorp down list*@
+                else
+                {
+                    <li id="left-sidebar-menu-donationrecevied" name="hosp_cluster_exclude_all_list_control" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-dashboard"></i>
+                            <span>@Resource.DonationReceived/<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Resource.Expenditure</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a asp-area="" asp-controller="DonationRecNExp" asp-action="Index" asp-route-donor_name="" asp-route-show_year="" onclick="addInst_Code(this,'DonationRecNExp_dropdown')">
+                                    <i class="fa fa-circle-o"></i><span>@Resource.HospCluster</span>
+                                </a>
+                                <select class="form-control" style="height:28px;" asp-items="@(new SelectList(ViewBag.HospClusterExAllList,"Value","Text"))" id="DonationRecNExp_dropdown"></select>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-donationreserve" name="hosp_cluster_exclude_all_list_control" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-th"></i><span>@Resource.DonationReserve</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a asp-area="" asp-controller="DonationReserve" asp-action="Index"  onclick="addInst_Code(this,'DonationReserve_dropdown')">
+                                    <i class="fa fa-circle-o"></i><span>@Resource.HospCluster</span>
+                                </a>
+                                <select class="form-control" style="height:28px;" asp-items="@(new SelectList(ViewBag.HospClusterExAllList,"Value","Text"))" id="DonationReserve_dropdown"></select>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-reconofdonationreceipts" name="hosp_cluster_list_control" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-th"></i><span>@Resource.ReconOfDonationReceipts</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a asp-area="" asp-controller="DonationRecNExpRecon" asp-action="Index" asp-route-recon_type='1' onclick="addInst_CodeWithParam(this,'ReconDonationRec_dropdown')">
+                                    <i class="fa fa-circle-o"></i><span>@Resource.HospCluster</span>
+                                </a>
+                                <select class="form-control" style="height:28px;" asp-items="@(new SelectList(ViewBag.HospClusterList,"Value","Text"))" id="ReconDonationRec_dropdown"></select>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-reconofdonationexp" name="hosp_cluster_list_control" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-th"></i><span>@Resource.ReconOfDonationExp</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a asp-area="" asp-controller="DonationRecNExpRecon" asp-action="Index" asp-route-recon_type='2' onclick="addInst_CodeWithParam(this,'ReconDonationExp_dropdown')">
+                                    <i class="fa fa-circle-o"></i><span>@Resource.HospCluster</span>
+                                </a>
+                                <select class="form-control" style="height:28px;" asp-items="@(new SelectList(ViewBag.HospClusterList,"Value","Text"))" id="ReconDonationExp_dropdown"></select>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-remark" name="hosp_cluster_list_control" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-th"></i><span>@Resource.Remark</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a asp-area="" asp-controller="DonationRemark" asp-action="Index" onclick="addInst_Code(this,'DonationRemark_dropdown')">
+                                    <i class="fa fa-circle-o"></i><span>@Resource.HospCluster</span>
+                                </a>
+                                <select class="form-control" style="height:28px;" asp-items="@(new SelectList(ViewBag.HospClusterList,"Value","Text"))" id="DonationRemark_dropdown"></select>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "DonationPeriod") == "Y" && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Donation") == "I")
+                {
+                    <li id="left-sidebar-menu-uploaddonation">
+                        <a  asp-area="" asp-controller="DonationUpload" asp-action="Index">
+                            <i class="fa fa-book"></i><span>@Resource.DonationUpload</span>
+                        </a>
+                    </li>
+                }
+                <li class="header">@Resource.Print</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Report_D") != "N" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Asoi_Rpt_D") == "R" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_Domain_Id") != "")
+                {
+                    <li id="left-sidebar-menu-printreport">
+                        <a asp-area="" asp-controller="Report" asp-action="Index" asp-route-modules="D">
+                            <i class="fa fa-book"></i><span>@Resource.PrintReport</span>
+                        </a>
+                    </li>
+                }
+                <li class="header">@Resource.Admin</li>
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Admin_M") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Cluster_Admin") == "I" || UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Fv_User_Admin") == "edit")
+                {
+                    <li id="left-sidebar-menu-useradmin">
+                        <a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-modules="D">
+                            <i class="fa fa-folder"></i><span>@Resource.UserAdmin</span>
+                        </a>
+                    </li>
+                }
+                <li id="left-sidebar-menu-schedulesetting">
+                    <a href="@Url.Action("Schedule", "Schedule")">
+                        <i class="fa fa-folder"></i><span>Schedule Setting</span>
+                    </a>
+                </li>
+            </ul>
+         }
+    </section>
+</aside>
+
+<script>
+    $(document).ready(function () {
+        var val = '@HttpContextAccessor.HttpContext.Session.GetString("current_sys")';
+        $("#CURRENT_SYSTEM").append(" " + Sys_Desc(val));
+        $('#hospital_drop_down').css({ display: 'none' });
+        $('#cluster_list').css({ display: 'none' });
+        $('#cluster_include_all_list').css({ display: 'none' });
+        $('#hosp_cluster_list').css({ display: 'none' });
+        $('#hosp_cluster_exclude_all_list').css({ display: 'none' });
+        showmenu();
+        setTimeout(function () { hidemenu();}, 0.1);
+    });
+
+    // Show hide drop down list
+    $('li').click(function () {
+        var name = ''
+        if ($(this).attr('name')!= ''&& $(this).attr('name')!= null && $(this).attr('name')!= undefined) {
+            name = $(this).attr('name').toString();
+        }
+        if (name == '') {
+            $('#hospital_drop_down').css({ display: 'none' });
+            $('#cluster_list').css({ display: 'none' });
+            $('#cluster_include_all_list').css({ display: 'none' });
+            $('#hosp_cluster_list').css({ display: 'none' });
+            $('#hosp_cluster_exclude_all_list').css({ display: 'none' });
+        } else if (name == 'hospital_drop_down_control') {
+            $('#hospital_drop_down').css({ display: 'block' });
+            $('#cluster_list').css({ display: 'none' });
+            $('#cluster_include_all_list').css({ display: 'none' });
+            $('#hosp_cluster_list').css({ display: 'none' });
+            $('#hosp_cluster_exclude_all_list').css({ display: 'none' });
+        } else if (name == 'cluster_list_control') {
+            $('#hospital_drop_down').css({ display: 'none' });
+            $('#cluster_list').css({ display: 'block' });
+            $('#cluster_include_all_list').css({ display: 'none' });
+            $('#hosp_cluster_list').css({ display: 'none' });
+            $('#hosp_cluster_exclude_all_list').css({ display: 'none' });
+        } else if (name == 'cluster_include_all_list_control') {
+            $('#hospital_drop_down').css({ display: 'none' });
+            $('#cluster_list').css({ display: 'none' });
+            $('#cluster_include_all_list').css({ display: 'block' });
+            $('#hosp_cluster_list').css({ display: 'none' });
+            $('#hosp_cluster_exclude_all_list').css({ display: 'none' });
+        } else if (name == 'hosp_cluster_list_control') {
+            $('#hospital_drop_down').css({ display: 'none' });
+            $('#cluster_list').css({ display: 'none' });
+            $('#cluster_include_all_list').css({ display: 'none' });
+            $('#hosp_cluster_list').css({ display: 'block' });
+            $('#hosp_cluster_exclude_all_list').css({ display: 'none' });
+        } else if (name == 'hosp_cluster_exclude_all_list_control') {
+            $('#hospital_drop_down').css({ display: 'none' });
+            $('#cluster_list').css({ display: 'none' });
+            $('#cluster_include_all_list').css({ display: 'none' });
+            $('#hosp_cluster_list').css({ display: 'none' });
+            $('#hosp_cluster_exclude_all_list').css({ display: 'block' });
+        };
+
+    });
+
+    $('#input').mouseover(function () {
+        showmenu();
+    });
+
+    //$('#sidebar-menu').mouseleave(function () {
+    $('#input').click(function () {
+        hidemenu();
+    });
+
+    function hidemenu() {
+        $('#left-sidebar-menu-asoi').css({ display: 'none' });
+        $('#left-sidebar-menu-rentalincome').css({ display: 'none' });
+        $('#left-sidebar-menu-designateddonation').css({ display: 'none' });
+        $('#left-sidebar-menu-capitalsubvention').css({ display: 'none' });
+        $('#left-sidebar-menu-stock').css({ display: 'none' });
+        $('#left-sidebar-menu-annualcapitalcommitments').css({ display: 'none' });
+        $('#left-sidebar-menu-listoffinancelease').css({ display: 'none' });
+        $('#left-sidebar-menu-contingentliabilities').css({ display: 'none' });
+        $('#left-sidebar-menu-bankdeposit').css({ display: 'none' });
+        $('#left-sidebar-menu-bankrecon').css({ display: 'none' });
+        $('#left-sidebar-menu-prepayment').css({ display: 'none' });
+        $('#left-sidebar-menu-breakdownofcapitalprojects').css({ display: 'none' });
+        $('#left-sidebar-menu-relatedpartytran').css({ display: 'none' });
+        $('#left-sidebar-menu-relatedpartytranhacm').css({ display: 'none' });
+        $('#left-sidebar-menu-donationrecieiptanexp').css({ display: 'none' });
+        $('#left-sidebar-menu-finnacialvetting').css({ display: 'none' });
+        $('#input .fa-angle-left').css('transform', 'rotate(' + 0 + 'deg)');
+    };
+
+    function showmenu() {
+        $('#left-sidebar-menu-asoi').css({ display: 'block' });
+        $('#left-sidebar-menu-rentalincome').css({ display: 'block' });
+        $('#left-sidebar-menu-designateddonation').css({ display: 'block' });
+        $('#left-sidebar-menu-capitalsubvention').css({ display: 'block' });
+        $('#left-sidebar-menu-stock').css({ display: 'block' });
+        $('#left-sidebar-menu-annualcapitalcommitments').css({ display: 'block' });
+        $('#left-sidebar-menu-listoffinancelease').css({ display: 'block' });
+        $('#left-sidebar-menu-contingentliabilities').css({ display: 'block' });
+        $('#left-sidebar-menu-bankdeposit').css({ display: 'block' });
+        $('#left-sidebar-menu-bankrecon').css({ display: 'block' });
+        $('#left-sidebar-menu-prepayment').css({ display: 'block' });
+        $('#left-sidebar-menu-breakdownofcapitalprojects').css({ display: 'block' });
+        $('#left-sidebar-menu-relatedpartytran').css({ display: 'block' });
+        $('#left-sidebar-menu-relatedpartytranhacm').css({ display: 'block' });
+        $('#left-sidebar-menu-donationrecieiptanexp').css({ display: 'block' });
+        $('#left-sidebar-menu-finnacialvetting').css({ display: 'block' });
+        $('#input .fa-angle-left').css('transform', 'rotate(' + 270 + 'deg)');
+    };
+
+    function addInst_Code(element, list_id) {
+        list_name = "#" + list_id;
+        $(element).attr('href', function () {
+            return this.href + '?Inst_Code=' + $(list_name).val();
+        });
+    }
+    function addInst_CodeWithParam(element, list_id) {
+        list_name = "#" + list_id;
+        $(element).attr('href', function () {
+            return this.href + '&Inst_Code=' + $(list_name).val();
+        });
+    }
+    function addHosp_CodeWithParam(element, list_id) {
+        list_name = "#" + list_id;
+        $(element).attr('href', function () {
+            return this.href + '&hosp_Code=' + $(list_name).val();
+        });
+    }
+    $(document).ready(function () {
+        var url = window.location;
+        var element = $('ul.sidebar-menu a').filter(function () {
+            return this.href == url || url.href.indexOf(this.href) == 0;
+        }).parent().addClass('active');
+        if (element.is('li')) {
+            element.addClass('active').parent().parent('li').addClass('active')
+        }
+    });
+
+</script>

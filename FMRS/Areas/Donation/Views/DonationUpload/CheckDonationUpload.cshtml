@@ -1,0 +1,86 @@
+﻿@using System.Globalization;
+@model FMRS.Model.DTO.DonationUploadViewModel
+@{
+    ViewBag.Title = Resource.UploadDonationRecord;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var numberFormat = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+    numberFormat.CurrencyNegativePattern = 0;
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+
+<div class="box box-default" style="overflow:auto;">
+    <div class="box-header" style="padding-bottom:0;">
+    </div>
+    <div class="box-body">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="UploadDetail">
+                    </div>
+                    <!-- Summary -->
+                    <div style="padding-top:10px;">
+                        @Resource.TotalValidRecordCnt @Model.Valid_rec_cnt<br />
+                        @Resource.TotalInvalidRecordCnt @Model.Invalid_rec_cnt<br/>
+                        @Resource.TotalBlankLineCnt @Model.Break_line
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-footer">
+        <div class="dt-buttons">
+            <input type="button" id="btnUpload" class="dt-button btn btn-default" onclick="upload()" value="@Resource.UploadValidRecords" />
+            @if (Model.Valid_only == 0)
+            {
+                <input type="button" id="btnDisplayInvalid" class="dt-button btn btn-default" onclick="display_invalid(-1);" value="@Resource.DisplayInvalidRecords" />
+            }
+            else
+            {
+                <input type="button" id="btnDisplayAll" class="dt-button btn btn-default" onclick="display_invalid(0);" value="@Resource.DisplayAllRecord" />
+            }
+            <input type="button" id="btnback" class="dt-button btn btn-default" onclick="back();" value="@Resource.Back" />
+        </div>
+    </div>
+
+</div>
+
+
+<form id="Donation" asp-action="CheckDonationUpload" asp-controller="DonationUpload">
+    <input type="hidden" asp-for="Inst_code" value="@Model.Inst_code" />
+    <input type="hidden" asp-for="Error_list" value="@Model.Error_list" />
+    <input type="hidden" asp-for="Valid_only" value="@Model.Valid_only" />
+    <textarea asp-for="Remark" style="display:none;" rows="1" cols="1" value="@Model.Remark"></textarea>
+    <input type="hidden" asp-for="Action" value="" />
+    <input type="hidden" asp-for="Record_list" value="@Model.Record_list" />
+</form>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('body').addClass("sidebar-collapse");
+        $("#UploadDetail").load("GetLine", {
+            inst_code: '@Model.Inst_code',
+            remark: '@Model.Remark',
+            record_array: '@Html.Raw(Model.Record_array)',
+            function_mode: "C",
+            show_valid_only: $("#Valid_only").val()
+        });
+    });
+
+    function display_invalid(show_valid_only) {
+        $("#Action").val("");
+        $("#Valid_only").val(show_valid_only);
+        $('#Donation').submit();
+    };
+    function back() {
+        var url = '@Url.Action("Index", "DonationUpload")';
+        //url = url + "?remark="+'@Model.Remark'; not enough space
+        location.href = url;
+    };
+    function upload() {
+        $("#Action").val("Upload");
+        $('#Donation').submit();
+    };
+    </script>

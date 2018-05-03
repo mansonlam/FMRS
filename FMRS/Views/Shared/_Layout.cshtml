@@ -1,0 +1,115 @@
+﻿@using FMRS.Common.Resources;
+
+<!DOCTYPE html>
+<html style="height:auto;min-height:100%">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>@Resource.FMRSTitle</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    
+    <!-- Bootstrap 3.3.7-->
+    <link rel="~/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/font-awesome/css/font-awesome.min.css" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/Ionicons/css/ionicons.min.css" />
+    <!-- bootstrap datepicker -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" />
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/select2/dist/css/select2.min.css" />
+    <!-- Theme Style -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/AdminLTE.min.css" />
+    <!-- AdminLTE Skins -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/skins/_all-skins.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/AdminLTE/bower_components/jquery/dist/jquery.min.js"></script>
+</head>
+<body class="skin-purple sidebar-mini" style=" padding:0px;height:auto;min-height:100%">
+    <div class="wrapper" style="height:auto;min-height:100%;" >
+        <header class="main-header">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="logo">
+                <span class="logo-mini"><b>F</b>MRS</span>
+                <span class="logo-lg"><b>F</b>MRS</span>
+            </a>
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-collapse">
+                    @Html.Partial("_TopMenuPartial")
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </nav>
+        </header>
+        @Html.Partial("_SideMenuPartial")
+
+        <div class="body-content content-wrapper" style="margin-top:-20px;height:auto;min-height:100%">
+            <div id="MessageBox" style="margin: 20px -10px -20px -15px;">
+                @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+                {
+                    <div>
+                        <div class="alert alert-success alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4>
+                                <i class="icon fa fa-check"></i> @Resource.Information
+                            </h4>
+                            @if (ViewBag.IsHtmlMessage as bool? == true)
+                            {
+                                @Html.Raw(@ViewBag.SuccessMessage);
+                            }
+                            else
+                            {
+                                @ViewBag.SuccessMessage
+                            }
+                        </div>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <div>
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4>
+                                <i class="icon fa fa-warning"></i> @Resource.Alert!
+                            </h4>
+                            @if (ViewBag.IsHtmlMessage as bool? == true)
+                            {
+                                @Html.Raw(@ViewBag.ErrorMessage);
+                            }
+                            else
+                            {
+                                @ViewBag.ErrorMessage
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <input type="hidden" name="current_sys" value='@HttpContextAccessor.HttpContext.Session.GetString("current_sys")'>
+            @RenderBody()
+            <br />
+            @*<br /><br />
+                <br />
+                <hr style="border-top-color:lightgray"/>
+            <footer><p>&copy; 2017 - FMRS</p></footer>*@
+        </div>
+        
+    </div>
+    @*<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>*@
+    <script src="~/AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <!-- bootstrap datepicker -->
+    <script src="~/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/AdminLTE/dist/js/adminlte.min.js"></script>
+    
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+﻿@model FMRS.Model.DTO.DonationReconModel
+@using System.Globalization;
+@{
+    ViewBag.Title = Model.Recon_type == 1 ? Resource.ReconOfDonationReceipts : Resource.ReconOfDonationExp;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var numberFormat = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+    numberFormat.CurrencyNegativePattern = 2;
+}
+
+<style>
+    th, td {
+        border: 3px solid #f4f4f4 !important;
+    }
+    .dataRow:hover {
+        background-color: lightgreen !important;
+    }
+</style>
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+
+<div class="box box-default" style="overflow:auto;">
+    <div class="box-header" style="padding-bottom:0;">
+
+    </div>
+    <div class="box-body">
+        <div style="padding:0 15px;line-height:1.5;">
+            <b>
+                @(Model.Recon_type == 1 ? Resource.ReconOfDonationReceiptsTitle : Resource.ReconOfDonationExpTitle) 
+                @ViewBag.FinancialYear/@((ViewBag.FinancialYear + 1).ToString().Substring(2, 2)) ( @ViewBag.HospDesc )
+                <br />
+            </b>
+        </div>
+        <div class="form-group" style="padding:20px;margin-bottom:0;">
+            <form id="ReconOfDonation" asp-action="UpdateDonationMovement" asp-controller="DonationRecNExpRecon">
+                <input type="hidden" asp-for="Inst_code" value="@Model.Inst_code" />
+                <input type="hidden" asp-for="Recon_type" value="@Model.Recon_type" />
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr style="background-color:cornflowerblue;color:white;">
+                            <th colspan="2" style="padding:10px;"><b>@Resource.LedgerMovementsCashBook</b></th>
+                            <th></th>
+                            <th style="text-align:center;padding:10px;"><b>@Resource.OracleGLMovementDuringTheYear</b></th>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.Fund</b></td>
+                            <td><b>@Resource.AccountNo</b></td>
+                            <td></td>
+                            <td style="text-align:center;"><b>@Resource.HKDollar</b></td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.DonationFund</b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>@Resource.Subtotal</td>
+                            <td></td>
+                            <td style="text-align:right;">@(((decimal)Model.Total * -1).ToString("N2", CultureInfo.InvariantCulture))</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>@Resource.GrandTotal</td>
+                            <td></td>
+                            <td style="text-align:right;">@(((decimal)Model.Total * -1).ToString("N2", CultureInfo.InvariantCulture))</td>
+                        </tr>
+                        <tr><td colspan="4">&nbsp;</td></tr>
+                        <tr>
+                            <td colspan="2">@Resource.DonationBalancePerOracleGL</td>
+                            <td></td>
+                            <td style="text-align:right;">@(((decimal)Model.Total * -1).ToString("N2", CultureInfo.InvariantCulture))</td>
+                            <td style="text-align:right;">@Resource.parA</td>
+                        </tr>
+                        <tr><td colspan="4">&nbsp;</td></tr>
+                        <tr>
+                            <td colspan="3">
+                                @(Model.Recon_type == 1 ? Resource.DonationReceivedDuringTheYearPerFMRS : Resource.DonationExpenditureDuringTheYearPerFMRS) 
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="#" onclick="$('#donationMovement').modal('show');">
+                                    @(((decimal)Model.Cost).ToString("N2", CultureInfo.InvariantCulture))
+                                </a>
+                            </td>
+                            <td style="text-align:right;">@Resource.parB</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">@Resource.VarianceBetweenOracleGLAndFMRS</td>
+                            <td style="text-align:right;">@((((decimal)Model.Total * -1) - (decimal)Model.Cost).ToString("N2", CultureInfo.InvariantCulture))</td>
+                            <td style="text-align:right;">@Resource.AMinB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+    </div>
+    <div class="box-footer">
+    </div>
+</div>
+
+<!-- Donation Movement List Section -->
+<div class="modal fade" id="donationMovement" tabindex="-1" style="display:none;padding-top:50px;">
+    <div class="modal-dialog box box-default" style="width:90%;">
+        <div class="box-header">
+            <h4>
+                @Resource.DonationReceivedExp for 
+                @ViewBag.LastMonth.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("en-US"))
+                (@ViewBag.HospDesc)
+            </h4>
+        </div>
+        <div class="box-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr style="background-color:cornflowerblue;color:white;">
+                        <th>@Resource.Hospital</th>
+                        <th>@Resource.DonorName</th>
+                        <th>@Resource.DonationType</th>
+                        <th>@Resource.DonationPurpose</th>
+                        <th>@Resource.DonationCategory</th>
+                        <th>@Resource.DonationDesc</th>
+                        <th>@Resource.CMAmount</th>
+                        <th>@Resource.YTDAmount</th>
+                    </tr>
+                </thead>
+                <tbody class="link_rec">
+                    @{
+                        var old_don_inc_exp = "";
+                        var old_trust = -1;
+                        decimal total_don_cur_mth = 0;
+                        decimal total_don_ytd = 0;
+                        var total_cnt = 0;
+                    }
+                    @{ int i = 0;}
+                    @foreach (var m in Model.DonationList)
+                    {
+                        if (old_don_inc_exp != m.Don_inc_exp || old_trust != m.Trust)
+                        {
+                            if (old_don_inc_exp != "" && old_trust != -1)
+                            {
+                                <tr style="background-color:blueviolet;color:white;">
+                                    <td colspan="4"></td>
+                                    <td>@Resource.Total</td>
+                                    <td>@total_cnt</td>
+                                    <td>@(((decimal)total_don_cur_mth).ToString("C2", numberFormat))</td>
+                                    <td>@(((decimal)total_don_ytd).ToString("C2", numberFormat))</td>
+                                </tr>
+                                <tr><td>&nbsp;</td></tr>
+                                total_don_cur_mth = 0;
+                                total_don_ytd = 0;
+                                total_cnt = 0;
+                            }
+                            <tr>
+                                <td style="background-color:blueviolet;color:white;">
+                                    <b>
+                                        @if (m.Don_inc_exp == "I")
+                                        {
+                                            @Resource.Received
+                                        }
+                                        else if (m.Don_inc_exp == "E")
+                                        {
+                                            @Resource.Expenditure
+                                        }
+                                    </b>
+                                </td>
+                            </tr>
+                            old_don_inc_exp = m.Don_inc_exp;
+                            old_trust = Convert.ToInt32(m.Trust);
+                        }
+                        <tr class="dataRow" style="background-color:aquamarine;cursor:pointer;" onclick="formSubmit('@m.Id','@m.Hospital','@m.Fund','@m.Section','@m.Analytical','@m.Don_inc_exp');">
+                            <td>@m.Hospital @(m.Trust == 1 ? "-" + Resource.Trust : "")</td>
+                            <td>@m.Donor_name</td>
+                            <td>@m.Don_type_desc</td>
+                            <td>@m.Don_purpose_desc</td>
+                            <td>@m.Don_cat_desc</td>
+                            <td>@m.Don_kind_desc</td>
+                            <td align="right">@(((decimal)m.Don_cur_mth).ToString("C2", numberFormat))</td>
+                            <td align="right">@(((decimal)m.Don_YTD).ToString("C2", numberFormat))</td>
+                        </tr>
+                        {
+                            total_cnt = total_cnt + 1;
+                            total_don_cur_mth = total_don_cur_mth + m.Don_cur_mth;
+                            total_don_ytd = total_don_ytd + m.Don_YTD;
+                            i++;
+                        }
+                    }
+                </tbody>
+</table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function formSubmit( id, inst_code, fund, section, analytical, don_inc_exp) {
+        var url = '@Url.Action("Input", "DonationRecNExp")';
+        url = url + "?id=" + id;
+        url = url + "&inst_code=" + inst_code;
+        url = url + "&fund=" + fund;
+        url = url + "&section=" + section;
+        url = url + "&analytical=" + analytical;
+        url = url + "&don_inc_exp=" + don_inc_exp;
+        location.href = url;
+    }
+</script>

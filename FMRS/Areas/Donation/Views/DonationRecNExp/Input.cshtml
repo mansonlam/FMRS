@@ -1,0 +1,954 @@
+﻿@model FMRS.Model.DTO.DonationRecNExpModel
+@using System.Globalization;
+@using System.Web;
+
+@{    
+    ViewBag.Title = Resource.DonationReceivedExp;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 style="padding:20px 0 5px;">@ViewBag.Title 
+    @if (Model.Id == 0)
+    {
+        <span>(</span>
+        @Resource.NewRecord
+        <span>)</span>
+    }
+    for @DateTime.ParseExact(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Value_Date2"), "yyyyMMdd", CultureInfo.InvariantCulture).ToString("MMMM yyyy"))</h4>
+
+<div class="box box-default">
+    <form id="InsertUpdateForm" asp-action="InsertUpdate" asp-controller="DonationRecNExp">
+        <div class="box-header">
+            <div class="row" style="padding-top:5px;">
+                <div class="col-md-3">@Resource.Hospital/ @Resource.Fund/ @Resource.Section/ @Resource.AnalyticalCode: </div>
+                <div class="col-md-3">@Model.Hospital/@Model.Fund/@Model.Section/@Model.Analytical</div>
+                <div class="col-md-3">@Resource.DonationReceivedExp: </div>
+                <div class="col-md-3">
+                    @if (Model.Don_inc_exp == "I")
+                    {
+                        @Resource.DonationReceived
+                    }
+                    else
+                    {
+                        @Resource.DonationExpenditure
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Id" value="@Model.Id" />
+            <input type="hidden" asp-for="OId" value="@Model.OId" />
+            <input type="hidden" asp-for="Delete_function" value=0 />
+            <input type="hidden" asp-for="Inst_code" value="@Model.Inst_code" />
+            <input type="hidden" asp-for="Input_month" value=11 />
+            <input type="hidden" asp-for="Ischange_ind" value=0 />
+            <input type="hidden" asp-for="Ischange_desc_ind" value=0 />
+            <input type="hidden" asp-for="Hospital" value="@Model.Hospital" />
+            <input type="hidden" asp-for="Fund" value="@Model.Fund" />
+            <input type="hidden" asp-for="Section" value="@Model.Section" />
+            <input type="hidden" asp-for="Analytical" value="@Model.Analytical" />
+            <input type="hidden" asp-for="Don_inc_exp" value="@Model.Don_inc_exp" />
+            <input type="hidden" asp-for="Link_diff_type" value="@Model.Fund" />
+            <input type="hidden" asp-for="Link_id" value="@Model.Link_id" />
+            <table class="table table-striped">
+                <tr>
+                    <td style="vertical-align:middle">@Resource.LinkPreviousRecords</td>
+                    <td>
+                        <select class="form-control" asp-for="Exist_record" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Text = Resource.Yes, Value ="Y"},
+                                    new SelectListItem{ Text = Resource.No, Value = "N"}
+                                    }, "Value", "Text", "N"))" onchange="check_exists_record(this.value, @Model.Exist_record_cnt)"></select>
+                    @if (Model.Link_ind != null) {
+                        @Resource.LinkedRecord;
+                    }
+
+                    </td>
+                    <td colspan="3">
+                        <span style="float:left;padding-top:6px;">@Resource.DonationInCash/ @Resource.DonationInKind/ @Resource.InterestReceived&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <select class="form-control" style="float:left;width:250px;padding-left:15px;" asp-for="Don_type" asp-items="@(new SelectList(ViewBag.DonType, "Value", "Text"))"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.NameOfDonor</td>
+                    <td colspan="4">
+                        <select class="form-control" asp-for="Donor_name_exist" asp-items="@(new SelectList(ViewBag.DonDonor, "Value", "Text", Model.ODonor_id))" onchange="javascript:change_donor_type(this.value)"></select>
+                    <input type="text" asp-for="Donor_name" class="form-control" style="display:none"></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.DescriptionOfDonation</td>
+                    <td>
+                        <select class="form-control" asp-for="Don_desc" style="float:left;" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Text = Resource.NewProgramme, Value ="N"},
+                                    new SelectListItem{ Text = Resource.ExistingProgramme, Value = "E"}
+                                    }, "Value", "Text", ("@Model.Don_kind_desc" != "" ? "E" : "N")))"
+                                onchange="change_don_desc(this.value)"></select>
+                        </td>
+                    <td colspan="3">
+                        <input class="form-control" asp-for="New_program" style="float:left;" maxlength="100" value="">
+                        <select class="form-control" asp-for="Exist_program" style="display:none;float:left;" asp-items="@(new SelectList(ViewBag.DonDesc, "Value", "Text",HttpUtility.HtmlEncode(Model.Don_kind_desc).Replace("&#x27;","\'").Replace("&#39;", "\'")))"></select>
+                        <!-- For the case displaying Don_kind_desc not exist in current fin year +-1 -->
+                        <!--<input class="form-control" id="test" style="display:block;" value="@HttpUtility.HtmlEncode(Model.Don_kind_desc).Replace("&#x27;","\'").Replace("&#39;", "\'")" />-->
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.PurposeOfDonations</td>
+                    <td>
+                        <select class="form-control" asp-for="Don_purpose" asp-items="@(new SelectList(ViewBag.DonPurpose, "Value", "Text"))"></select>
+                    </td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.SpecificDonations</td>
+                    <td>
+                        <select class="form-control" asp-for="Don_supercat" asp-items="@(new SelectList(ViewBag.DonSuperCat, "Value", "Text"))" onchange="change_don_supercat(this.value, 0)"></select>
+                    </td>
+                    <td>
+                        <select class="form-control" asp-for="Don_cat" asp-items="@(new SelectList(ViewBag.DonCat, "Value", "Text"))" onchange="change_don_cat(this.value, 0)"></select>
+                    </td>
+                    <td>
+                        <select class="form-control" asp-for="Don_subcat" asp-items="@(new SelectList(ViewBag.DonSubCat, "Value", "Text"))" onchange="change_don_subcat(this.value, 0)"></select>
+                    </td>
+                    <td>
+                        <select class="form-control" asp-for="Don_subsubcat" asp-items="@(new SelectList(ViewBag.DonSubsubCat, "Value", "Text"))" onchange="change_don_subsubcat(this.value, 0)"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="4">
+                        <div id="don_specificdiv" style="display:none;">
+                            <textarea class="form-control" asp-for="Don_specific" rows="1" cols="97" style="overflow:hidden"></textarea>
+                            <input class="form-control" type="hidden" asp-for="Eqt_desc" size='10' maxlength='100' />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.MajorDonation</td>
+                    <td colspan="4">
+                        <select class="form-control" asp-for="Maj_don" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Text = Resource.Yes, Value ="Y"},
+                                    new SelectListItem{ Text = Resource.No, Value = "N" }
+                                    }, "Value", "Text", "N"))"
+                                onchange="change_major_don(this.value)" style="width:210px;"></select>
+                        <div id="don_case" style="display:none;">
+                            <input type="checkbox" asp-for="Don_case1" />&nbsp;&nbsp;@Resource.DonCase1<br />
+                            <input type="hidden" asp-for="Don_case1" />
+                            <input type="checkbox" asp-for="Don_case2" />&nbsp;&nbsp;@Resource.DonCase2<br />
+                            <input type="hidden" asp-for="Don_case2" />
+                            <input type="checkbox" asp-for="Don_case3" />&nbsp;&nbsp;@Resource.DonCase3<br />
+                            <input type="hidden" asp-for="Don_case3" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.OnReimbursementBasis</td>
+                    <td>
+                        <select class="form-control" asp-for="Reimb" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Text = Resource.Yes, Value ="Y"},
+                                    new SelectListItem{ Text = Resource.No, Value = "N" }
+                                    }, "Value", "Text", "N"))"
+                                onchange="chk_reimb_and_reserve_bal(this.value)"></select>
+                    </td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.BalanceBoughtForward</td>
+                    <td></td>
+                    <td align="right">
+                        <a href="javascript:refund('')" style="text-decoration: underline;">
+                            @(((decimal)Model.BalForward).ToString("N2", CultureInfo.InvariantCulture))
+                        </a>
+                        <input type="hidden" asp-for="BalForward" value="@Model.BalForward" />
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle">@Resource.CurrentYearDonation</td>
+                    <td style="vertical-align:middle;text-align:center;">
+                    @if (Model.Don_inc_exp == "I")
+                    {
+                        @Resource.DateReceived
+                    }
+                    else
+                    {
+                        @Resource.DateExpenditure
+                    }
+                    <br />@Resource.parDateFormat</td>
+                    <td style="vertical-align:middle;text-align:center;">@Resource.AdjustmentDate<br />@Resource.parDateFormat</td>
+                    <td style="vertical-align:middle;text-align:center;">
+                        @if (Model.Don_inc_exp == "I")
+                        {
+                            @Resource.DonationReceived
+                        }
+                        else
+                        {
+                            @Resource.DonationExpenditure
+                        }
+                    </td>
+                    <td style="vertical-align:middle"></td>
+                </tr>
+                <tr>
+                    <td><input type="hidden" name="editable_0" value="1"></td>
+                    <td><input type="text" class="form-control datepicker" style="text-align:center;" id="original_don_date_0" value=""></td>
+                    <td><input type="text" style="display:none;" name="don_date_0"/></td>
+                    <td><input type="text" class="form-control" style="text-align:right;" id="cost_0" value="0" onchange="javascript:change_don_cur_mth(0);"/></td>
+                    <td>@Resource.parA</td>
+                </tr>
+                @{ decimal cm_input_amt = 0;}
+                @for (int i = 0; i < Model.CM_record_cnt; i++)
+                {
+                    <tr>
+                        <td><input type="hidden" id="editable_@(i + 1)" value="1"></td>
+                        @if ("@Model.Action" != "link" || "@Model.Don_inc_exp" != "@Model.ODon_inc_exp") {
+                        <td><input type="text" class="form-control datepicker" style="text-align:center;" id="original_don_date_@(i + 1)" value="@Model.CM_record[i].Original_don_date"></td>
+                        <td><input type="text" style="display:none;" id="don_date_@(i + 1)" value="@Model.CM_record[i].Input_for" /></td>
+                        <td><input type="text" class="form-control" style="text-align:right;" id="cost_@(i + 1)" value="@(((decimal)Model.CM_record[i].Cost).ToString("N2", CultureInfo.InvariantCulture))" onchange="change_don_cur_mth(@(i + 1));" /></td>
+                        <td></td>
+                        }
+                    </tr>
+                    cm_input_amt = cm_input_amt + Model.CM_record[i].Cost;
+                }
+                <tr>
+                    <td>@Resource.CMPerGL</td>
+                    <td></td>
+                    <td></td>
+                    <td align="right"><div id="div_cm_per_gl">@(((decimal)Model.CM_per_GL).ToString("N2", CultureInfo.InvariantCulture))</div>
+                    <input type="hidden" asp-for="CM_per_GL" value="@Model.CM_per_GL"/></td>
+                    <td>@Resource.parB</td>
+                </tr>
+                <tr>
+                    <td>@Resource.OtherCMInputRecords <br /> @Model.Hospital/@Model.Fund/@Model.Section/@Model.Analytical</td>
+                    <td></td>
+                    <td></td>
+                    <td align="right"><div id="div_cm_input">@(((decimal)Model.CM_Input).ToString("N2", CultureInfo.InvariantCulture))</div>
+                        <input type="hidden" asp-for="CM_Input" value="@Model.CM_Input" /></td>
+                    <td>@Resource.parC</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle"><b>@Resource.Outstanding</b></td>
+                    <td></td>
+                    <td></td>
+                    <td align="right"><div id="outstanding"><b>@(((decimal)Model.CM_per_GL - Model.CM_Input - cm_input_amt).ToString("N2", CultureInfo.InvariantCulture))</b></div></td>
+                    <td><b>@Resource.BMinAMinC</b></td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                @if (Model.Previous_record_cnt > 0) { 
+                    <tr>
+                        <td style="vertical-align:middle">@Resource.PreviousRecords</td>
+                        <td colspan="4"></td>
+                    </tr>
+                }
+                @{ decimal cm_prev_input_amt = 0;}
+                @for (int i = 0; i < Model.Previous_record_cnt; i++)
+                {
+                    int j = Model.CM_record_cnt + 1 + i;
+                    <tr>
+                        <td><input type="hidden" id="editable_@j" value="1"></td>
+                        <td><input type="text" class="form-control" style="text-align:center;" disabled id="original_don_date_@j" value="@Model.Previous_record[i].Original_don_date"></td>
+                        <td><input type="text" class="form-control datepicker" style="text-align:center;" id="don_date_@j" value="@Model.Previous_record[i].Input_for" /></td>
+                        <td align="right"><div>@(((decimal)Model.Previous_record[i].Cost).ToString("N2", CultureInfo.InvariantCulture))</div>
+                        <input type="hidden" style="text-align:right;" id="cost_@j" value="@Model.Previous_record[i].Cost" /></td>
+                        <td></td>
+                    </tr>
+                    cm_prev_input_amt = cm_prev_input_amt + Model.Previous_record[i].Cost;
+                }
+                <tr>
+                    <td style="vertical-align:middle"><b>@Resource.YTDPerFMRS</b></td>
+                    <td><input type="hidden" id="cm_prev_input_amt" value="@cm_prev_input_amt" /></td>
+                    <td></td>
+                    <td align="right"><div id="don_ytd"><b>
+                        @((Model.Action == "link" && "Model.Don_inc_exp" != "Model.Odon_inc_exp")?0:(((decimal)cm_input_amt + cm_prev_input_amt + ViewBag.Refund).ToString("N2", CultureInfo.InvariantCulture)))
+                          </b></div></td>
+                    <td></td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="box-footer">
+            <div class="dt-buttons">
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "DonationPeriod") == "Y" && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Donation") == "I")
+                {
+                    if (Model.Id == 0)
+                    {
+                        <input type="button" id="btnInsert" class="dt-button btn btn-primary" onclick="insert_update_submit('Insert');" value="@Resource.Insert">
+                    }
+                    else
+                    {
+                        <input type="button" id="btnUpdate" class="dt-button btn btn-primary" onclick="insert_update_submit('Update');" value="@Resource.Update">
+                        if (ViewBag.NotEditable == 0 && ViewBag.BalForward == 0)
+                        {
+                            <input type="button" id="btnDelete" class="dt-button btn btn-default" onclick="delete_rec()" value="@Resource.Delete" />
+                        }
+                    }
+                }
+                <input type="button" id="btnCancel" class="dt-button btn btn-default" onclick="cancel()" value="@Resource.Cancel" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Donation Related Record Section Start -->
+<div class="modal fade" id="donationRelatedRec" tabindex="-1" style="display:none;padding-top:50px;">
+    <div class="modal-dialog box box-default" style="width:90%;">
+        <div class="box-header">
+            <h4>
+                @Resource.LinkToExistingRecord
+            </h4>
+        </div>
+        <div class="box-body">
+            <table class="table table-hover">
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <th>@Resource.Hospital</th>
+                    <th>@Resource.FundCode</th>
+                    <th>@Resource.Section</th>
+                    <th>@Resource.AnalyticalCode</th>
+                    <th>@Resource.Donor</th>
+                    <th>@Resource.DonationType</th>
+                    <th>@Resource.DonationPurpose</th>
+                    <th>@Resource.DonationCategory</th>
+                    <th>@Resource.DonationDesc</th>
+                    <th>@Resource.CMAmount</th>
+                    <th>@Resource.YTDAmount</th>
+                </tr>
+                @foreach (var m in Model.Link_rec)
+                {
+                    <form id="RelatedRec_@m.Id" asp-action="Input" asp-controller="DonationRecNExp">
+                        <input type="hidden" asp-for="Id" value="@m.Id" />
+                        <input type="hidden" asp-for="OId" value="@Model.OId" />
+                        <input type="hidden" asp-for="Action" value="link" />
+                        <input type="hidden" asp-for="ODon_inc_exp" value="@Model.Don_inc_exp" />
+                        <input type="hidden" asp-for="Don_inc_exp" value="@m.Don_inc_exp" />
+                        <tr style="background-color:aquamarine;cursor:pointer;" name="RelatedRec" onclick='link_record("#RelatedRec_@m.Id")'>
+                            @*onclick="link_record('@m.Id','@m.Hospital','@m.Section','@m.Fund','@m.Analytical', '@m.OId', '@m.Don_inc_exp', '@m.ODon_inc_exp','link');">*@
+                            <td>@m.Hospital<input type="hidden" asp-for="Inst_code" value="@m.Hospital" /></td>
+                            <td>@m.Fund<input type="hidden" asp-for="Fund" value="@m.Fund" /></td>
+                            <td>@m.Section<input type="hidden" asp-for="Section" value="@m.Section" /></td>
+                            <td>@m.Analytical<input type="hidden" asp-for="Analytical" value="@m.Analytical" /></td>
+                            <td>@m.Donor_name</td>
+                            <td>@m.Don_type_desc</td>
+                            <td>@m.Don_purpose_desc</td>
+                            <td>@m.Don_cat_desc</td>
+                            <td>@m.Don_kind_desc.Replace(",", "\'")</td>
+                            <td align="right">@(((decimal)m.Don_cur_mth).ToString())</td>
+                            <td align="right">@(((decimal)m.Don_YTD).ToString())</td>
+                        </tr>
+                    </form>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Donation Related Record Section End -->
+
+<!-- Donation Refund Section Start -->
+<div id="donationRefund" class="modal fade" tabindex="-1" style="display:none;padding-top:120px;">
+    <div class="modal-dialog box box-default" style="width:30%;">
+        <div class="box-header">
+            <h4>
+                @Resource.BalanceBoughtForward
+            </h4>
+        </div>
+        <div class="box-body">
+            <form id="UpdateDonationRefundForm" asp-action="UpdateDonationRefund" asp-controller="DonationRecNExp">
+                <input type="hidden" asp-for="Id" value="@Model.Id" />
+                <input type="hidden" asp-for="Inst_code" value="@Model.Inst_code" />
+                <input type="hidden" asp-for="Hospital" value="@Model.Hospital" />
+                <input type="hidden" asp-for="Fund" value="@Model.Fund" />
+                <input type="hidden" asp-for="Section" value="@Model.Section" />
+                <input type="hidden" asp-for="Analytical" value="@Model.Analytical" />
+                <input type="hidden" asp-for="Don_inc_exp" value="@Model.Don_inc_exp" />
+                <input type="hidden" asp-for="Link_diff_type" value="@Model.Fund" />
+                <input type="hidden" asp-for="Link_id" value="@Model.Link_id" />
+                <table class="table">
+                    <tr style="background-color:cornflowerblue;color:white;">
+                        <th class="text-center">@Resource.DonationDate @Resource.parDateFormat</th>
+                        <th class="text-center">@Resource.AdjustmentDate @Resource.parDateFormat</th>
+                        <th class="text-right">@Resource.Amount</th>
+                    </tr>
+                    @*@if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "DonationPeriod") == "Y" && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Donation") == "I")
+                    { 
+                        <tr>
+                            <td>
+                                <input type="text" id=""/>
+                                //Create Empty row
+                            </td>
+                        </tr>
+                    }*@                    
+                    @{ decimal refund_total_cost = 0;}
+                    @for (int i = 0; i < Model.Refund.Refund_Detail_Cnt; i++)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <input type="hidden" id="editable_@i" value="0">
+                                @Model.Refund.Refund_Detail[i].Original_don_date.ToString("dd/MM/yyyy") 
+                                <input type="hidden" asp-for="Refund.Refund_Detail[i].Original_don_date" value="@Model.Refund.Refund_Detail[i].Original_don_date.ToString("dd/MM/yyyy")" />
+                            </td>
+                            <td class="text-center">
+                                <input type="text" class="form-control datepicker" style="text-align:center;" asp-for="Refund.Refund_Detail[i].Input_for" value="@Model.Refund.Refund_Detail[i].Input_for.ToString("dd/MM/yyyy")" />
+                            </td>
+                            <td class="text-right">
+                                @(((decimal)Model.Refund.Refund_Detail[i].Cost).ToString("F2", CultureInfo.InvariantCulture))
+                                <input type="hidden" asp-for="Refund.Refund_Detail[i].Cost" value="Model.Refund.Refund_Detail[i].Cost" />
+                            </td>
+                        </tr>
+                        refund_total_cost += Model.Refund.Refund_Detail[i].Cost;
+                    }
+                    <tr>
+                        <td><b>@Resource.Total</b></td>
+                        <td></td>
+                        <td align="right">
+                            <div id="total_cost">
+                                <b>@(((decimal)refund_total_cost).ToString("F2", CultureInfo.InvariantCulture))</b>
+                            </div>
+                            <input type="hidden" asp-for="Refund.Refund_total_cost" value="@refund_total_cost" />
+                        </td>
+                    </tr>
+                </table>
+                <input type="hidden" asp-for="Refund.Refund_Detail_Cnt" value="@Model.Refund.Refund_Detail_Cnt" />
+                <input type="hidden" asp-for="Refund.Rec_type" value="" />
+                @if (UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "DonationPeriod") == "Y" && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Privilege_Donation") == "I")
+                {
+                    <input type="button" id="btnUpdate" class="dt-button btn btn-primary" onclick="update_refund();" value="@Resource.Update">
+                }
+            </form>
+        </div>
+        <div class="box-footer">
+            
+            
+        </div>
+    </div>
+</div>
+<!-- Donation Refund Section ENd -->
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        $(".datepicker").datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        })
+        //if ('@Model.Id' != '' && '@Model.Id' != 0) {
+            if ('@ViewBag.DonCat.Count' == 0) {
+                $("#Don_cat").hide();
+                $("#Don_cat").val(0);
+                $("#Don_subcat").hide();
+                $("#Don_subcat").val(0);
+                $("#Don_subsubcat").hide();
+                $("#Don_subsubcat").val(0);
+            }
+            else if ('@ViewBag.DonSubCat.Count' == 0) {
+                $("#Don_subcat").hide();
+                $("#Don_subcat").val(0);
+                $("#Don_subsubcat").hide();
+                $("#Don_subsubcat").val(0);
+            }
+            else {
+                if (jQuery.inArray('@Model.Don_subcat', ['12', '28', '45', '49', '52', '54', '55']) != -1)
+                { $("#don_specificdiv").show(); }
+                else
+                { $("#don_specificdiv").hide(); $("#don_specificdiv").val("");  }
+
+                if ('@ViewBag.DonSubsubCat.Count' == 0) {
+                    $("#Don_subsubcat").hide();
+                    $("#Don_subsubcat").val(0);
+                }
+                else {
+                    if (jQuery.inArray('@Model.Don_subsubcat', ['7', '14', '21', '28', '30', '37']) != -1)
+                    { $("#don_specificdiv").show(); }
+                    else
+                    { $("#don_specificdiv").hide(); $("#don_specificdiv").val(""); }
+                }
+            }
+            $("#Don_type").prop("disabled", true);
+            if ($("#Don_cat").val() != 12) {
+                //$("#Don_cat option[value='10']").remove();
+            }
+        //}
+
+        if ("@Model.Don_kind_desc" != "") {
+                change_don_desc("E");
+                $("#Exist_program").val("@Model.Don_kind_desc");
+        }
+        if ('@Model.ODonor_id' == 0) {
+            $("#Donor_name").show();
+        }
+        else {
+            $("#Donor_name").hide();
+            }
+        if ('@Model.Maj_don1' == "Y" || '@Model.Maj_don2' == "Y" || '@Model.Maj_don3' == "Y") {
+                $("#Maj_don").val("Y");
+                $("#don_case").show();
+                if ('@Model.Maj_don1' == "Y")
+                { $("#Don_case1").prop("checked", true); }
+                if ('@Model.Maj_don2' == "Y")
+                { $("#Don_case2").prop("checked", true); }
+                if ('@Model.Maj_don3' == "Y")
+                { $("#Don_case3").prop("checked", true); }
+        }
+        if ('@Model.Reimb' == "Y")
+            { $("#Reimb").val('@Model.Reimb'); }
+            else
+            { $("#Reimb").val("N"); }
+    });
+    function change_donor_type(donor_id) {
+        if (donor_id == 0)
+        {
+            $("#Donor_name").show();
+            $("#Donor_name").val("");
+        }
+        else
+            $("#Donor_name").hide();
+    }
+    function change_don_desc(don_desc) {
+        if (don_desc == "N")
+        {
+            $("#New_program").show();
+            $("#Exist_program").hide();
+         }
+        else
+        {
+            $("#Exist_program").show();
+            $("#New_program").hide();
+        }
+    }
+    function change_don_supercat(don_supercat, init) {
+        if (don_supercat != 0) {
+            $.ajax({
+                dataType: "json",
+                url: '@Url.Action("GetDonCatBySuperCatId", "DonationRecNExp")',
+                data: { don_supercat: don_supercat },
+                success: function (data) {
+                    $("#Don_cat").empty();
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            //alert(item.value + " : " + item.text);
+                            var optionhtml = '<option value="' + item.value + '"' + (i == 0 ? ' selected ' : '') + '>' + item.text + '</option>';
+                            //alert(optionhtml);
+                            $("#Don_cat").append(optionhtml);
+                            if (i == 0) { $("#Don_cat").val(item.value); };
+                        });
+                        $("#Don_cat").show();
+                        change_don_cat($("#Don_cat").val(), init);
+                    }
+                else
+                {
+                    $("#Don_cat").hide();
+                    $("#Don_cat").val(0);
+                    $("#Don_subcat").hide();
+                    $("#Don_subcat").val(0);
+                    $("#Don_subsubcat").hide();
+                    $("#Don_subsubcat").val(0);
+                    }
+                },
+                error: function () {
+                    $("#Don_cat").empty();
+                }
+            });
+
+        }
+        else if (don_supercat == 0)
+        {
+            $("#Don_cat").hide();
+            $("#Don_cat").val(0);
+            $("#Don_subcat").hide();
+            $("#Don_subcat").val(0);
+            $("#Don_subsubcat").hide();
+            $("#Don_subsubcat").val(0);
+        }
+    }
+    function change_don_cat(don_cat, init) {
+        if (don_cat != 0) {
+            $.ajax({
+                dataType: "json",
+                url:'@Url.Action("GetDonSubCatByCatId", "DonationRecNExp")',
+                data: { don_cat: don_cat },
+                success: function (data) {
+                    $("#Don_subcat").empty();
+                    if (data.length > 0) {
+                        $.each(data, function (i, item) {
+                            var optionhtml = '<option value="' + item.value + '"' + (i == 0 ? ' selected ' : '') + '>' + item.text + '</option>';
+                            $("#Don_subcat").append(optionhtml);
+                            if (i == 0) { $("#Don_subcat").val(item.value); };
+                        });
+                        $("#Don_subcat").show();
+                        change_don_subcat($("#Don_subcat").val(), init);
+                    }
+                    else
+                    {
+                        $("#Don_subcat").hide();
+                        $("#Don_subcat").val(0);
+                        $("#Don_subsubcat").hide();
+                        $("#Don_subsubcat").val(0);
+                    }
+                },
+                error: function () {
+                    $("#Don_subcat").empty();
+                }
+            });
+        }
+    }
+    function change_don_subcat(don_subcat, init) {
+        if (don_subcat != 0) {
+            if (jQuery.inArray(don_subcat, ['12', '28', '45', '49', '52', '54', '55']) != -1)
+            { $("#don_specificdiv").show(); }
+            else
+            { $("#don_specificdiv").hide(); if (init == 0) $("#don_specificdiv").val(""); }
+            $.ajax({
+                dataType: "json",
+                url:'@Url.Action("GetDonSubSubCatBySubCatId", "DonationRecNExp")',
+                data: { don_subcat: don_subcat },
+                success: function (data) {
+                    $("#Don_subsubcat").empty();
+                    if(data.length > 0){
+                        $.each(data, function (i, item) {
+                            var optionhtml = '<option value="' + item.value + '"' + (i == 0 ? ' selected ' : '') + '>' + item.text + '</option>';
+                            $("#Don_subsubcat").append(optionhtml);
+                            if (i == 0) { $("#Don_subsubcat").val(item.value); };
+                        });
+                        $("#Don_subsubcat").show();
+                        change_don_subsubcat($("#Don_subsubcat").val(), init);
+                    }
+                    else
+                    {
+                        $("#Don_subsubcat").hide();
+                        $("#Don_subsubcat").val(0);
+                    }
+                },
+                error: function () {
+                    $("#Don_subsubcat").empty();
+                }
+            });
+        }
+    }
+    function change_don_subsubcat(don_subsubcat, init) {
+        if (jQuery.inArray(don_subsubcat, ['7', '14', '21', '28', '30', '37']) != -1)
+        { $("#don_specificdiv").show(); }
+        else
+        { $("#don_specificdiv").hide(); if (init == 0) $("#don_specificdiv").val("");}
+    }
+
+    function change_major_don(major_don) {
+        if (major_don == "Y")
+        { $("#don_case").show(); }
+        else
+        { $("#don_case").hide(); }
+    }
+
+    function chk_reimb_and_reserve_bal(reimb) {
+        if (reimb == "Y" && '@ViewBag.Reserve_Bal_Alert' == 1)
+            if (!confirm("@Resource.ConfirmReimbMsg"))
+                $("#Reimb").val("N");
+        return;
+    }
+
+    function change_don_cur_mth(row) {
+        var temp_ytd_total = 0;
+        var temp_outstanding = 0;
+        var temp_cm_per_gl = 0;
+        var temp_cm_input = 0;
+        var row_str = "";
+        var inc_exp = '@Model.Don_inc_exp';
+        var donation_cnt = @Model.CM_record_cnt + @Model.Previous_record_cnt;
+        for (i= 0; i <= donation_cnt; i++)
+        {
+            var cost_id = "#cost_" + i;
+            temp_ytd_total += parseFloat($(cost_id).val().replace(/,/g, "").replace(".00", ""));
+        }
+        temp_cm_per_gl = parseFloat($("#CM_per_GL").val());
+        temp_cm_input = parseFloat($("#CM_Input").val());
+        temp_outstanding = temp_cm_per_gl - temp_cm_input - temp_ytd_total + parseFloat($("#cm_prev_input_amt").val());
+        temp_outstanding = Math.round(temp_outstanding * 100)/100;
+        if ((temp_cm_per_gl > 0) && (temp_outstanding < 0)) {
+            alert('@Resource.OutstandingAmtNotNegative');
+            outstanding.innerHTML = parseFloat(temp_cm_per_gl - temp_cm_input - temp_ytd_total + parseFloat($("#cm_prev_input_amt").val())).toFixed(2).replace(/(\d)(?=(?:[0-9]{3})+\b)/gm, "$1,").toString();
+            row_str = "#cost_" + row;
+            $(row_str).val(0);
+            change_don_cur_mth(row);
+            $(row_str).focus();
+        }
+        else if ((temp_cm_per_gl < 0) && (temp_outstanding > 0)) {
+            alert('@Resource.OutstandingAmtNotPositive');
+            outstanding.innerHTML = parseFloat(temp_cm_per_gl - temp_cm_input - temp_ytd_total + parseFloat($("#cm_prev_input_amt").val())).toFixed(2).replace(/(\d)(?=(?:[0-9]{3})+\b)/gm, "$1,").toString();
+            row_str = "#cost_" + row;
+            $(row_str).val(0);
+            change_don_cur_mth(row);
+            $(row_str).focus();
+        }
+        else {
+            don_ytd.innerHTML = parseFloat(temp_ytd_total).toFixed(2).replace(/(\d)(?=(?:[0-9]{3})+\b)/gm, "$1,").toString();
+            outstanding.innerHTML = parseFloat(temp_outstanding).toFixed(2).replace(/(\d)(?=(?:[0-9]{3})+\b)/gm, "$1,").toString();
+        }
+
+    }
+
+
+
+    function check_required() {
+        var donation_cnt = @Model.CM_record_cnt + @Model.Previous_record_cnt;
+        var temp_date;
+        var temp_cm_per_gl = parseFloat($("#CM_per_GL").val());
+        var value_date = '@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Value_Date2")';
+        var cal_date = '@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "cal_date")';
+        if (temp_cm_per_gl > 0) {
+            for (i = 0; i <= donation_cnt; i++) {
+                var org_don_date_name = "#original_don_date_" + i;
+                var don_date_name = "#don_date_" + i;
+                var cost_name = "#cost_" + i;
+                var editable_name = "#editable_" + i;
+                var temp_ori_dt = $(org_don_date_name).val();
+                if ((temp_ori_dt.substring(6, 8) + temp_ori_dt.substring(3, 5)) == value_date.substring(3, 4) &&
+                    $(editable_name).val() == 1 && $(don_date_name).val().trim().length == 0) {
+                    if (parseFloat($(cost_name).val()) < 0) {
+                        alert('@Resource.AmtNotNegative');
+                        $(cost_name).focus();
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (temp_cm_per_gl < 0) {
+            for (i = 0; i <= donation_cnt; i++) {
+                var org_don_date_name = "#original_don_date_" + i;
+                var don_date_name = "#don_date_" + i;
+                var cost_name = "#cost_" + i;
+                var editable_name = "#editable_" + i;
+                var temp_ori_dt = $(org_don_date_name).val();
+                if ((temp_ori_dt.substring(6, 8) + temp_ori_dt.substring(3, 5)) == value_date.substring(3, 4) &&
+                    $(editable_name).val() == 1 && $(don_date_name).val().trim().length == 0) {
+                    if (parseFloat($(cost_name).val()) < 0) {
+                        alert('@Resource.AmtNotPositive');
+                        $(cost_name).focus();
+                        return false;
+                    }
+                }
+            }
+         }
+
+        for (i = 0; i <= donation_cnt; i++) {
+            var org_don_date_name = "#original_don_date_" + i;
+            var don_date_name = "#don_date_" + i;
+            var editable_name = "#editable_" + i;
+            if ($(editable_name).val() == 1){
+                var temp_ori_dt = $(org_don_date_name).val();
+                if (temp_ori_dt.trim().length > 0) {
+                    if (Date.parse(temp_ori_dt) == NaN) {
+                        alert(('@Model.Don_inc_exp' == "I") ? '@Resource.InvalidDateRecevived' : '@Resource.InvalidDateExpenditure');
+                        $(org_don_date_name).focus();
+                        return false;
+                    }
+                }
+                temp_date = $(don_date_name).val();
+                if (temp_date.trim().length > 0) {
+                    if (Date.parse(temp_date) == NaN) {
+                        alert('@Resource.InvalidAdjustmentDate');
+                        $(don_date_name).focus();
+                        return false;
+                    }
+                    if ((temp_date.substring(6) + temp_date.substring(3, 5) + temp_date.substring(0, 2)) > value_date.substring(3, 6) &&
+                        (temp_date.substring(6) + temp_date.substring(3, 5) + temp_date.substring(0, 2)) > cal_date.substring(3, 6) ) {
+                        alert('@Resource.AdjustmentDateFutureNotAllowed');
+                        $(don_date_name).focus();
+                        return false;
+                    }
+                    if ((temp_date.substring(6) + temp_date.substring(3, 5)) > value_date.substring(3, 4) &&
+                        (temp_date.substring(6) + temp_date.substring(3, 5)) > cal_date.substring(3, 4) ) {
+                        alert('@Resource.AdjestmentDateForbiddenIfDonDateInCM');
+                        $(don_date_name).focus();
+                        return false;
+                    }
+                }
+
+                if ((temp_ori_date.substring(6, 8) + temp_ori_date.substring(3, 5)) != value_date.substring(3, 4)) {
+                    if (temp_ori_dt.Trim().length != 0) {
+                        alert('@Resource.DateReceivedInCM');
+                        $(org_don_date_name).focus();
+                        return false;
+                    }
+                }
+
+                if (temp_date.trim().length > 0) {
+                    if ((temp_date.substring(6) + temp_date.substring(3, 5)) != (temp_ori_date.substring(6, 8) + temp_ori_date.substring(3, 5))) {
+                        alert('@Resource.AdjustmemtDateShouldBeSameMonth');
+                        $(don_date_name).focus();
+                        return false;
+                    }
+                }
+            }
+        }
+        if ($("#Don_type").val().Trim().length == 0) {
+            alert('@Resource.SelectDonType');
+            $("#Don_type").focus();
+            return false;
+        }
+        if ($("#Don_purpose").val().Trim().length == 0) {
+            alert('@Resource.SelectDonPurpose');
+            $("#Don_purpose").focus();
+            return false;
+        }
+        if ($("#Don_supercat").val().Trim().length == 0) {
+            alert('@Resource.SelectSpecificDon');
+            $("#Don_supercat").focus();
+            return false;
+        }
+        if ($("#Donor_name_exist").val() == "N") {
+            alert('@Resource.SelectDonor');
+            $("#Donor_name_exist").focus();
+            return false;
+        }
+        if ($("#Don_subcat").is(":visible") && $("#Don_subcat").val() == 0) {
+            alert('@Resource.SelectSpecificDon');
+            $("#Don_subcat").focus();
+            return false;
+        }
+        if ($("#Don_Specific").is(":visible") && $("#Don_Specific").val() == 0) {
+            alert('@Resource.SpecificDonation');
+            $("#Don_Specific").focus();
+            return false;
+        }
+        for (i = 0; i <= donation_cnt; i++) {
+            var editable_name = "#editable_" + i;
+            var cost_name = "#cost_" + i;
+            var org_don_date_name = "#original_don_date_" + i;
+            if ($(editable_name).val() == 1) {
+                if ($(cost_name).val() != 0) {
+                    if ($(org_don_date_name).val().Trim().length == 0) {
+                        alert('@Resource.InputDateReceived');
+                        $(org_don_date_name).focus();
+                        return false;
+                    }
+                }
+            }
+        }
+
+        ("#Don_inc_exp").removeAttr("disabled");
+        $("#Ischange_ind").val(0);
+        $("#Ischange_desc_ind").val(0);
+
+        return true;
+    }
+    function delete_rec() {
+        if (confirm('@Resource.DeleteRecord')) {
+            $("#Delete_function").val(1);
+            $("#InsertUpdateForm").submit();
+        }
+    }
+    function submitConfirm() {
+        if (check_required()) {
+            $("#Don_type").removeAttr("disabled");
+            $("#Don_cat").removeAttr("disabled");
+            return true;
+        }
+        else
+            return false;
+    }
+
+    function check_exists_record(exist_ind, record_cnt) {
+        if (record_cnt == 0)
+        {
+            alert('No related record found.');
+            $("#Exist_record").val("N");
+        }
+        else if (exist_ind == "Y")
+        {
+            $('#donationRelatedRec').modal('show');
+        }
+    }
+
+    function insert_update_submit(type) {
+        if(submitConfirm())
+            $("#InsertUpdateForm").submit();
+    }
+
+    function cancel() {
+        window.location.href = "@Url.Action("Index", "DonationRecNExp", new { inst_code = Model.Inst_code})";
+    }
+
+    function refund(x) {
+        isMainChange();
+        if ($("#Ischange_ind").val() == 1)
+        {  return; }
+        else {
+            $('#donationRefund').modal('show');
+        }
+    }
+
+    function isMainChange() {
+        $("#Ischange_ind").val(0);
+        if ($("#Ischange_desc_ind").val() == 1) {
+            $("#Ischange_ind").val(1);
+        }
+        else
+        {
+            if ($("#Don_inc_exp").val() != 1) {
+                if ($("#Don_inc_exp").val() != '@Model.Don_inc_exp')
+                    $("#Ischange_ind").val(1);
+            }
+            if ($("#original_don_date_0").val().trim().length > 0) {
+                $("#Ischange_ind").val(1);
+            }
+
+            var donation_cnt = @Model.CM_record_cnt + @Model.Previous_record_cnt;
+            if (donation_cnt >= 1) {
+                for (i = donation_cnt; i >= 1; i--) {
+                    var org_don_date_name = "#original_don_date_" + i;
+                    var don_date_name = "#don_date_" + i;
+                    var cost_name = "#cost_" + i;
+                    var pre_org_don_date_name = "#original_don_date_" + i -1;
+                    var pre_don_date_name = "#don_date_" + i -1;
+                    var pre_cost_name = "#cost_" + i-1;
+                    if ($(org_don_date_name).val() != "" && $(org_don_date_name).val() != null) {
+                        if ($(org_don_date_name).val() != $(pre_org_don_date_name).val())
+                            $("#Ischange_ind").val(1);
+                    }
+                    if ($(don_date_name).val() != "" && $(don_date_name).val() != null) {
+                        if ($(don_date_name).val() != $(pre_don_date_name).val())
+                            $("#Ischange_ind").val(1);
+                    }
+                    if ($(cost_name).val() != "" && $(cost_name).val() != null) {
+                        if ($(cost_name).val() != $(pre_cost_name).val())
+                            $("#Ischange_ind").val(1);
+                    }
+                }
+            }
+
+        }
+    }
+
+    function link_record(form_id) {
+        if (!confirm("@Resource.ConfirmLinkRecMsg"))
+            return false;
+        $(form_id).submit();
+    }
+
+    function update_refund() {
+        if (check_refund_required()) {
+            $("#UpdateDonationRefundForm").submit();
+        }
+    }
+
+    function check_refund_required() {
+        for (i = 0; i <@Model.Refund.Refund_Detail_Cnt;i++) {
+            refund_date_name = "#Refund_Refund_Detail_" + i + "__Input_for";
+            refund_original_don_date_name = "#Refund_Refund_Detail_" + i + "__Original_don_date";
+            temp_refund_date = $(refund_date_name).val();
+            temp_refund_original_don_date = $(refund_original_don_date_name).val();
+            current_date = @UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Current_Date");
+            if (temp_refund_date != "" && temp_refund_original_don_date != "")
+            {
+                if (temp_refund_date.substring(6) + temp_refund_date.substring(3, 5) + temp_refund_date.substring(0, 2) > current_date){
+                    alert('@Resource.AdjustmentDateFutureNotAllowed');
+                    $(refund_date_name).focus();
+                    return false;
+                }
+                if (temp_refund_date.substring(3) != temp_refund_original_don_date.substring(3) ) {
+                    alert('@Resource.AdjustmemtDateShouldBeSameMonth');
+                    $(refund_date_name).focus();
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+</script>

@@ -1,0 +1,71 @@
+﻿@model FMRS.Model.DTO.DonationUploadViewModel
+@{
+    ViewBag.Title = Resource.UpdatingDonation;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" asp-for="Inst_code" value="@Model.Inst_code" />
+<input type="hidden" asp-for="Record_array" value="@Model.Record_array" />
+<input type="hidden" asp-for="Valid_only" value="@Model.Valid_only" />
+<textarea asp-for="Remark" style="display:none;" rows="1" cols="1" value="@Model.Remark"></textarea>
+<input type="hidden" asp-for="Action" value="" />
+<input type="hidden" asp-for="Record_list" value="@Model.Record_list" />
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+
+<div class="box box-default" style="overflow:auto;">
+    <div class="box-header" style="padding-bottom:0;">
+    </div>
+    <div class="box-body">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="UploadDetail">
+                    </div>
+
+                    @if (Model.Invalid_rec_cnt > 0)
+                    { 
+                        <div>@Resource.AboveRecordsAreInvalid</div>
+                        <br />
+                        <div id="InvalidRecordDetail">
+                        </div>
+                    }
+                    <!-- Summary -->
+                    <div style="padding-top:10px;">
+                        @Resource.TotalUploadRecordCnt @Model.Valid_rec_cnt<br />
+                        @Resource.TotalRejectRecordCnt @Model.Invalid_rec_cnt
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-footer">
+        <div class="dt-buttons">
+            <input type="button" id="btnback" class="dt-button btn btn-default" onclick="back();" value="@Resource.UploadAgain" />
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('body').addClass("sidebar-collapse");
+        $("#UploadDetail").load("GetLine", {
+            inst_code: '@Model.Inst_code',
+            remark: '@Model.Remark',
+            record_array: '@Html.Raw(Model.Record_array)',
+            function_mode: "U",
+            show_valid_only: -1
+        });
+        $("#InvalidRecordDetail").load("GetLine", {
+            inst_code: '@Model.Inst_code',
+            remark: '@Model.Remark',
+            record_array: '@Html.Raw(Model.Record_array)',
+            function_mode: "D",
+            show_valid_only: 1
+        });
+    });
+    function back() {
+        var url = '@Url.Action("Index", "DonationUpload")';
+        location.href = url;
+    }
+</script>

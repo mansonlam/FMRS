@@ -1,0 +1,415 @@
+﻿@model FMRS.Model.DTO.ASOIModel
+@using System.Globalization;
+@{
+    ViewBag.Title = Resource.NewRecord;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+<div class="box box-default">
+    <form id="ASOICatNewForm" asp-action="ASOICatUpdate" asp-controller="ASOI">
+        <div class="box-header">
+            <b>
+                @Model.Detail.Hosp_code<br />
+                @Model.Detail.Cat_name<br />
+                @Resource.AsAt @Model.Detail.Period<br />
+            </b>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Detail.Hosp_code" value="@Model.Detail.Hosp_code" />
+            <input type="hidden" asp-for="Detail.Cat" value="@Model.Detail.Cat" />
+            <input type="hidden" asp-for="Update_type" value="new" />
+            @if (Model.Detail.Cat == "10")
+            {
+                <input type="hidden" asp-for="Detail.Prog_sub_cat" value="10.1" />
+            }
+            <table class="table">
+                <tr>
+                    <td>@Resource.Analytical</td>
+                    <td><input type="text" asp-for="Detail.Analytical" class="form-control" value="@Model.Detail.Analytical"></td>
+                    <td>@Resource.Section</td>
+                    <td><input type="text" asp-for="Detail.Section" class="form-control" value="@Model.Detail.Section"></td>
+                    <td>@Resource.StartDate (@Resource.Optional)</td>
+                    <td><input type="text" class="form-control datepicker" style="text-align:center;display:initial;" asp-for="Detail.Start_date" value="@Model.Detail.Start_date"></td>
+                    <td>@Resource.EndDate (@Resource.Optional)</td>
+                    <td><input type="text" class="form-control datepicker" style="text-align:center;display:initial;" asp-for="Detail.End_date" value="@Model.Detail.End_date"></td>
+                </tr>
+                @if (Model.Detail.Cat != "10")
+                {
+                    <tr>
+                        <td>@Resource.ProgramCode (@Resource.Optional)</td>
+                        <td><input type="text" asp-for="Detail.Program_code" class="form-control" value="@Model.Detail.Program_code"></td>
+                        <td>@Resource.NoOfProjects</td>
+                        <td><input type="text" asp-for="Detail.No_project" class="form-control" value="@Model.Detail.No_project"></td>
+                        <td>@Resource.ProgramSubCat</td>
+                        <td colspan="3">
+                            <select class="form-control" asp-for="Detail.Prog_sub_cat" asp-items="@(new SelectList(ViewBag.SubCatByCatNo, "Value", "Text", Model.Detail.Prog_sub_cat))"></select>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td>@Resource.ProgramDescriptionLocation</td>
+                    <td colspan="3"><input type="text" asp-for="Detail.Prog_desc" class="form-control" value="@Model.Detail.Prog_desc"></td>
+                    <td>@Resource.ProgramOrganizerDepartment</td>
+                    <td colspan="3"><input type="text" asp-for="Detail.Prog_organizer" class="form-control" value="@Model.Detail.Prog_organizer"></td>
+                </tr>
+                <tr>
+                @if (Model.Detail.Cat != "10")
+                {
+                    <td>@Resource.ServiceProvidedToCollaboratedWith</td>
+                    <td>
+                        <select class="form-control" style="min-width:135px;" asp-for="Detail.Service_provided"  asp-items="@(new SelectList(ViewBag.ServiceProvidedByCatNo, "Value", "Text",Model.Detail.Service_provided))"></select>
+                    </td>
+                    <td>@Resource.ContractSignedWith3rdParty</td>
+                    <td>
+                        <select class="form-control" style="min-width:135px;" asp-for="Detail.Contract_signed" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "", Text = "(" + Resource.PleaseSelect + ")" },
+                                    new SelectListItem{ Value = "Y", Text = Resource.Yes },
+                                    new SelectListItem{ Value = "N", Text = Resource.No }
+                                    }, "Value", "Text", Model.Detail.Contract_signed))"></select>
+                    </td>
+                }
+                    <td>@Resource.NatureOfIncome</td>
+                    <td colspan=@(Model.Detail.Cat != "10"?1:3)>
+                        <select class="form-control"  style="min-width:135px;" asp-for="Detail.Nature_income" asp-items="@(new SelectList(ViewBag.NatureIncomeByCatNo, "Value", "Text", Model.Detail.Nature_income))"></select>
+                    </td>
+                    <td>@Resource.ProjectInformationRollOverToNextPeriod</td>
+                    <td colspan=@(Model.Detail.Cat != "10"?1:3)>
+                        <select class="form-control" style="min-width:135px;" asp-for="Detail.Roll_over" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "Y", Text = Resource.Yes },
+                                    new SelectListItem{ Value = "N", Text = Resource.No }
+                                    }, "Value", "Text", Model.Detail.Roll_over))"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8"><b>@Resource.YTD</b></td>
+                </tr>
+                <tr>
+                    <td>@Resource.Income (@Resource.HKD)</td>
+                    <td><input type="text" asp-for="Detail.Ytd_income" class="form-control" value="0" onblur='ytd_sd_cal()' disabled></td>
+                    <td>@Resource.PE (@Resource.HKD)</td>
+                    <td><input type="text" asp-for="Detail.Ytd_pe" class="form-control" value="0" onblur='ytd_sd_cal()' disabled></td>
+                    <td>@Resource.OC (@Resource.HKD)</td>
+                    <td><input type="text" asp-for="Detail.Ytd_oc" class="form-control" value="0" onblur='ytd_sd_cal()' disabled></td>
+                    <td>@Resource.SurplusDeficit</td>
+                    <td><span id="Ytd_sd_total"></span>
+                        <input type="hidden" asp-for="Detail.Ytd_sd" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8"><b>@Resource.CurrentYearProjection</b></td>
+                </tr>
+                <tr>
+                    <td>@Resource.Income (@Resource.HKDpa)</td>
+                    <td><input type="text" asp-for="Detail.Cyp_income" class="form-control" value="@(((decimal)Model.Detail.Cyp_income).ToString("N2", CultureInfo.InvariantCulture))" onblur='cyp_sd_cal()'></td>
+                    <td>@Resource.PE (@Resource.HKDpa)</td>
+                    <td><input type="text" asp-for="Detail.Cyp_pe" class="form-control" value="@(((decimal)Model.Detail.Cyp_pe).ToString("N2", CultureInfo.InvariantCulture))" onblur='cyp_sd_cal()'></td>
+                    <td>@Resource.OC (@Resource.HKDpa)</td>
+                    <td><input type="text" asp-for="Detail.Cyp_oc" class="form-control" value="@(((decimal)Model.Detail.Cyp_oc).ToString("N2", CultureInfo.InvariantCulture))" onblur='cyp_sd_cal()'></td>
+                    <td>@Resource.SurplusDeficit</td>
+                    <td><span id="Cyp_sd_total">&nbsp;@(((decimal)Model.Detail.Cyp_sd).ToString("N2", CultureInfo.InvariantCulture))</span>
+                        <input type="hidden" asp-for="Detail.Cyp_sd" value="@Model.Detail.Cyp_sd" /></td>
+                </tr>
+                @if (Model.Detail.Cat != "10")
+                {
+                    <tr>
+                        <td colspan="8"><b>@Resource.ProjectionOnApplication (@Resource.Optional)</b></td>
+                    </tr>
+                    <tr>
+                        <td>@Resource.Income (@Resource.HKD)</td>
+                        <td><input type="text" asp-for="Detail.Poa_income" class="form-control" value="@(((decimal)Model.Detail.Poa_income).ToString("N2", CultureInfo.InvariantCulture))" onblur='poa_sd_cal()'></td>
+                        <td>@Resource.PE (@Resource.HKD)</td>
+                        <td><input type="text" asp-for="Detail.Poa_pe" class="form-control" value="@(((decimal)Model.Detail.Poa_pe).ToString("N2", CultureInfo.InvariantCulture))" onblur='poa_sd_cal()'></td>
+                        <td>@Resource.OC (@Resource.HKD)</td>
+                        <td><input type="text" asp-for="Detail.Poa_oc" class="form-control" value="@(((decimal)Model.Detail.Poa_oc).ToString("N2", CultureInfo.InvariantCulture))" onblur='poa_sd_cal()'></td>
+                        <td>@Resource.SurplusDeficit</td>
+                        <td><span id="Poa_sd_total">&nbsp;@(((decimal)Model.Detail.Poa_sd).ToString("N2", CultureInfo.InvariantCulture))</span>
+                            <input type="hidden" asp-for="Detail.Poa_sd" value="@Model.Detail.Poa_sd" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td>@Resource.Remarks</td>
+                    <td colspan="7"><input type="text" asp-for="Detail.Remarks" class="form-control" value="@Model.Detail.Remarks" ></td>
+                </tr>
+            </table>
+        </div>
+        <div class="box-footer">
+            <div class="dt-buttons form-horizontal ">
+                <input type="button" id="btnCreate" class="dt-button btn btn-primary" onclick="create_submit();" value="@Resource.Create">
+                @if (Model.Detail.Cat != "10")
+                {
+                    <input type="button" id="btnDetail" class="dt-button btn btn-primary" onclick="detail_button();" value="@Resource.Detail">
+                }
+                <input type="button" id="btnCancel" class="dt-button btn btn-primary" onclick="cancel_button();" value="@Resource.Cancel">
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".datepicker").datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        })
+        if ($("#Detail_Prog_sub_cat").find("option:first-child").text() == "(None)") {
+            $("#Detail_Prog_sub_cat").attr("disabled", true);
+        }
+        if ($("#Detail_Nature_income").find("option:first-child").text() == "(None)") {
+            $("#Detail_Nature_income").attr("disabled", true);
+        }
+        if ($("#Detail_Service_provided").find("option:first-child").text() == "(None)") {
+            $("#Detail_Service_provided").attr("disabled", true);
+        }
+
+    })
+
+
+    function ytd_sd_cal() {
+        var a = $("#Detail_Ytd_income").val().replace(/,/g, "");
+        var b = $("#Detail_Ytd_pe").val().replace(/,/g, "");
+        var c = $("#Detail_Ytd_oc").val().replace(/,/g, "");
+        var num = Number(a) + Number(b) + Number(c);
+        $("#Detail_Ytd_sd").val(num);
+        $("#Detail_Ytd_sd_total").html(num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    }
+
+    function cyp_sd_cal() {
+        var a = $("#Detail_Cyp_income").val().replace(/,/g, "");
+        var b = $("#Detail_Cyp_pe").val().replace(/,/g, "");
+        var c = $("#Detail_Cyp_oc").val().replace(/,/g, "");
+        var num = Number(a) + Number(b) + Number(c);
+        $("#Detail_Cyp_sd").val(num);
+        $("#Detail_Cyp_sd_total").html(num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    }
+
+    function poa_sd_cal() {
+        var a = $("#Detail_Poa_income").val().replace(/,/g, "");
+        var b = $("#Detail_Poa_pe").val().replace(/,/g, "");
+        var c = $("#Detail_Poa_oc").val().replace(/,/g, "");
+        var num = Number(a) + Number(b) + Number(c);
+        $("#Detail_Poa_sd").val(num);
+        $("#Detail_Poa_sd_total").html(num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    }
+
+    function create_submit() {
+        if (!check_required())
+            return false;
+        else {
+            $("#ASOICatNewForm").submit();
+        }
+     }
+
+    function check_required() {
+        var cat_no = '@Model.Detail.Cat';
+
+        var analy_reg = /^[0-9]{5}$/;
+        var analytical = $("#Detail_Analytical").val().toUpperCase();
+        if (analytical == '') {
+            alert('@Resource.AnalyticalBeginNotBlank');
+            return false;
+        }
+        else if (!analytical.match(analy_reg) && analytical != "ZZZZZ") {
+            alert('@Resource.AnalyticalBeginNotNumber');
+            return false;
+        }
+
+        var sect_reg = /^[0-9]{7}$/;
+        var section = $("#Detail_Section").val().toUpperCase();
+        if (section == '') {
+            alert('@Resource.SectionNotBlank');
+            return false;
+        }
+        else if (!section.match(sect_reg) && section != "ZZZZZZZ") {
+            alert('@Resource.SectionNotNumber');
+            $("#Detail_Section").focus();
+            return false;
+        }
+
+        var date_reg = /^([1-9]|0[1-9]|[12][0-9]|3[01])[/]([1-9]|0[1-9]|1[012])[/](19|20)\d\d/;
+        if ($("#Detail_Start_date").val() != '' && !$("#Detail_Start_date").val().match(date_reg)) {
+            alert('@Resource.StartDateFormat');
+            $("#Detail_Start_date").focus();
+            return false;
+        }
+        if ($("#Detail_End_date").val() != '' && !$("#Detail_End_date").val().match(date_reg)) {
+            alert('@Resource.EndDateFormat');
+            $("#Detail_End_date").focus();
+            return false;
+        }
+        var get_start_day = $("#Detail_Detail_Start_date").val().split('/');
+        var start_date = new Date(get_start_day[2], get_start_day[1], get_start_day[0]);
+        var get_end_day = $("#End_date").val().split('/');
+        var end_date = new Date(get_end_day[2], get_end_day[1], get_end_day[0]);
+        if (start_date > end_date) {
+            alert('@Resource.StartDateEndDateOrder');
+            return false;
+        }
+
+        if (cat_no != "10") {
+            if ($("#Detail_No_project").val() == '') {
+                alert('@Resource.NoOfProjectNotBlank');
+                $("#Detail_No_project").focus();
+                return false;
+            } else if (isNaN($("#Detail_No_project").val())) {
+                alert('@Resource.NoOfProjectNotNumber');
+                $("#Detail_No_project").focus();
+                return false;
+            }
+
+            if ($("#Detail_Prog_sub_cat").val() == '') {
+                alert('@Resource.ProgramSubCatSelect');
+                $("#Detail_Prog_sub_cat").focus();
+                return false;
+            }
+        }
+        if ($("#Detail_Prog_desc").val() == '') {
+            alert('@Resource.ProgDescNotBlank');
+            $("#Detail_Prog_desc").focus();
+            return false;
+        }
+
+        if ($("#Detail_Prog_organizer").val() == '') {
+            alert('@Resource.ProgOrganizerNotBlank');
+            $("#Detail_Prog_organizer").focus();
+            return false;
+        }
+
+        if (cat_no != "10") {
+            if ($("#Detail_Service_provided").val() == '') {
+                alert('@Resource.ServiceProvidedSelect');
+                $("#Detail_Service_provided").focus();
+                return false;
+            }
+
+            if ($("#Detail_Contract_signed").val() == '') {
+                alert('@Resource.ContractSignedSelect');
+                $("#Detail_Contract_signed").focus();
+                return false;
+            }
+        }
+        if ($("#Detail_Nature_income").val() == '') {
+            alert('@Resource.NatureIncomeSelect');
+            $("#Detail_Nature_income").focus();
+            return false;
+        }
+
+        var ytd_income = $("#Detail_Ytd_income").val().replace(/,/g, "");
+        var ytd_pe = $("#Detail_Ytd_pe").val().replace(/,/g, "");
+        var ytd_oc = $("#Detail_Ytd_oc").val().replace(/,/g, "");
+        if (ytd_income == '') {
+            alert('@Resource.YTDIncomeNotBlank');
+            return false;
+        } else if (ytd_pe == '') {
+            alert('@Resource.YTDPENotBlank');
+            return false;
+        } else if (ytd_oc == '') {
+            alert('@Resource.YTDOCNotBlank');
+            return false;
+        } else if (!is2dp(ytd_income)) {
+            alert('@Resource.YTDIncomeNotNumber');
+            return false;
+        } else if (!is2dp(ytd_pe)) {
+            alert('@Resource.YTDPENotNumber');
+            return false;
+        } else if (!is2dp(ytd_oc)) {
+            alert('@Resource.YTDOCNotNumber');
+            return false;
+        }
+
+        var cyp_income = $("#Detail_Cyp_income").val().replace(/,/g, "");
+        var cyp_pe = $("#Detail_Cyp_pe").val().replace(/,/g, "");
+        var cyp_oc = $("#Detail_Cyp_oc").val().replace(/,/g, "");
+        if (cyp_income == '') {
+            alert('@Resource.CypIncomeNotBlank');
+            return false;
+        } else if (cyp_pe == '') {
+            alert('@Resource.CypPENotBlank');
+            return false;
+        } else if (cyp_oc == '') {
+            alert('@Resource.CypOCNotBlank');
+            return false;
+        } else if (!is2dp(cyp_income)) {
+            alert('@Resource.CypIncomeNotNumber');
+            return false;
+        } else if (!is2dp(cyp_pe)) {
+            alert('@Resource.CypPENotNumber');
+            return false;
+        } else if (!is2dp(cyp_oc)) {
+            alert('@Resource.CypOCNotNumber');
+            return false;
+        }
+
+        if (cat_no != 10) {
+            if ($("#Detail_Poa_income").val() != '' || $("#Detail_Poa_pe").val() != '' || $("#Detail_Poa_oc").val() != '') {
+                var poa_income = $("#Detail_Poa_income").val().replace(/,/g, "");
+                var poa_pe = $("#Detail_Poa_pe").val().replace(/,/g, "");
+                var poa_oc = $("#Detail_Poa_oc").val().replace(/,/g, "");
+                if (poa_income == '') {
+                    alert('@Resource.PoaIncomeNotBlank');
+                    return false;
+                } else if (poa_pe == '') {
+                    alert('@Resource.PoaPENotBlank');
+                    return false;
+                } else if (poa_oc == '') {
+                    alert('@Resource.PoaOCNotBlank');
+                    return false;
+                } else if (!is2dp(poa_income)) {
+                    alert('@Resource.PoaIncomeNotNumber');
+                    return false;
+                } else if (!is2dp(poa_pe)) {
+                    alert('@Resource.PoaPENotNumber');
+                    return false;
+                } else if (!is2dp(poa_oc)) {
+                    alert('@Resource.PoaOCNotNumber');
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    function detail_button() {
+        alert("Details only avaliable in Edit page.");
+    }
+
+    function cancel_button() {
+        var url = '@Url.Action("Index", "ASOI")'
+            + "?hosp_code=" + '@Model.Detail.Hosp_code'
+            + "&cat_no=" + '@Model.Detail.Cat';
+        location.href = url;
+    }
+
+    function is2dp(num) {
+        if (isNaN(num)) {
+            return false;
+        }
+
+        var isn = num.toString();
+        if (isn.indexOf('.') == -1) {
+            return true;
+        }
+
+        var splitValue = isn.split(".", 2);
+        if (!isNaN(splitValue[0]) && !isNaN(splitValue[1])) {
+            if (splitValue[1] != null) {
+                if (splitValue[1].length == 1 || splitValue[1].length == 2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+</script>

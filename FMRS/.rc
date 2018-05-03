@@ -1,0 +1,6 @@
+{
+  "directory": "wwwroot/lib"//,
+  //"registry": "http://bower.herokuapp.com",
+  //"proxy": "http://CORP/CKC004:890IOPkl;@proxypac.ha.org.hk:8080",
+  //"https-proxy": "http://CORP/CKC004:890IOPkl;@proxypac.ha.org.hk:8080"
+}

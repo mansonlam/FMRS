@@ -1,0 +1,19 @@
+﻿@using Microsoft.Extensions.Options;
+
+@inject IOptions<AppConfiguration> AppConfiguration
+<div class="navbar-custom-menu">
+    <ul class="nav navbar-nav">
+        <li><img title="Launch Support Hotline Homepage" src="@Url.Content("~/Images/support_on.png")" style='cursor:pointer;padding:12px 10px;' onmouseout='jscript:this.src="@Url.Content("~/Images/support_on.png")"' onmouseover='jscript:this.src="@Url.Content("~/Images/support_off.png")"' onclick="openSupport()" /></li>
+        <li class="text-gray" style="padding:20px 10px 15px;">Hi @UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserName") </li>
+        <li style="padding-right:15px;">
+            <a asp-area="" asp-controller="Account" asp-action="Logout" class="btn btn-block btn-flat" style="padding-bottom:14px;">@Resource.SignOut </a>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript">
+function openSupport(){
+    x = "@Html.Raw(AppConfiguration.Value.BSD_Url)/logon.asp?userid=@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Domain")\\@UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "UserID")&module=FMRS&ftype=NEW"
+    window.open(x, "support", "height=700, width=900, toolbar=yes, menubar=yes, resizable=yes, scrollbars=yes, titlebar=yes, location=yes");
+    window.focus()
+}
+</script>

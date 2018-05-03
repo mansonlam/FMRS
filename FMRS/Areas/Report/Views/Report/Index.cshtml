@@ -1,0 +1,1151 @@
+﻿@model FMRS.Model.DTO.ReportViewModel
+@using System.Globalization;
+@{
+    ViewBag.Title = Resource.GenerateReport;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DateTime today = DateTime.Today;
+    var get_year = today.Year;
+    var get_month = today.Month;
+    var int_year = get_month <= 9 ? get_year - 1 : get_year;
+    var ye_year = get_month <= 3 ? get_year - 1 : get_year;   
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+<div class="box box-default">
+    <form id="ReportForm" asp-action="GenerateReport" asp-controller="Report">
+        <div class="box-header"></div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Modules" value="@ViewBag.Modules" />
+            <input type="hidden" asp-for="Asp_file" value="" />
+            <input type="hidden" asp-for="Hosp_asp_file" value="" />
+            <input type="hidden" asp-for="Report_name" value="" />
+            <input type="hidden" asp-for="Export_to_excel" value=0 />
+            <table class="table">
+                <tr>
+                    <!-- Category -->
+                    <td>@Resource.Category</td>
+                    <td><select class="form-control" asp-for="Rpt_group" asp-items="@(new SelectList(ViewBag.RptGpList, "Value", "Text"))" onchange="javascript:change_rpt_group(this.value);"></select></td>
+                </tr>
+                <tr>
+                    <!-- Report -->
+                    <td>@Resource.Report</td>
+                    <td><select class="form-control" asp-for="Rpt_name" asp-items="@(new SelectList(ViewBag.RptNameList, "Value", "Text"))" onchange="change_rpt(this.value);"></select></td>
+                    <td><select class="form-control" asp-for="Flash_rpt_date" asp-items="@(new SelectList(Model.FlashRptDateList, "Value", "Text", Model.FlashRptDateList.Where(a => a.Selected == true).Select(a => a.Value).First()))"></select></td>
+                    <td><select class="form-control" asp-for="Flash_rpt_date2" asp-items="@(new SelectList(Model.FlashRptDateList2, "Value", "Text", Model.FlashRptDateList2.Where(a => a.Selected == true).Select(a => a.Value).First()))"></select></td>
+                </tr>
+
+                @if (ViewBag.UserGroup != "HOSP")
+                {
+                    <tr id="Rpt_hospital_row"><!-- hospital -->
+                        <td>@Resource.Hospital</td>
+                        <td>
+                            <select class="form-control" asp-for="Rpt_hospital" asp-items="@(new SelectList(ViewBag.RptHospList, "Value", "Text"))" onchange="change_cluster(this.value);"></select>
+                        </td>
+                    </tr> 
+                }
+                else if (ViewBag.UserInstCode == "QMH")
+                {
+                    <tr id="Rpt_hospital_row"><!-- hospital -->
+                        <td>@Resource.Hospital</td>
+                        <td>
+                            <select class="form-control" asp-for="Rpt_hospital" style="float:left;" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "QMH_TYH", Text = Resource.QMH },
+                                    new SelectListItem{ Value = "QMH", Text = Resource.QMHExcludeTYH },
+                                    new SelectListItem{ Value = "TYH", Text = Resource.TYH }
+                                    }, "Value", "Text"))"
+                                    onchange="change_cluster(this.value)"></select>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Rpt_hospital" value='@ViewBag.UserInstCode' />
+                }
+                @if (ViewBag.UserGroup != "HOSP" || ViewBag.UserInstCode == "QMH")
+                {
+                    <tr id="Rpt_cluster_row">
+                        <!-- cluster -->
+                        <td>@Resource.HospCluster</td>
+                        <td>
+                            <select class="form-control" asp-for="Rpt_cluster" asp-items="@(new SelectList(ViewBag.RptHospGpList, "Value", "Text"))" onchange="change_cluster(this.value);"></select>
+                        </td>
+                        <td>
+                            <select class="form-control" asp-for="Rpt_consolidation" style="float:left;" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "Y", Text = Resource.Consolidate },
+                                    new SelectListItem{ Value = "N", Text = Resource.ByHospital }
+                                    }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Rpt_cluster" value='@ViewBag.UserInstCode' />
+                    <input type="hidden" asp-for="Rpt_consolidation" value="N" />
+                }
+
+                <tr id="Snapshot_row">
+                    <td>@Resource.Snapshot</td>
+                    <td>
+                        <select class="form-control" style="width:100px;float:left;" asp-for="Snapshot" asp-items="@(new SelectList(ViewBag.Snapshot, "Value", "Text"))" onchange="change_snapshot(this.value);"></select>
+                        <select class="form-control" style="width:100px;float:left;" asp-for="Snapshot_m"></select>
+                    </td>
+                </tr>
+                <tr id="startdate_row">
+                    <!-- Start Date -->
+                    <td><div id='startdate_w'>@Resource.StartMth</div> </td>
+                    <td>
+                        <select class="form-control" style="width:100px;float:left;" asp-for="Startdate_m" onchange="change_startdate(this.value);"></select>
+                        <select class="form-control" style="width:100px;float:left;" asp-for="Startdate_y"></select>
+                    </td>
+                </tr>
+                <tr id="enddate_row">
+                    <!-- End Date -->
+                    <td><div id='enddate_w'>@Resource.EndMth</div> </td>
+                    <td>
+                        <select class="form-control" style="width:100px;float:left;" asp-for="Enddate_m" onchange="change_enddate(this.value);"></select>
+                        <select class="form-control" style="width:100px;float:left;" asp-for="Enddate_y"></select>
+                    </td>
+                </tr>
+                <tr id="Ddl_fv_ind_row">
+                    <!-- FV Industry -->
+                    <td><div id='l_fv_ind'>@Resource.Industry</div></td>
+                    <td>
+                        <select class="form-control" asp-for="Ddl_fv_ind" asp-items="@(new SelectList(ViewBag.FVIndList, "Value", "Text"))" onchange="change_fv_ind(this.value);"></select>
+                    </td>
+                </tr>
+                <tr id="fv_tenderer_row">
+                    <!-- FV Tenderer-->
+                    <td><div id='l_fv_ind'>@Resource.Tenderer</div> </td>
+                    <td>
+                        <div id='fv_tenderer' style='overflow:auto;padding:0 10px 10px;border: 0.5px;border-style: solid;border-color: lightgrey;'>
+                            @foreach (var item in Model.FVIndTenderer_list)
+                            {
+                                <div id="FVIndTenderer_list_@item.Fv_ind_id" class="checkbox fvIndTenderer_list" style="display:none;">
+                                    <div class="fvIndTenderer_name" style="display:none;">@item.Fv_ind_name<br /></div>
+                                    @foreach (var list in item.Tenderer_list)
+                                    {
+                                        <label>
+                                            <input type="checkbox" asp-for="Cb_fv_tenderer" value="@list.Fv_tenderer_id" onclick="check_fv_tenderer(this.value)" />@list.Fv_tenderer_name
+                                        </label>
+                                                <br />
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr id="Show_all_period_row">
+                    <!-- Show All Period -->
+                    <td>@Resource.ShowAllPeriod</td>
+                    <td>
+                        <select class="form-control" asp-for="Show_all_period" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "N", Text = Resource.No },
+                                    new SelectListItem{ Value = "Y", Text = Resource.Yes }
+                                    }, "Value", "Text"))"></select>
+                    </td>
+                </tr>
+                @if (ViewBag.Modules == "Y")
+                {
+                    <tr id="Fund_gp_row">
+                        <!-- Fund Group -->
+                        <td>
+                            <span id="Fund_gp_label">@Resource.FundGroup</span>
+                            <span id="Rpt_item_id_label">@Resource.RptItem</span>
+                        </td>
+                        <td>
+                            <select class="form-control" asp-for="Fund_gp" asp-items="@(new SelectList(ViewBag.FundGpList, "Value", "Text"))" onchange="change_fund(this.value);"></select>
+                            <select class="form-control" style="width:150px;float:left;" asp-for="Fund_gp_ind" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "Y", Text = Resource.Consolidate },
+                                    new SelectListItem{ Value = "N", Text = Resource.ByFund }
+                                    }, "Value", "Text"))"></select>
+                            <input type="hidden" asp-for="Exclude" value="N" />
+                            <select class="form-control" style="width:300px;float:left;" asp-for="Rpt_item_id" asp-items="@(new SelectList(ViewBag.ProjItemIndList, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="period_row">
+                        <!-- Period -->
+                        <td>@Resource.Period</td>                        
+                        <td>
+                            <select class="form-control" asp-for="Period" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = int_year+"0901", Text = "Period 6 ("+int_year +"-09-30)(before closing)" },
+                            new SelectListItem{ Value = int_year+"0902", Text = "Period 6 ("+int_year +"-09-30)(after closing)" },
+                            new SelectListItem{ Value = ye_year+"0301", Text = "Period 12 ("+ye_year +"-03-31)" },
+                            new SelectListItem{ Value = ye_year+"0302", Text = "Period 13 ("+ye_year +"-03-31)" },
+                            new SelectListItem{ Value = ye_year+"0303", Text = "Period 15 ("+ye_year +"-03-31)" }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Exp_type_row">
+                        <!-- Exp type -->
+                        <td>@Resource.ExpType</td>
+                        <td>
+                            <select class="form-control" asp-for="Exp_type" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "201", Text = Resource.Drugs },
+                            new SelectListItem{ Value = "212", Text = Resource.HospitalSupplies },
+                            new SelectListItem{ Value = "213", Text = Resource.RentAndRates },
+                            new SelectListItem{ Value = "214", Text = Resource.Utilities },
+                            new SelectListItem{ Value = "224", Text = Resource.TransportAndTravelling }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Cost_depr_row">
+                        <!-- Cost depr, basis -->
+                        <td>
+                            <span id="Cost_depr_label">@Resource.CostDepr</span>
+                            <span id="Basis_label">@Resource.Basis</span>
+                        </td>
+                        <td>
+                            <select class="form-control" asp-for="Cost_depr" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "C", Text = Resource.CapitalisedExpenses },
+                            new SelectListItem{ Value = "D", Text = Resource.Depreciation }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                        <td>
+                            <select class="form-control" asp-for="Basis" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "", Text = Resource.BothCashAndAccrual },
+                            new SelectListItem{ Value = "Cash", Text = Resource.Cash },
+                            new SelectListItem{ Value = "Accrual", Text = Resource.Accrual }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Account_group_row">
+                        <!-- Account Group -->
+                        <td>@Resource.AccountGroup</td>
+                        <td>
+                            <select class="form-control" style="width:300px;float:left;" asp-for="Account_group" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "1", Text = Resource.ListOfPrepayments },
+                            new SelectListItem{ Value = "2", Text = Resource.BreakdownOfCapitalProjectsAccruedCharges }
+                            }, "Value", "Text"))" onchange="change_account_group()"></select>
+                            <select class="form-control" style="width:150px;float:left;" asp-for="Account_code"></select>
+                        </td>
+                    </tr>
+                    <tr id="Rpt_next_year_row">
+                        <!-- Rpt Next Year -->
+                        <td>@Resource.ReportYear</td>
+                        <td>
+                            <select class="form-control" asp-for="Rpt_next_year" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.CurrentYear },
+                            new SelectListItem{ Value = "1", Text = Resource.NextYear }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                }
+                @if (ViewBag.Modules == "M")
+                {
+                    <tr id="Budget_cluster_row">
+                        <!-- budget cluster 23-->
+                        <td>@Resource.BudgetCluster</td>
+                        <td>
+                            @if (ViewBag.UserGroup == "ALL" || ViewBag.UserGroup.Substring(0, 3) == "CBV" || ViewBag.UserGroup.Substring(0, 3) == "CWD")
+                            {
+                                <select class="form-control" asp-for="Budget_cluster" asp-items="@(new SelectList(ViewBag.HospClusterList_WithAllHAHO, "Value", "Text"))"></select>
+                            }
+                            else
+                            {
+                                <select class="form-control" asp-for="Budget_cluster" asp-items="@(new SelectList(ViewBag.HospClusterList_forM, "Value", "Text"))"></select>
+                            }
+                        </td>
+                    </tr>
+                    <tr id="Budget_cluster_hosp_row"><!-- budget_cluster_hosp -->
+                        <td>@Resource.BudgetCluster</td>
+                        <td>
+                            <select class="form-control" asp-for="Budget_cluster_hosp" asp-items="@(new SelectList(ViewBag.BudgetClusterHospList, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="by_row"><!-- Proj_type, Sort list, Top 10 -->
+                        <td>@Resource.By</td>
+                        <td>
+                            <select class="form-control" asp-for="Proj_type_select" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "ALL", Text = Resource.ALLCap },
+                            new SelectListItem{ Value = "Maj-Eng", Text = Resource.MajEng },
+                            new SelectListItem{ Value = "Maj-Med", Text = Resource.MajMed },
+                            new SelectListItem{ Value = "Min-Eng", Text = Resource.MinEng },
+                            new SelectListItem{ Value = "Min-Med", Text = Resource.MinMed },
+                            new SelectListItem{ Value = "Min-Lum", Text = Resource.MinLum }
+                            }, "Value", "Text"))"></select>
+                            <select class="form-control" asp-for="Proj_type_main_select" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "ALL", Text = Resource.ALLCap },
+                            new SelectListItem{ Value = "MAJENG", Text = Resource.MajEng },
+                            new SelectListItem{ Value = "MAJMED", Text = Resource.MajMed },
+                            new SelectListItem{ Value = "MINENG", Text = Resource.MinEng },
+                            new SelectListItem{ Value = "MINMED", Text = Resource.MinMed }
+                            }, "Value", "Text"))"></select>
+                            <select class="form-control" display="none" asp-for="Cwrf_sort_list" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "project", Text = Resource.ProjectTypeClusterHospital },
+                            new SelectListItem{ Value = "cluster", Text = Resource.ClusterHospitalProjectType },
+                            new SelectListItem{ Value = "wk_agent", Text = Resource.WorkAgentProjectTypeClusterHospital }
+                            }, "Value", "Text", "project"))"></select>
+                            <select class="form-control" display="none" asp-for="Proj_sort_list" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "project", Text = Resource.ProjectTypeClusterHospital },
+                            new SelectListItem{ Value = "cluster", Text = Resource.ClusterHospitalProjectType }
+                            }, "Value", "Text", "project"))"></select>
+                            <select class="form-control" asp-for="Top_10" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.All },
+                            new SelectListItem{ Value = "1", Text = Resource.Top10byReportingCategory }
+                            }, "Value", "Text", "0"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="cwrf_recur_list_row"> <!-- Cwrf_recur -->
+                        <td>@Resource.ProjectType</td>
+                        <td>
+                            <select class="form-control" asp-for="Cwrf_recur_list" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "MNT", Text = Resource.MaintenanceProjects },
+                            new SelectListItem{ Value = "WEP", Text = Resource.WEPProjects },
+                            new SelectListItem{ Value = "IMP", Text = Resource.SH8100MXImprovementProjects }
+                            }, "Value", "Text", "MNT"))" onchange="change_cwrf_recur_list(this.value)"></select>
+                            <select class="form-control" asp-for="Rpt_item_id" asp-items="@(new SelectList(ViewBag.ProjItemIndList, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Work_agent_row"> <!-- Work_agent -->
+                        <td>@Resource.WorkAgent</td>
+                        <td>
+                            <select class="form-control" asp-for="Work_agent" asp-items="@(new SelectList(ViewBag.WorkAgentList, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="cwrf_nonrecur_list_row"><!-- Cwrf_nonrecur -->
+                        <td>@Resource.ProjectType</td>
+                        <td>
+                            <select class="form-control" asp-for="Cwrf_nonrecur_list" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "ALL", Text = Resource.ALLCap },
+                            new SelectListItem{ Value = "Works", Text = Resource.Works },
+                            new SelectListItem{ Value = "FE", Text = Resource.FE }
+                            }, "Value", "Text", "ALL"))"></select>
+                            <select class="form-control" asp-for="Cwrf_nonrecur_imp_list" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "ALL", Text = Resource.ALLCap },
+                            new SelectListItem{ Value = "EMR", Text = Resource.EMR },
+                            new SelectListItem{ Value = "IMP", Text = Resource.IMP },
+                            new SelectListItem{ Value = "PMNT", Text = Resource.PMNT }
+                            }, "Value", "Text", "ALL"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="criteria_row"> <!-- Criteria -->
+                        <td>@Resource.Criteria</td>
+                        <td>
+                            <select class="form-control" asp-for="Criteria" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "3", Text = Resource.SatisfyAnyoftheTwoCriteria },
+                            new SelectListItem{ Value = "1", Text = Resource.VsRevisedCashflowProjection },
+                            new SelectListItem{ Value = "2", Text = Resource.VsFullYearForcastLastMonth }
+                            }, "Value", "Text", "3"))"></select>
+                            <select class="form-control" asp-for="Criteria2" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "3", Text = Resource.ProjectsNotYetClosedOrClosedWithinCurrentFinancialYear },
+                            new SelectListItem{ Value = "1", Text = Resource.AllProjectsNotYetClosed },
+                            new SelectListItem{ Value = "2", Text = Resource.ProjectClosedWithinCurrentFinancialYear }
+                            }, "Value", "Text", "3"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Report_status_row"> <!-- Report_status -->
+                        <td>@Resource.CommentReportStatus</td>
+                        <td>
+                            <select class="form-control" asp-for="Report_status" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "A", Text = Resource.ALLCap },
+                            new SelectListItem{ Value = "N", Text = Resource.No },
+                            new SelectListItem{ Value = "Y", Text = Resource.Yes }
+                            }, "Value", "Text", "N"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Next_month_row"> <!-- Next_month, Cluster_sort, Batch_no, App_yr_sort, One_line --> <!-- test case 6 One_line--><!-- test case 7 Next_month--><!-- test case 14 Cluster_sort--><!-- test case 25 null  -->
+                        <td>
+                            <span id="Next_month_label">@Resource.UpTo</span>
+                            <span id="Cluster_sort_label">@Resource.SortBy</span>
+                            <span id="Batch_no_label">@Resource.BatchNo</span>
+                            <span id="App_yr_sort_label">@Resource.SortBy</span>
+                            <span id="One_line_label">@Resource.OneLine</span>
+                        </td>
+                        <td>
+                            <select class="form-control" asp-for="Next_month" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.UpToLastMonth },
+                            new SelectListItem{ Value = "1", Text = Resource.UpToDated }
+                            }, "Value", "Text", "0"))"></select>
+                            <select class="form-control" asp-for="Cluster_sort" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "1", Text = Resource.SortByCluster },
+                            new SelectListItem{ Value = "2", Text = Resource.SortByHARefNo }
+                            }, "Value", "Text", "1"))"></select>
+                            <select class="form-control" asp-for="Batch_no" asp-items="@(new SelectList(ViewBag.BatchNoList, "Value", "Text","0"))"></select>
+                            <select class="form-control" asp-for="App_yr_sort" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "1", Text = Resource.SortByCluster },
+                            new SelectListItem{ Value = "2", Text = Resource.SortByYearOfApproval }
+                            }, "Value", "Text", "1"))"></select>
+                            <select class="form-control" asp-for="One_line" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "ALL", Text = Resource.ALLProjects },
+                            new SelectListItem{ Value = "No", Text = Resource.OneLineNo }
+                            }, "Value", "Text", "ALL"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Rec_type_row"> <!-- Rec_type, Closed_only, Closed_only, Rpt_next_year --><!-- test case 6 Rpt_next_year--><!-- test case 7 Closed_only--><!-- test case 14 null--><!-- test case 25 Closed_only  -->
+                        <td>
+                            <span id="Rec_type_label">@Resource.RecType</span>
+                            <span id="Rpt_format_label">@Resource.ReportFormat</span>
+                            <span id="Closed_only_label">@Resource.ClosedOnly</span>
+                            <span id="Rpt_next_year_label">@Resource.ReportYear</span>
+                        </td>
+                        <td>
+                            <select class="form-control" asp-for="Rec_type" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "6", Text = Resource.RecType6 },
+                            new SelectListItem{ Value = "1", Text = Resource.RecType1 },
+                            new SelectListItem{ Value = "2", Text = Resource.RecType2 },
+                            new SelectListItem{ Value = "3", Text = Resource.RecType3 },
+                            new SelectListItem{ Value = "4", Text = Resource.RecType4 },
+                            new SelectListItem{ Value = "5", Text = Resource.RecType5 }
+                            }, "Value", "Text", "ALL"))"></select>
+                            <select class="form-control" asp-for="Rpt_format" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "1", Text = Resource.APE },
+                            new SelectListItem{ Value = "2", Text = Resource.Cashflow }
+                            }, "Value", "Text"))"></select>
+                            <select class="form-control" asp-for="Closed_only" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.AllProjectsExceptClosedAtPriorYears },
+                            new SelectListItem{ Value = "1", Text = Resource.ClosedAtPriorYears },
+                            new SelectListItem{ Value = "2", Text = Resource.AllProjectsIncludedClosedAtPriorYears }
+                            }, "Value", "Text"))"></select>
+                            <select class="form-control" asp-for="Rpt_next_year" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.CurrentYear },
+                            new SelectListItem{ Value = "1", Text = Resource.NextYear }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="in_million_row">
+                        <td>@Resource.InDollar</td>
+                        <td>
+                            <select class="form-control" asp-for="In_million" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.InDollar },
+                            new SelectListItem{ Value = "1", Text = Resource.InMillion }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                }
+                @if (ViewBag.Modules == "D")
+                {
+                    if (ViewBag.UserGroup != "HOSP" || ViewBag.UserInstCode == "QMH")
+                    {
+                        <tr id="hosp_cluster_row">
+                            <!-- Hosp_cluster -->
+                            <td>@Resource.HospCluster</td>
+                            <td>
+                                <select class="form-control" asp-for="Hosp_cluster" asp-items="@(new SelectList(ViewBag.HospClusterList, "Value", "Text"))"></select>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="Hosp_cluster" value="@ViewBag.UserInstCode" />
+                    }
+                    <tr id="don_purpose_row">
+                        <!-- Don_purpose -->
+                        <td>@Resource.DonationPurpose</td>
+                        <td>
+                            <select class="form-control" asp-for="Don_purpose" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "0", Text = Resource.All },
+                                    new SelectListItem{ Value = "1", Text = Resource.NonSARS },
+                                    new SelectListItem{ Value = "2", Text = Resource.SARS }
+                                    }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="don_fund_row">
+                        <!-- Don_fund -->
+                        <td>@Resource.DonationFund</td>
+                        <td>
+                            <select class="form-control" asp-for="Don_fund" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.All },
+                            new SelectListItem{ Value = "1", Text = "21-22 Fund" },
+                            new SelectListItem{ Value = "2", Text = "52 Fund" }
+                            }, "Value", "Text","1"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="Exp_type_row">
+                        <!-- Exp_type -->
+                        <td>@Resource.IncomeExp</td>
+                        <td>
+                            <select class="form-control" asp-for="Exp_type" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "I", Text = Resource.Income },
+                            new SelectListItem{ Value = "E", Text = Resource.Expenditure}
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="deleted_row">
+                        <!-- deleted -->
+                        <td>@Resource.Deleted</td>
+                        <td>
+                            <select class="form-control" asp-for="Deleted" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = "" },
+                            new SelectListItem{ Value = "1", Text = Resource.DeletedRecordsOnly },
+                            new SelectListItem{ Value = "2", Text = Resource.MovementOnly }
+                            }, "Value", "Text","0"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="don_type_row">
+                        <!-- Don_type -->
+                        <td>@Resource.DonationType</td>
+                        <td>
+                            <select class="form-control" asp-for="Don_type" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.AllDonationType },
+                            new SelectListItem{ Value = "1", Text = Resource.DonationInKind },
+                            new SelectListItem{ Value = "2", Text = Resource.DonationInCash },
+                            new SelectListItem{ Value = "3", Text = Resource.InterestReceived }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="as_at_row">
+                        <!-- As_at -->
+                        <td>@Resource.AsAt</td>
+                        <td>
+                            <select class="form-control" asp-for="As_at" asp-items="@(new SelectList(Model.AsAtList,"Value", "Text", Model.AsAtList.Where(a => a.Selected == true).Select(a => a.Value).First()))"></select>
+                            <select class="form-control" style="width:100px;float:left;" asp-for="As_at_m" asp-items="@(new SelectList(Model.AsAtMList, "Value", "Text", Model.AsAtMList.Where(a => a.Selected == true).Select(a => a.Value).First()))"></select>
+                            <select class="form-control" style="width:100px;float:left;" asp-for="As_at_y" asp-items="@(new SelectList(ViewBag.AsAtYList, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="don_cat_row">
+                        <!-- Don_cat -->
+                        <td>@Resource.Category</td>
+                        <td>
+                            <select class="form-control" asp-for="Don_cat" asp-items="@(new SelectList(ViewBag.DonSuperCatList, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                    <tr id="trust_only_row">
+                        <!-- Trust_only -->
+                        <td>@Resource.Trust</td>
+                        <td>
+                            <select class="form-control" asp-for="Trust_only" asp-items="@(new SelectList(new[] {
+                            new SelectListItem{ Value = "0", Text = Resource.NonTrust },
+                            new SelectListItem{ Value = "1", Text = Resource.TrustOnly }
+                            }, "Value", "Text"))"></select>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+
+        </div>
+        <div class="box-footer">
+            <div class="dt-buttons">
+                <input type="button" id="Generate" class="dt-button btn btn-primary" onclick="generate();" value="@Resource.Generate">
+                <input type="button" id="Excel" class="dt-button btn btn-primary" onclick="export_excel();" value="@Resource.ExportToExcel">
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@for (int i = 0; i < Model.Cnt; i++)
+{
+    var rec = Model.Report_detail_list[i];
+    var id = rec.Report_Id;
+    var annual_costing_ind = rec.Annual_costing_ind;
+    if ((ViewBag.UserInstCode == "HAHO" && rec.HAHO_ind == "Y") || (ViewBag.UserInstCode != "HAHO" && rec.Hosp_ind == "Y") || 1 == 1)
+    {
+        if (annual_costing_ind != "Y" || ViewBag.Privilege_closing_report == "I" || ViewBag.Privilege_closing_report == "R")
+        {
+            if (id != 206 || ViewBag.Cluster_level == "Y")
+            {
+                <span id="rpt_name_@id" style="display:none;">@rec.Rpt_name</span>
+                <span id="asp_file_@id" style="display:none;">@rec.Asp_file</span>
+                <span id="hosp_asp_file_@id" style="display:none;">@rec.Hosp_asp_file</span>
+                <span id="show_hosp_ind_@id" style="display:none;">@rec.Show_hosp_ind</span>
+                <span id="show_project_item_ind_@id" style="display:none;">@rec.Show_project_item_ind</span>
+                <span id="show_cluster_ind_@id" style="display:none;">@rec.Show_cluster_ind</span>
+                <span id="consolidation_ind_@id" style="display:none;">@rec.Consolidation_ind</span>
+                <span id="next_year_ind_@id" style="display:none;">@rec.Next_year_ind</span>
+                <span id="fund_gp_ind_@id" style="display:none;">@rec.Fund_gp_ind</span>
+                <span id="period_@id" style="display:none;">@rec.Period</span>
+                <span id="exp_type_@id" style="display:none;">@rec.Exp_type</span>
+                <span id="cbv_rpt_type_@id" style="display:none;">@rec.Cbv_rpt_type</span>
+                <span id="cwrf_recur_@id" style="display:none;">@rec.Cwrf_recur</span>
+                <span id="cwrf_nonrecur_@id" style="display:none;">@rec.Cwrf_nonrecur</span>
+                <span id="budget_cluster_@id" style="display:none;">@rec.Budget_cluster</span>
+                <span id="consolidate_individual_@id" style="display:none;">@rec.Consolidate_individual</span>
+            }
+        }
+    }
+}
+@foreach (var row in Model.Consolidate_ind_dict)
+{
+    <span id="@row.Key" style="display:none;">@row.Value</span>
+}
+    @*<input type="hidden" id="@row.Key" value="@row.Value" />*@
+@for (int i = 0; i < Model.Rtp_item_list.Count; i++)
+{
+    var rpt_id = Model.Rtp_item_list[i].Rpt_id;
+    var table_rtp_item_list = Model.Rtp_item_list[i].Table_rtp_item_list;
+    var cnt = 0;
+    foreach (var item in table_rtp_item_list)
+    {
+        <span id="table_rpt_item_id_@rpt_id@cnt" style="display:none;">@item.Id</span>
+        <span id="table_rpt_item_desc_@rpt_id@cnt" style="display:none;">@item.Description</span>
+        cnt++;
+    }
+    <span id="table_rpt_item_length_@rpt_id" style="display:none;">@cnt</span>
+}
+@foreach (var row in Model.Report_group_full_list)
+{
+    <span id="report_group_@row.Group_id" style="display:none;">@Json.Serialize(row.Report_id_list)</span>
+}
+
+<script>
+    $(document).ready(function () {
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun', 'Jul', 'Aug', 'Sep','Oct', 'Nov', 'Dec'];
+        for (i = 1; i <= 12; i++) {
+            $('#Startdate_m').append($('<option>',
+                {
+                    value: i,
+                    text: months[i-1]
+                }));
+            $('#Enddate_m').append($('<option>',
+                {
+                    value: i,
+                    text: months[i - 1]
+                }));
+        }
+        var d = new Date();
+        var n = d.getMonth();
+        var y = d.getFullYear();
+        $('#Startdate_m').val(n + 1);
+        $('#Enddate_m').val(n + 1);
+
+        for (i = 0; i <= 11; i++) {
+            $('#Startdate_y').append($('<option>',
+                {
+                    value: y-i-1,
+                    text: y-i-1
+                }));
+            $('#Enddate_y').append($('<option>',
+                {
+                    value: y - i,
+                    text: y - i
+                }));
+        }
+        if (@ViewBag.RptGpList.Count > 0){
+            if ('@ViewBag.Rpt_group' != "" && '@ViewBag.Rpt_group' != "0") {
+                $("#Rpt_group").val('@ViewBag.Rpt_group');
+                change_rpt_group('@ViewBag.Rpt_group');
+            }
+            else {
+                change_rpt_group($("#Rpt_group option:first").val());
+            }
+        }
+        if (@ViewBag.RptNameList.Count > 0) {
+            if ('@ViewBag.Rpt_name' != "" && '@ViewBag.Rpt_name' != "0") {
+                $("#Rpt_name").val('@ViewBag.Rpt_name');
+                change_rpt('@ViewBag.Rpt_name');
+            }
+            else {
+                change_rpt($("#Rpt_name option:first").val());
+            }
+        }
+        else {
+            change_rpt("0");
+        }
+        change_snapshot($("#Snapshot").val());
+    });
+
+    function generate() {
+        $("#ReportForm").submit();
+    }
+
+    function export_excel() {
+        $("#Export_to_excel").val(1);
+        $("#ReportForm").submit();
+    }
+
+    function change_cluster(hosp_gp) {
+        var rpt_id = $("#Rpt_name").val();
+        hosp_gp = hosp_gp.replace(/-/g, "");
+        var consolidate_individual_rpt_id = "#consolidate_individual_" + rpt_id;
+        var consolidation_ind_hosp_gp = "#consolidation_ind_" + hosp_gp;
+        var show_cluster_ind_rpt_id = "#show_cluster_ind_" + rpt_id;
+        var consolidation_ind_rpt_id = "#consolidation_ind_" + rpt_id;
+        if (($(consolidate_individual_rpt_id).text() != "Y" && $(consolidation_ind_hosp_gp).length > 0) && ($(show_cluster_ind_rpt_id).text() == "Y" || $(consolidation_ind_rpt_id).text() == "Y")) {
+            $("#Rpt_consolidation").show();
+            if (!$("#Rpt_consolidation").is(":visible") && rpt_id == 281)
+                check_annex();
+        }
+        else {
+            $("#Rpt_consolidation").hide();
+            $("#Rpt_consolidation").val("N");
+        }
+    }
+
+    function check_annex() {
+        $("#Rpt_consolidation").show();
+        if ('@ViewBag.UserGroup' == "HOSP") {
+            $("#Rpt_consolidation").val("N");
+        }
+    }
+
+    function change_snapshot(get_temp){
+        if (get_temp == '@ViewBag.SnapshotMaxYr')
+            get_temp = 0;
+        $("#Snapshot_m").children('option').remove();
+        if (get_temp == 0) {
+            var array = @Html.Raw(Json.Serialize(ViewBag.SnapshotDateListByMaxYr));
+            for (i = 0; i < array.length; i++) {
+                $('#Snapshot_m').append($('<option>',
+                    {
+                        value: array[i],
+                        text: array[i]
+                    }));
+            }
+        }
+        else {
+            $("#Snapshot_m").append($('<option>', { value: '09-30', text: '09-30' }));
+            $("#Snapshot_m").append($('<option>', { value: '03-31', text: '03-31' }));
+        }
+    }
+
+    function change_fund(fund_gp) {
+        if (fund_gp == "ALL"){
+            $("#Fund_gp_ind").show();
+        }
+        else {
+            $("#Fund_gp_ind").hide();
+        }
+        $("#Fund_gp_ind").val("N");
+    }
+
+    function change_account_group() {
+        if ($("#Account_group").val() == 1) {
+            $("#Account_code").children('option').remove();
+            $("#Account_code").append($('<option>', { value: "All", text: '@Resource.ALLCap' }));
+            $("#Account_code").append($('<option>', { value: '73760', text: "73760, 774990" }));
+            $("#Account_code").append($('<option>', { value: '73770', text: "73770, 774010" }));
+            $("#Account_code").append($('<option>', { value: '73780', text: "73780, 774020" }));
+        }
+        else {
+            $("#Account_code").children('option').remove();
+            $("#Account_code").append($('<option>', { value: "All", text: '@Resource.ALLCap' }));
+            $("#Account_code").append($('<option>', { value: '82890', text: "82890, 826000" }));
+            $("#Account_code").append($('<option>', { value: '82899', text: "82899, 826990" }));
+            $("#Account_code").append($('<option>', { value: '826900', text: '826900' }));
+        }
+        $("#Account_code").val("All");
+    }
+
+    function change_fv_ind(ind_id) {
+        $(".fvIndTenderer_name").hide();
+        $(".fvIndTenderer_list").hide();
+        if (ind_id != "ALL") {
+            $("#fv_tenderer").height(150);
+            div_id = "#FVIndTenderer_list_" + ind_id;
+            $(div_id).show();
+        }
+        else {
+            $("#fv_tenderer").height(500);
+            $(".fvIndTenderer_name").show();
+            $(".fvIndTenderer_list").show();
+        }
+    }
+
+    function change_cwrf_recur_list(project_type) {
+        if ($("#Rpt_name").val() == 190) {
+            if (project_type == "CBV_E" || project_type == "CBV_M" || project_type == "FE" || project_type == "DON") {
+                $("#Criteria").hide();
+                if ($("#Criteria2").is(":visible"))
+                { $("#criteria_row").show(); }
+                else { $("#criteria_row").hide();}
+            }
+            else { $("#Criteria,#criteria_row").show();}
+        }
+    }
+    function change_rpt_group(group_id) {
+        if (group_id == 19) {
+            $("#Rpt_name").children('option').remove();
+            $("#Rpt_name").append($('<option>', { value: '1111', text: '@Resource.TransactionVolumeOfFV' }));
+            $("#Rpt_name").append($('<option>', { value: '2222', text: '@Resource.IndustryLeverageRatioAnalysisReport' }));
+            $("#Rpt_name").append($('<option>', { value: '3333', text: '@Resource.FinancialAnalysisDataExtractionSummary' }));
+            $("#Rpt_name").val($("#Rpt_name option:first").val());
+            change_rpt($("#Rpt_name option:first").val());
+        }
+        else {
+            $("#Rpt_name").children('option').remove();
+            var report_group_name = "#report_group_" + group_id;
+
+            var temp = $(report_group_name).text().replace("[", "").replace("]", "").replace(/\"/g, "");
+            var array = temp.split(",");
+            for (i = 0; i < array.length; i++) {
+                var rpt_name = "#rpt_name_" + array[i].toString();
+                $('#Rpt_name').append($('<option>',
+                    {
+                        value: array[i].toString(),
+                        text: (i + 1) + ". " + $(rpt_name).text()
+                        }));
+            }
+
+            $("#Rpt_name").val($("#Rpt_name option:first").val());
+            change_rpt($("#Rpt_name option:first").val());
+        }
+    }
+
+    function change_rpt(rpt_id) {
+        $("#startdate_row,#enddate_row,#Show_all_period_row,#Show_all_period").hide();
+        $("#Ddl_fv_ind_row, #Ddl_fv_ind, #fv_tenderer,#fv_tenderer_row").hide();
+        if (rpt_id == 1111 || rpt_id == 2222 || rpt_id == 3333) {
+            $("#Rpt_cluster,#Rpt_consolidation,#Rpt_cluster_row,#Rpt_hospital,#Rpt_hospital_row,#Rpt_item_id,#Snapshot_row").hide();
+            $("#Account_group_row,#Cost_depr,#Basis,#Cost_depr_row,#Flash_rpt_date,#Flash_rpt_date2").hide();
+            $("#Fund_gp,#Fund_gp_ind,#Fund_gp_row,#period_row,#Exp_type,#Exp_type_row,#Rpt_next_year,#Rpt_next_year_row,#Excel").hide();
+            if (rpt_id == 1111) {
+                $("#startdate_row").show();
+                $("#enddate_row").show();
+                $("#Asp_file").val("fv_rpt_trans_vol.rpt");
+                $("#Hosp_asp_file").val("fv_rpt_trans_vol.rpt");
+                $("#Report_name").val("Transaction volume of FV");
+                $("#Export_to_excel").val(1);
+            }
+            if (rpt_id == 2222) {
+                $("#Asp_file").val("fv_rpt_leverage_ratio.rpt");
+                $("#Hosp_asp_file").val("fv_rpt_leverage_ratio.rpt");
+                $("#Report_name").val("Industry Leverage Ratio Analysis report");
+                $("#Export_to_excel").val(1);
+            }
+            if (rpt_id == 3333) {
+                $("#Asp_file").val("fv_rpt_ratio_analysis.rpt");
+                $("#Hosp_asp_file").val("fv_rpt_ratio_analysis.rpt");
+                $("#Report_name").val("Financial Analysis Data Extraction Summary");
+                $("#Export_to_excel").val(1);
+                $("#Show_all_period_row,#Show_all_period,#Ddl_fv_ind_row,#Ddl_fv_ind,#fv_tenderer,#fv_tenderer_row").show();
+                change_fv_ind($("#Ddl_fv_ind").val());
+            }
+            return;
+        }
+        else {
+            $("#startdate_row,#enddate_row,#Show_all_period_row,#Show_all_period").hide();
+            $("#Ddl_fv_ind_row,#Ddl_fv_ind,#fv_tenderer,#fv_tenderer_row").hide();
+        }
+        var asp_file_name = "#asp_file_" + rpt_id;
+        var hosp_asp_file_name = "#hosp_asp_file_" + rpt_id;
+        var rpt_name_name = "#rpt_name_" + rpt_id;
+        $("#Asp_file").val($(asp_file_name).text());
+        $("#Hosp_asp_file").val($(hosp_asp_file_name).text());
+        $("#Report_name").val($(rpt_name_name).text());
+        if ($(asp_file_name).text().slice(-4) == ".rpt") {  $("#Excel").show();}
+        else { $("#Excel").hide();}
+        var show_hosp_ind_name = "#show_hosp_ind_" + rpt_id;
+        if ($(show_hosp_ind_name).text() == "Y") { $("#Rpt_hospital,#Rpt_hospital_row").show(); }
+        else { $("#Rpt_hospital,#Rpt_hospital_row").hide(); }
+
+        if (rpt_id == 26 || rpt_id == 6 || rpt_id == 281 || rpt_id == 289 || rpt_id == 290 || rpt_id == 293) {
+            $("#Flash_rpt_date").show();
+        }
+        else { $("#Flash_rpt_date").hide(); }
+        if (rpt_id == 296) { $("#Flash_rpt_date2").show(); }
+        else { $("#Flash_rpt_date2").hide(); }
+        var consolidation_ind_name = "#consolidation_ind_" + rpt_id;
+        if ($(consolidation_ind_name).text() == "Y") {
+            $("#Rpt_consolidation").show();
+        } else {
+            $("#Rpt_consolidation").hide();
+            $("#Rpt_consolidation").val("N");
+        }
+        if ('@ViewBag.Modules' == "Y") {
+            $("#Fund_gp_row").hide();
+            var fund_gp_ind_name = "#fund_gp_ind_" + rpt_id;
+            if ($(fund_gp_ind_name).text() == "Y") {
+                $("#Fund_gp,#Fund_gp_ind,#Fund_gp_label,#Fund_gp_row").show();
+            }
+            else {
+                $("#Fund_gp,#Fund_gp_ind,#Fund_gp_label").hide();
+                $("#Fund_gp").val("ALL");
+                $("#Fund_gp_ind").val("N");
+            }
+            var period_name = "#period_" + rpt_id;
+            if ($(period_name).text() == "Y") {
+                $("#period_row").show();
+                $("#Period").val('@int_year' + "0901");
+            }
+            else {
+                $("#period_row").hide();
+                $("#Period").val("N");
+            }
+            var exp_type_name = "#exp_type_" + rpt_id;
+            if ($(exp_type_name).text() == "Y") { $("#Exp_type,#Exp_type_row").show(); }
+            else { $("#Exp_type,#Exp_type_row").hide(); }
+            $("#Cost_depr_row").hide();
+            if (rpt_id == 249) { $("#Cost_depr,#Cost_depr_label,#Cost_depr_row").show(); }
+            else { $("#Cost_depr,#Cost_depr_label").hide(); }
+            if (rpt_id == 115 || rpt_id == 119) { $("#Basis,#Basis_label,#Cost_depr_row").show(); }
+            else { $("#Basis,#Basis_label").hide(); }
+            if (rpt_id == 278) {
+                $("#Account_group").show();
+                change_account_group();
+                $("#Account_code").show();
+                $("#Account_group_row").show();
+            }
+            else {
+                $("#Account_group_row").hide();
+            }
+            var next_year_ind_name = "#next_year_ind_" + rpt_id;
+            if ($(next_year_ind_name).text() == "Y") {
+                $("#Rpt_next_year,#Rpt_next_year_row").show();
+                $("#Rpt_next_year").children('option').remove();
+                if (rpt_id == 66) {
+                    $("#Rpt_next_year").append($('<option>', { value: '0', text: '@Resource.UpToDated' }));
+                    $("#Rpt_next_year").append($('<option>', { value: '1', text: '@Resource.LastYearEnd' }));
+                }
+                else {
+                    $("#Rpt_next_year").append($('<option>', { value: '0', text: '@Resource.CurrentYear' }));
+                    $("#Rpt_next_year").append($('<option>', { value: '1', text: '@Resource.NextYear' }));
+                }
+            }
+            else {
+                $("#Rpt_next_year,#Rpt_next_year_row").hide();
+                $("#Rpt_consolidation").val("N");
+            }
+            var show_project_item_ind_name = "#show_project_item_ind_" + rpt_id;
+            if ($(show_project_item_ind_name).text() == "Y") { $("#Rpt_item_id,#Rpt_item_id_label,#Fund_gp_row").show();}
+            else { $("#Rpt_item_id,#Rpt_item_id_label").hide();}
+        }
+        if ('@ViewBag.Modules' == "M") {
+            if (rpt_id == 17 || rpt_id == 18 || rpt_id == 282 || rpt_id == 283 || rpt_id == 293) {  $("#Proj_sort_list,#by_row").show();}
+            else { $("#Proj_sort_list").hide(); }
+            var cbv_rpt_type_name = "#cbv_rpt_type_" + rpt_id;
+            if ($(cbv_rpt_type_name).text() == "T") { $("#Proj_type_select,#by_row").show(); }
+            else { $("#Proj_type_select").hide(); }
+            if ($(cbv_rpt_type_name).text() == "M") { $("#Proj_type_main_select,#by_row").show(); }
+            else { $("#Proj_type_main_select").hide(); }
+            var budget_cluster_name = "#budget_cluster_" + rpt_id;
+            if ($(budget_cluster_name).text() == "Y") {
+                if ('@ViewBag.UserGroup' == "HOSP" && (rpt_id == 289 || rpt_id == 290 || rpt_id == 307)) {
+                    $("#Budget_cluster_hosp, #Budget_cluster_hosp_row").show();
+                    $("#Budget_cluster,#Budget_cluster_row").hide();
+                }
+                else {
+                    $("#Budget_cluster_hosp, #Budget_cluster_hosp_row").hide();
+                    $("#Budget_cluster,#Budget_cluster_row").show();
+                }
+            }
+            else {
+                $("#Budget_cluster_hosp, #Budget_cluster_hosp_row").hide();
+                $("#Budget_cluster,#Budget_cluster_row").hide();
+            }
+            $("#Next_month_row").hide();
+            if (rpt_id == 54) { $("#One_line,#One_line_label,#Next_month_row").show(); }
+            else { $("#One_line,#One_line_label").hide(); }
+            if (rpt_id == 229) { $("#Batch_no,#Batch_no_label,#Next_month_row").show(); }
+            else { $("#Batch_no,#Batch_no_label").hide(); }
+            if (rpt_id == 273) { $("#in_million_row").show(); }
+            else { $("#in_million_row").hide(); }
+            var cwrf_recur_name = "#cwrf_recur_" + rpt_id;
+            if ($(cwrf_recur_name).text() == "Y") {
+                $("#Cwrf_recur_list").children('option').remove();
+                if (rpt_id == 54) {
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'ALL', text: '@Resource.AllEquipments' }));
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'Eng', text: '@Resource.EngineeringEquipment' }));
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'Med', text: '@Resource.MedicalEquipment' }));
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'Lum', text: '@Resource.MinorLumpSum' }));
+                }
+                else if (rpt_id == 269) {
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'MNT', text: '@Resource.ScheduleIIMaintenaceWorksProjects' }));
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'IMP', text: '@Resource.SH8100MXImprovementProjects' }));
+                }
+                else if (rpt_id == 270) {
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'IMP', text: '@Resource.SH8100MXImprovementProjects' }));
+                }
+                else if (rpt_id == 158 || rpt_id == 212 || rpt_id == 213 || rpt_id == 273) {
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'IMP', text: '@Resource.SH8100MXImprovementProjects' }));
+                }
+                else {
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'MNT', text: '@Resource.MaintenanceProjects' }));
+                    $("#Cwrf_recur_list").append($('<option>', { value: 'WEP', text: '@Resource.WEPProjects' }));
+                    if (rpt_id == 190) {
+                        $("#Cwrf_recur_list").children('option').remove();
+                        if (@ViewBag.CntCbv > 0) {
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'CBV_E', text: '@Resource.CBVEngineeringEquipment' }));
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'CBV_M', text: '@Resource.CBVNonEngineeringEquipment' }));
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'FE', text: '@Html.Raw(@Resource.CWRFFE)' }));
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'DON', text: '@Resource.DonationExpPaidByHAHO' }));
+                        }
+                        if (@ViewBag.CntCwrf > 0) {
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'MNT', text: '@Resource.ScheduleIIMaintenaceWorksProjects' }));
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'WEP', text: '@Resource.WEPProjects' }));
+                            $("#Cwrf_recur_list").append($('<option>', { value: 'IMP', text: '@Resource.SH8100MXImprovementProjects' }));
+                        }
+                    }
+                    else if (rpt_id == 220) {
+                        $("#Cwrf_recur_list").children('option').remove();
+                        $("#Cwrf_recur_list").append($('<option>', { value: 'F', text: '@Html.Raw(@Resource.CWRFFE)' }));
+                        $("#Cwrf_recur_list").append($('<option>', { value: 'C', text: '@Resource.CWRFWORKS' }));
+                        $("#Cwrf_recur_list").append($('<option>', { value: 'X', text: '@Resource.X8100MX' }));
+                    }
+                    else if (rpt_id == 232) {
+                        $("#Cwrf_recur_list").children('option').remove();
+                        $("#Cwrf_recur_list").append($('<option>', { value: 'IMP', text: '@Resource.IMP' }));
+                    }
+                    else if (rpt_id == 289 || rpt_id == 290) {
+                        $("#Cwrf_recur_list").children('option').remove();
+                        $("#Cwrf_recur_list").append($('<option>', { value: 'IMP', text: '@Html.Raw(@Resource.EMRnIMPnPMNT)' }));
+                    }
+                }
+                $("#Cwrf_recur_list").val($("#Cwrf_recur_list option:first").val());
+                $("#Cwrf_recur_list,#cwrf_recur_list_row").show();
+                change_cwrf_recur_list($("#Cwrf_recur_list").val());
+            }
+            else {
+                $("#Cwrf_recur_list").hide();
+            }
+            $("#Rec_type_row").hide();
+            var next_year_ind_name = "#next_year_ind_" + rpt_id;
+            if ($(next_year_ind_name).text() == "Y") { $("#Rpt_next_year,#Rpt_next_year_label,#Rec_type_row").show(); }
+            else {
+                $("#Rpt_next_year,#Rpt_next_year_label").hide();
+                $("#Rpt_consolidation").val("N");
+            }
+
+            var cwrf_nonrecur_name = "#cwrf_nonrecur_" + rpt_id;
+            if ($(cwrf_nonrecur_name).text() == "Y") { $("#Cwrf_nonrecur_list,#cwrf_nonrecur_list_row").show(); }
+            else { $("#Cwrf_nonrecur_list").hide(); }
+            if (($(cwrf_nonrecur_name).text() == "Y" || rpt_id == 155 || rpt_id == 151) && rpt_id != 308) { $("#Cwrf_sort_list,#by_row").show(); }
+            else { $("#Cwrf_sort_list").hide(); }
+            if (rpt_id == 177 || rpt_id == 179 || rpt_id == 309) { $("#Work_agent,#Work_agent_row").show(); }
+            else { $("#Work_agent,#Work_agent_row").hide(); }
+            if (rpt_id == 177) { $("#Cwrf_nonrecur_imp_list,#cwrf_nonrecur_list_row").show(); }
+            else {
+                $("#Cwrf_nonrecur_imp_list").hide();
+                if ($("#Cwrf_nonrecur_list").is(":visible"))
+                { $("#cwrf_nonrecur_list_row").show(); }
+                else { $("#cwrf_nonrecur_list_row").hide();}
+            }
+            if (rpt_id == 158 || rpt_id == 215 || rpt_id == 216 || rpt_id == 217 || rpt_id == 273) { $("#Next_month").val("1"); }
+            if (rpt_id == 151 || rpt_id == 155 || rpt_id == 308 || rpt_id == 179 || rpt_id == 309 || rpt_id == 269 || rpt_id == 270 || rpt_id == 271) { $("#Next_month,#Next_month_label,#Next_month_row").show(); }
+            else { $("#Next_month,#Next_month_label").hide(); }
+            if (rpt_id == 189 || rpt_id == 190) {
+                $("#Criteria,#criteria_row").show();
+                $("#Report_status,#Report_status_row").show();
+                change_cwrf_recur_list($("#Cwrf_recur_list").val());
+            }
+            else {
+                $("#Criteria").hide();
+                $("#Report_status,#Report_status_row").hide();
+            }
+            if (rpt_id == 151 || rpt_id == 155 || rpt_id == 308 || rpt_id == 179 || rpt_id == 309 || rpt_id == 177 || rpt_id == 302 || rpt_id == 307) {
+                $("#Closed_only,#Closed_only_label,#Rec_type_row").show();
+                $('#Closed_only option').eq(0).attr('disabled', false);
+                $('#Closed_only option').eq(1).attr('disabled', false);
+                if (rpt_id == 302 || rpt_id == 307) { $('#Closed_only option').eq(2).attr('disabled', false); }
+                else { $('#Closed_only option').eq(2).attr('disabled', 'disabled'); }
+                $("#Closed_only").val("0");
+            }
+            else { $("#Closed_only,#Closed_only_label").hide(); }
+            if (rpt_id == 302) {
+                $("#Top_10,#by_row").show();
+                $("#Top_10").val("0");
+            }
+            else {
+                $("#Top_10").hide();
+                if ($("#Proj_sort_list").is(":visible") || $("#Proj_type_select").is(":visible") || $("#Proj_type_main_select").is(":visible") || $("#Cwrf_sort_list").is(":visible"))
+                { $("#by_row").show(); }
+                else { $("#by_row").hide(); }
+            }
+            if (rpt_id == 215 || rpt_id == 216 || rpt_id == 217) { $("#Criteria2,#criteria_row").show();}
+            else {
+                $("#Criteria2").hide();
+                if ($("#Criteria").is(":visible"))
+                { $("#criteria_row").show(); }
+                else { $("#criteria_row").hide();}
+            }
+            if (rpt_id == 215) { $("#Cluster_sort,#Cluster_sort_label,#Next_month_row").show();}
+            else { $("#Cluster_sort,#Cluster_sort_label").hide(); }
+            if (rpt_id == 219) { $("#App_yr_sort,#App_yr_sort_label,#Next_month_row").show();}
+            else { $("#App_yr_sort,#App_yr_sort_label").hide(); }
+            if (rpt_id == 227 || rpt_id == 228 || rpt_id == 229) {
+                $("#Rec_type,#Rec_type_label,#Rec_type_row").show();
+                $("#Rec_type").children('option').remove();
+                $("#Rec_type").append($('<option>', { value: '0', text: '@Resource.AllMinorWorksProjects' }));
+                $("#Rec_type").append($('<option>', { value: '1', text: '@Resource.RecType6' }));
+                $("#Rec_type").append($('<option>', { value: '2', text: '@Resource.RecType1' }));
+                $("#Rec_type").append($('<option>', { value: '3', text: '@Resource.RecType2' }));
+                $("#Rec_type").append($('<option>', { value: '4', text: '@Resource.RecType3' }));
+                $("#Rec_type").append($('<option>', { value: '5', text: '@Resource.RecType4' }));
+                $("#Rec_type").append($('<option>', { value: '6', text: '@Resource.RecType5' }));
+            }
+            else if (rpt_id == 243 || rpt_id == 244 || rpt_id == 245) {
+                $("#Rec_type,#Rec_type_label").show();
+                $("#Rec_type").children('option').remove();
+                $("#Rec_type").append($('<option>', { value: '1', text: '@Resource.MaintenanceBlockVoteForScheduleIIHospitals' }));
+                $("#Rec_type").append($('<option>', { value: '2', text: '@Html.Raw(@Resource.IWEPProjectsForSchInIIHospitals)' }));
+            }
+            else { $("#Rec_type,#Rec_type_label").hide(); }
+            if (rpt_id == 245) { $("#Rpt_format,#Rpt_format_label,#Rec_type_row").show(); }
+            else { $("#Rpt_format,#Rpt_format_label").hide(); }
+            var show_project_item_ind_name = "#show_project_item_ind_" + rpt_id;
+            if ($(show_project_item_ind_name).text() == "Y") {
+                var table_rpt_item_length_name = "#table_rpt_item_length_" + rpt_id;
+                var j = $(table_rpt_item_length_name).text();
+                if (((j >= 14) || (rpt_id == 139)) && rpt_id != 17 && rpt_id != 18 && rpt_id != 293 && rpt_id != 294) {
+                    $("#Rpt_item_id").children('option').remove();
+                    $("#Rpt_item_id").append($('<option>', { value: '0', text: '@Resource.ALLProjects' }));
+                    $("#Rpt_item_id").append($('<option>', { value: '-1', text: '@Html.Raw(@Resource.EMSTFSLAFeesNGEEquipmentMaintenance)' }));
+                }
+                for (i = 0; i < j; i++) {
+                    var table_rpt_item_id_name = "#table_rpt_item_id_" + rpt_id + i;
+                    var table_rpt_item_desc_name = "#table_rpt_item_desc_" + rpt_id + i;
+                    $("#Rpt_item_id").append($('<option>', {
+                        value: $(table_rpt_item_id_name).text(),
+                        text: $(table_rpt_item_desc_name).text()
+                    }));
+                }
+
+                $("#Rpt_item_id option").eq(0).prop('selected', true);
+                $("#Rpt_item_id,#cwrf_recur_list_row").show();
+            }
+            else {
+                $("#Rpt_item_id").hide();
+                if ($("#Cwrf_recur_list").is(":visible"))
+                { $("#cwrf_recur_list_row").show(); }
+                else { $("#cwrf_recur_list_row").hide(); }
+            }
+        }
+        if ('@ViewBag.Modules' == "D") {
+            $("#Rpt_consolidation").hide();
+            $("#Rpt_consolidation").val("N");
+            if (rpt_id != 287) { $("#hosp_cluster_row").show(); }
+            else { $("#hosp_cluster_row").hide(); }
+            if (((rpt_id >= 251) && (rpt_id <= 254)) || ((rpt_id >= 256) && (rpt_id <= 258)) || (rpt_id == 264) || (rpt_id == 275) || (rpt_id == 306)) {
+                $("#don_purpose_row").show();
+            } else { $("#don_purpose_row").hide(); }
+            if (rpt_id == 306 || rpt_id == 254 || rpt_id == 255 || rpt_id == 256 || rpt_id == 275 || rpt_id == 257 || rpt_id == 258 || rpt_id == 264) {
+                $("#don_fund_row").show();
+            } else { $("#don_fund_row").hide(); }
+            var exp_type_name = "#exp_type_" + rpt_id;
+            if ($(exp_type_name).text() == "Y") { $("#Exp_type,#Exp_type_row").show(); }
+            else { $("#Exp_type,#Exp_type_row").hide(); }
+            if (rpt_id == 256) {
+                $("#deleted_row").show();
+                $("#don_cat_row").show();
+            }
+            else {
+                $("#deleted_row").hide();
+                $("#don_cat_row").hide();
+            }
+            if (rpt_id == 252 || rpt_id == 253) { $("#don_type_row").show(); }
+            else { $("#don_type_row").hide(); }
+            $("#as_at_row").hide();
+            if (rpt_id == 257 || rpt_id == 258 || rpt_id == 259 || rpt_id == 264) { $("#As_at, #as_at_row").show(); }
+            else { $("#As_at").hide(); }
+            if (rpt_id == 251 || rpt_id == 252 || rpt_id == 253 || rpt_id == 254 || rpt_id == 256 || rpt_id == 275 || rpt_id == 306) {
+                $("#As_at_m,#As_at_y,#as_at_row").show();
+                $("#As_at_y").val('@get_year');
+            }
+            else {
+                $("#As_at_m").hide();
+                $("#As_at_y").hide();
+            }
+            $("#trust_only_row").hide();
+        }
+        var show_cluster_ind_name = "#show_cluster_ind_" + rpt_id;
+        if ($(show_cluster_ind_name).text() == "Y") {
+            $("#Rpt_cluster").show(); 
+            change_cluster($("#Rpt_cluster").val());
+        }
+        else { $("#Rpt_cluster").hide();}
+        if (rpt_id == 301 || rpt_id == 300 || rpt_id == 299 || rpt_id == 298) {
+            $("#Snapshot_row").show();
+            $("#Rpt_consolidation").hide();
+            change_snapshot(0);
+        }
+        else {
+            $("#Snapshot_row").hide();
+        }
+        if ($("#Rpt_cluster").is(":visible") || $("#Rpt_consolidation").is(":visible"))
+        { $("#Rpt_cluster_row").show(); }
+        else { $("#Rpt_cluster_row").hide(); }
+    }
+
+</script>

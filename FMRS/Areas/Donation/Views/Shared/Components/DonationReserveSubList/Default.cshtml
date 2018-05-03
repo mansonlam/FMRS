@@ -1,0 +1,89 @@
+﻿@using System.Globalization;
+@model FMRS.Model.DTO.DonationRecNExpModel
+<style type="text/css">
+    .link_rec > tr:hover {
+        background-color: lightgreen !important;
+    }
+</style>
+
+@if (Model.Link_rec.Count == 1)
+{
+
+    <script>
+    $(document).ready(function () {
+            formSubmit('@Model.Link_rec[0].Id', 'Edit', '@Model.Link_rec[0].Hospital','@Model.Link_rec[0].Fund','@Model.Link_rec[0].Section','@Model.Link_rec[0].Analytical','@Model.Link_rec[0].Don_inc_exp');
+    });
+    
+    </script>
+}
+else
+{
+    <div class="box-header">
+        <h4>
+            @Resource.SelectRecord
+        </h4>
+    </div>
+    <div class="box-body">
+        <table class="table table-hover">
+            <thead>
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <th>@Resource.Hospital</th>
+                    <th>@Resource.FundCode</th>
+                    <th>@Resource.Section</th>
+                    <th>@Resource.AnalyticalCode</th>
+                    <th>@Resource.Donor</th>
+                    <th>@Resource.DonationType</th>
+                    <th>@Resource.DonationPurpose</th>
+                    <th>@Resource.DonationCategory</th>
+                    <th>@Resource.DonationDesc</th>
+                    <th>@Resource.CMAmount</th>
+                    <th>@Resource.YTDAmount</th>
+                </tr>
+            </thead>
+            <tbody class="link_rec">
+                @foreach (var m in Model.Link_rec)
+                {
+                    <form id="RelatedRec_@m.Id" asp-action="Input" asp-controller="DonationRecNExp">
+                        <input type="hidden" asp-for="Id" value="@m.Id" />
+                        <input type="hidden" asp-for="OId" value="@Model.OId" />
+                        <input type="hidden" asp-for="Action" value="link" />
+                        <input type="hidden" asp-for="ODon_inc_exp" value="@m.Don_inc_exp" />
+                        <input type="hidden" asp-for="Don_inc_exp" value="@Model.ODon_inc_exp" />
+                        <tr style="background-color:aquamarine;cursor:pointer;" name="RelatedRec" 
+                            onclick="formSubmit('@m.Id','Edit','@m.Hospital','@m.Fund','@m.Section','@m.Analytical', '@m.Don_inc_exp');">
+                            @*onclick='link_record("#RelatedRec_@m.Id")'>*@
+                            <td>@m.Hospital<input type="hidden" asp-for="Inst_code" value="@m.Hospital" /></td>
+                            <td>@m.Fund<input type="hidden" asp-for="Fund" value="@m.Fund" /></td>
+                            <td>@m.Section<input type="hidden" asp-for="Section" value="@m.Section" /></td>
+                            <td>@m.Analytical<input type="hidden" asp-for="Analytical" value="@m.Analytical" /></td>
+                            <td>@m.Donor_name</td>
+                            <td>@m.Don_type_desc</td>
+                            <td>@m.Don_purpose_desc</td>
+                            <td>@m.Don_cat_desc</td>
+                            <td>@m.Don_kind_desc.Replace(",", "\'")</td>
+                            <td align="right">@(((decimal)m.Don_cur_mth).ToString("N2", CultureInfo.InvariantCulture))</td>
+                            <td align="right">@(((decimal)m.Don_YTD).ToString("N2", CultureInfo.InvariantCulture))</td>
+                        </tr>
+                    </form>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script>
+    function formSubmit(id, type, inst_code, fund, section, analytical, don_inc_exp) {
+        var url = '@Url.Action("Input", "DonationRecNExp")';
+            url = url + "?id=" + id;
+            url = url + "&type=" + type;
+            url = url + "&inst_code=" + inst_code;
+            url = url + "&fund=" + fund;
+            url = url + "&section=" + section;
+            url = url + "&analytical=" + analytical;
+            url = url + "&don_inc_exp=" + don_inc_exp;
+            location.href = url;
+    }
+    function link_record(form_id) {
+        $(form_id).submit();
+    }
+</script>

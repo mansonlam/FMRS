@@ -1,0 +1,66 @@
+﻿@model FMRS.Model.DTO.UserAdminCollection
+@{
+    ViewBag.Title = Resource.UserAdmin;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .dataRow:hover {
+        background-color: lightgreen !important;
+    }
+</style>
+<script type="text/javascript">
+    function formSubmit(action, admin_login_id) {
+        var url = '@Url.Action("EnquireUser", "Admin")';
+        url = url + "?modules=" + '@ViewBag.Modules';
+        url = url + "&function_type=" + action;
+        url = url + "&admin_login_id=" + admin_login_id;
+        location.href = url;
+    }
+
+</script>
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title 
+    @if (ViewBag.UserInstCode != "HAHO")
+    { 
+        <span> for @ViewBag.UserGroup</span>
+    }
+    <br />
+</h4>
+
+<div class="box box-default">
+    <div class="box-header">
+        @if(ViewBag.DomainUser == "Y" || ViewBag.FvUserAdmin == "edit")
+        {
+            <input type="button" class="dt-button btn btn-default" value="@Resource.NewUser" onclick="formSubmit('I','New');" />
+        }
+    </div>
+    <div class="box-body table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <th>@Resource.LoginID</th>
+                    <th>@Resource.UserName</th>
+                    <th>@Resource.Hospital</th>
+                    <th>@Resource.LastLogin</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user_group in Model.Collection)
+                {
+                    <tr><td>@user_group.User_group</td></tr>
+                    @foreach (var user in user_group.User_list)
+                    {
+                        <tr class="dataRow" style="background-color:aquamarine;cursor:pointer;" onclick="formSubmit('U','@user.UserInfo.LoginId');">
+                            <td>@user.UserInfo.LoginId </td>
+                            <td>@user.UserInfo.UserName</td>
+                            <td>@(user.UserInfo.UserGroup =="HOSP"?user.UserInfo.InstCode : user.UserInfo.UserGroup)</td>
+                            <td>@user.LastLogin_string</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

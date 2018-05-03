@@ -1,0 +1,72 @@
+﻿@model FMRS.Model.DTO.ProjectReportDetailViewModel
+@{
+    ViewBag.Title = Model.Report.Rpt_name;
+    Layout = "~/Views/Shared/_BodyLayout.cshtml";
+}
+<div>
+    <form id="FormProjectReportDetail" asp-action="UpdateProjectReportDetail" asp-controller="Admin">
+        <div class="box-header" style="padding:0 10px;">
+            <h4 style="margin-bottom:0;">@ViewBag.Title</h4>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Modules" value="@Model.Modules" />
+            <input type="hidden" asp-for="Admin_login_id" value="@Model.Admin_login_id" />
+            <input type="hidden" asp-for="Report.Report_id" value="@Model.Report.Report_id" />
+            <input type="hidden" asp-for="Group_id" value="@Model.Group_id" />
+            <input type="hidden" asp-for="Detail_type" value="@Model.Detail_type" />
+            <input type="hidden" asp-for="Access_right"  />
+            <table class="table" style="table-layout:fixed;">
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <td style="width:70%;">@Resource.Report</td>
+                    <td>@Resource.AccessRight</td>
+                </tr>
+                @foreach(var item in Model.Report.Project_right)
+                {
+                    <tr>
+                        <td>@item.Description</td>
+                        <td>
+                            @if (Model.Report.Report_id == "17" || Model.Report.Report_id == "18")
+                            {
+                                if (item.Id_type == "S")
+                                {
+                                    <select class="form-control access_right" id="Access_right_s_@(item.Id)" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "1", Text = Resource.Generate },
+                                    new SelectListItem{ Value = "0", Text = Resource.None }
+                                    }, "Value", "Text", (item.Cnt == 0 ? "1" : "0")))"></select>
+                                }
+                                else
+                                {
+                                    <select class="form-control access_right" id="Access_right_@(item.Id)" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "1", Text = Resource.Generate },
+                                    new SelectListItem{ Value = "0", Text = Resource.None }
+                                    }, "Value", "Text", (item.Cnt == 0 ? "1" : "0")))"></select>
+                                }
+
+                            }
+                            else
+                            {
+                                <select class="form-control access_right" id="Access_right_@(item.Id)" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "1", Text = Resource.Generate },
+                                    new SelectListItem{ Value = "0", Text = Resource.None }
+                                    }, "Value", "Text", (item.Cnt == 0 ? "1" : "0")))"></select>
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="box-footer">
+            <input type="button" id="Update" class="dt-button btn btn-primary" onclick="update_right();" value="@Resource.Update">
+            <input type="button" id="Cancel" class="dt-button btn btn-primary" onclick="window.close();" value="@Resource.Cancel">
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    function update_right() { 
+        var id = "";
+        $(".access_right").each(function () {
+            id = id + this.id + ":" + $(this).val() + ",";
+        })
+       $("#FormProjectReportDetail").submit();
+    }
+</script>

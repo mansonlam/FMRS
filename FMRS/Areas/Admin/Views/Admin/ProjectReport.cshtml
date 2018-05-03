@@ -1,0 +1,73 @@
+﻿@model FMRS.Model.DTO.ProjectReportViewModel
+@{
+    ViewBag.Title = (Model.Group_id == 4? Resource.ProjectVoteManagementReport: Resource.ProjectManagementReport);
+    Layout = "~/Views/Shared/_BodyLayout.cshtml";
+}
+
+<div>
+    <form id="FormProjectReport" asp-action="UpdateProjectReport" asp-controller="Admin">
+        <div class="box-header" style="padding:0 10px;">
+            <h4 style="margin-bottom:0;">@ViewBag.Title</h4>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Access_right" />
+            <table class="table" style="table-layout:fixed;">
+                <tr style="background-color:cornflowerblue;color:white;">
+                    <td style="width:70%;">@Resource.Report</td>
+                    <td>@Resource.AccessRight</td>
+                </tr>
+                @foreach (var item in Model.Report_list)
+            {
+                    <tr>
+                        <td>
+                            @if (item.Show_project_item_ind == "Y")
+                            {
+                                <a href="javascript:project_report_detail('@item.Report_id',1)">@item.Rpt_name</a>
+                            }
+                            else if (item.Cwrf_recur == "Y" && item.Report_id == "190")
+                            {
+                                <a href="javascript:project_report_detail('@item.Report_id',2)">@item.Rpt_name</a>
+                            }
+                            else
+                            {
+                                @item.Rpt_name
+                            }
+                        </td>
+                        <td>
+                            <select class="form-control access_right" id="Access_right_@item.Report_id" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "1", Text = Resource.Generate },
+                                    new SelectListItem{ Value = "0", Text = Resource.None }
+                                    }, "Value", "Text", (item.Cnt == 0 ? "1" : "0")))"></select>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="box-footer">
+            <input type="button" id="Update" class="dt-button btn btn-primary" onclick="update_right();" value="@Resource.Update">
+            <input type="button" id="Cancel" class="dt-button btn btn-primary" onclick="window.close();" value="@Resource.Cancel">
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function project_report_detail(id, detail_type)
+    {
+        var url = '@Url.Action("ProjectReportDetail", "Admin")';
+        url = url + "?modules=" + '@Model.Modules';
+        url = url + "&admin_login_id=" + '@Model.Admin_login_id';
+        url = url + "&group_id=" + '@Model.Group_id';
+        url = url + "&report_id=" + id;
+        url = url + "&detail_type=" + detail_type;
+        location.href = url;
+    }
+
+    function update_right() {
+        var id = "";
+        $(".access_right").each(function () {
+            id = id + this.id + ":" + $(this).val() + ",";
+        })
+        $("#FormProjectReport").submit();
+        window.close();
+    }
+</script>

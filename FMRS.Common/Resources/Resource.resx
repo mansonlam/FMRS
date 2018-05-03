@@ -1,0 +1,1638 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Alert" xml:space="preserve">
+    <value>Alert</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangePasswordMsg" xml:space="preserve">
+    <value>Click this to change your domain password. You have to type in your User name, Password and Domain and click 'OK' before you can specify your new password.</value>
+  </data>
+  <data name="Domain" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="Donation" xml:space="preserve">
+    <value>Donation</value>
+  </data>
+  <data name="DonationDescription" xml:space="preserve">
+    <value>Manage Donation Income and Expenditure</value>
+  </data>
+  <data name="ErrLoginFailure" xml:space="preserve">
+    <value>Username or password not correct</value>
+  </data>
+  <data name="FinancialClosing" xml:space="preserve">
+    <value>Financial Closing</value>
+  </data>
+  <data name="FinancialClosingDesc" xml:space="preserve">
+    <value>Manage Fix Asset for Closing</value>
+  </data>
+  <data name="FMRS" xml:space="preserve">
+    <value>FMRS</value>
+  </data>
+  <data name="HelpMsg" xml:space="preserve">
+    <value>Need help to logon - click here</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ProjectManagement" xml:space="preserve">
+    <value>Project Management</value>
+  </data>
+  <data name="ProjectManagementDesc" xml:space="preserve">
+    <value>Project Status Management</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>User Name</value>
+  </data>
+  <data name="DonationReceivedExp" xml:space="preserve">
+    <value>Donation Received/ Expenditure</value>
+  </data>
+  <data name="AnalyticalCode" xml:space="preserve">
+    <value>Analytical Code</value>
+  </data>
+  <data name="DonationExpenditure" xml:space="preserve">
+    <value>Donation Expenditure</value>
+  </data>
+  <data name="DonationReceived" xml:space="preserve">
+    <value>Donation Received</value>
+  </data>
+  <data name="Fund" xml:space="preserve">
+    <value>Fund</value>
+  </data>
+  <data name="Hospital" xml:space="preserve">
+    <value>Hospital</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Section" xml:space="preserve">
+    <value>Section</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="AdjustmentDate" xml:space="preserve">
+    <value>Adjustment Date</value>
+  </data>
+  <data name="BalanceBoughtForward" xml:space="preserve">
+    <value>Balance Bought Forward</value>
+  </data>
+  <data name="BMinAMinC" xml:space="preserve">
+    <value>(B)-(A)-(C)</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CMPerGL" xml:space="preserve">
+    <value>CM per GL</value>
+  </data>
+  <data name="CurrentYearDonation" xml:space="preserve">
+    <value>Current Year Donation</value>
+  </data>
+  <data name="DateReceived" xml:space="preserve">
+    <value>Date Received</value>
+  </data>
+  <data name="DescriptionOfDonation" xml:space="preserve">
+    <value>Description of Donation</value>
+  </data>
+  <data name="DonationInCash" xml:space="preserve">
+    <value>Donation in cash</value>
+  </data>
+  <data name="DonationInKind" xml:space="preserve">
+    <value>Donation in kind</value>
+  </data>
+  <data name="InterestReceived" xml:space="preserve">
+    <value>Interest Received</value>
+  </data>
+  <data name="LinkPreviousRecords" xml:space="preserve">
+    <value>Link previous records?</value>
+  </data>
+  <data name="MajorDonation" xml:space="preserve">
+    <value>Major Donation</value>
+  </data>
+  <data name="NameOfDonor" xml:space="preserve">
+    <value>Name of Donor</value>
+  </data>
+  <data name="OnReimbursementBasis" xml:space="preserve">
+    <value>On reimbursement Basis</value>
+  </data>
+  <data name="OtherCMInputRecords" xml:space="preserve">
+    <value>Other CM input records with</value>
+  </data>
+  <data name="Outstanding" xml:space="preserve">
+    <value>Outstanding</value>
+  </data>
+  <data name="PreviousRecords" xml:space="preserve">
+    <value>Previous records</value>
+  </data>
+  <data name="PurposeOfDonations" xml:space="preserve">
+    <value>Purpose of Donations</value>
+  </data>
+  <data name="SpecificDonations" xml:space="preserve">
+    <value>Specific Donations</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="YTDPerFMRS" xml:space="preserve">
+    <value>YTD per FMRS</value>
+  </data>
+  <data name="PleaseSelect" xml:space="preserve">
+    <value>Please Select</value>
+  </data>
+  <data name="ExistingProgramme" xml:space="preserve">
+    <value>Existing programme</value>
+  </data>
+  <data name="NewProgramme" xml:space="preserve">
+    <value>New programme</value>
+  </data>
+  <data name="DonCase1" xml:space="preserve">
+    <value>Donation amount &gt;= HK$5 million</value>
+  </data>
+  <data name="DonCase2" xml:space="preserve">
+    <value>Recurrent consequence &gt; HK$500K on net basis per annum</value>
+  </data>
+  <data name="DonCase3" xml:space="preserve">
+    <value>To meet certain conditions of significant consequence (e.g. naming request)</value>
+  </data>
+  <data name="ConfirmReimbMsg" xml:space="preserve">
+    <value>The reserve opening or ending balance of this COA does not equal to 0, are you sure to mark it as a reimbursement project?</value>
+  </data>
+  <data name="parDateFormat" xml:space="preserve">
+    <value>(DD/MM/YYYY)</value>
+  </data>
+  <data name="parA" xml:space="preserve">
+    <value>(A)</value>
+  </data>
+  <data name="parB" xml:space="preserve">
+    <value>(B)</value>
+  </data>
+  <data name="parC" xml:space="preserve">
+    <value>(C)</value>
+  </data>
+  <data name="SaveFail" xml:space="preserve">
+    <value>Fail to update record</value>
+  </data>
+  <data name="SaveSuccess" xml:space="preserve">
+    <value>The record is updated successfully!</value>
+  </data>
+  <data name="NewRecord" xml:space="preserve">
+    <value>New Record</value>
+  </data>
+  <data name="LinkedRecord" xml:space="preserve">
+    <value>This is a linked record.</value>
+  </data>
+  <data name="DateExpenditure" xml:space="preserve">
+    <value>Date Expenditure</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Insert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="FMRSTitle" xml:space="preserve">
+    <value>FMRS - Financial Managament Reporting System</value>
+  </data>
+  <data name="HospCluster" xml:space="preserve">
+    <value>Hosp/Cluster</value>
+  </data>
+  <data name="CMAmount" xml:space="preserve">
+    <value>CM Amount</value>
+  </data>
+  <data name="DonationCategory" xml:space="preserve">
+    <value>Donation Category</value>
+  </data>
+  <data name="DonationDesc" xml:space="preserve">
+    <value>Donation Desc</value>
+  </data>
+  <data name="DonationListA" xml:space="preserve">
+    <value>Designation Donation Brought Forward (Net) (A)</value>
+  </data>
+  <data name="DonationListB" xml:space="preserve">
+    <value>General Donation Brought Forward (Net) (B)</value>
+  </data>
+  <data name="DonationPurpose" xml:space="preserve">
+    <value>Donation Purpose</value>
+  </data>
+  <data name="DonationType" xml:space="preserve">
+    <value>Donation Type</value>
+  </data>
+  <data name="Donor" xml:space="preserve">
+    <value>Donor</value>
+  </data>
+  <data name="FundCode" xml:space="preserve">
+    <value>Fund Code</value>
+  </data>
+  <data name="SectionCode" xml:space="preserve">
+    <value>Section Code</value>
+  </data>
+  <data name="UnspentBalance" xml:space="preserve">
+    <value>Unspent Balance for</value>
+  </data>
+  <data name="YTDAmount" xml:space="preserve">
+    <value>YTD Amount</value>
+  </data>
+  <data name="DonationListC" xml:space="preserve">
+    <value>Designated Donation Income - For </value>
+  </data>
+  <data name="DonationListCTotal" xml:space="preserve">
+    <value>Total Designated Donation Income (C)</value>
+  </data>
+  <data name="DonationListD" xml:space="preserve">
+    <value>Designated Donation Expenditure - For</value>
+  </data>
+  <data name="DonationListDTotal" xml:space="preserve">
+    <value>Total Designated Donation Expenditure (D)</value>
+  </data>
+  <data name="DonationListE" xml:space="preserve">
+    <value>Designated Donation Carried Forward (Net) (E) = (A)+(C)+(D)</value>
+  </data>
+  <data name="DonationListF" xml:space="preserve">
+    <value>General Donation Income - For </value>
+  </data>
+  <data name="DonationListFTotal" xml:space="preserve">
+    <value>Total General Donation Income (F)</value>
+  </data>
+  <data name="DonationListG" xml:space="preserve">
+    <value>General Donation Expenditure - For </value>
+  </data>
+  <data name="DonationListGTotal" xml:space="preserve">
+    <value>Total General Donation Expenditure (G)</value>
+  </data>
+  <data name="DonationListH" xml:space="preserve">
+    <value>General Donation Carried Forward (Net) (H) = (B)+(F)+(G)</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="DonorNameStartsWith" xml:space="preserve">
+    <value>Donor name starts with</value>
+  </data>
+  <data name="Trust" xml:space="preserve">
+    <value>Trust</value>
+  </data>
+  <data name="LinkToExistingRecord" xml:space="preserve">
+    <value>Please link to existing record</value>
+  </data>
+  <data name="ConfirmLinkRecMsg" xml:space="preserve">
+    <value>The exisitng record will be overwritten by the linked record.\n Are you sure?</value>
+  </data>
+  <data name="OutstandingAmtNotNegative" xml:space="preserve">
+    <value>Outstanding amount should not be negative!</value>
+  </data>
+  <data name="OutstandingAmtNotPositive" xml:space="preserve">
+    <value>Outstanding amount should not be positive!</value>
+  </data>
+  <data name="DonationDate" xml:space="preserve">
+    <value>Donation Date</value>
+  </data>
+  <data name="DonationRefund" xml:space="preserve">
+    <value>Donation Refund</value>
+  </data>
+  <data name="RefundDate" xml:space="preserve">
+    <value>Refund Date</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="AdjustmemtDateShouldBeSameMonth" xml:space="preserve">
+    <value>Adjustment should be in the same month of the Donation date!</value>
+  </data>
+  <data name="AdjustmentDateFutureNotAllowed" xml:space="preserve">
+    <value>Future Adjustment Date is not allowed!</value>
+  </data>
+  <data name="DeleteRecord" xml:space="preserve">
+    <value>Delete the record?</value>
+  </data>
+  <data name="AdjestmentDateForbiddenIfDonDateInCM" xml:space="preserve">
+    <value>Adjustment date should not be input if the donation date is in the current month!</value>
+  </data>
+  <data name="AmtNotNegative" xml:space="preserve">
+    <value>Amount should not be negative!</value>
+  </data>
+  <data name="AmtNotPositive" xml:space="preserve">
+    <value>Amount should not be positive!</value>
+  </data>
+  <data name="DateReceivedInCM" xml:space="preserve">
+    <value>Date Received must be in the current month!</value>
+  </data>
+  <data name="InputDateReceived" xml:space="preserve">
+    <value>Please input Date Received!</value>
+  </data>
+  <data name="InvalidAdjustmentDate" xml:space="preserve">
+    <value>Invalid Adjustment Date!</value>
+  </data>
+  <data name="InvalidDateExpenditure" xml:space="preserve">
+    <value>Invalid Date Expenditure!</value>
+  </data>
+  <data name="InvalidDateRecevived" xml:space="preserve">
+    <value>Invalid Date Received!</value>
+  </data>
+  <data name="SelectDonor" xml:space="preserve">
+    <value>Please select a donor!</value>
+  </data>
+  <data name="SelectDonPurpose" xml:space="preserve">
+    <value>Please select Purpose of Donation!</value>
+  </data>
+  <data name="SelectDonType" xml:space="preserve">
+    <value>Please select Type of Donation!</value>
+  </data>
+  <data name="SelectSpecificDon" xml:space="preserve">
+    <value>Please select Specific Donation!</value>
+  </data>
+  <data name="SelectSubCat" xml:space="preserve">
+    <value>Please select Specific Sub Category!</value>
+  </data>
+  <data name="SpecificDonation" xml:space="preserve">
+    <value>Please Specific Donation!</value>
+  </data>
+  <data name="Expenditure" xml:space="preserve">
+    <value>Expenditure</value>
+  </data>
+  <data name="DonationReserve" xml:space="preserve">
+    <value>Donation Reserve</value>
+  </data>
+  <data name="APlusBPlusC" xml:space="preserve">
+    <value>(D)=(A)+(B)+(C)</value>
+  </data>
+  <data name="CalculatedReserveBalanceAs" xml:space="preserve">
+    <value>Calculated Reserve Balance as at</value>
+  </data>
+  <data name="CYExpenditure" xml:space="preserve">
+    <value>CY Expenditure</value>
+  </data>
+  <data name="CYReceipt" xml:space="preserve">
+    <value>CY Receipt</value>
+  </data>
+  <data name="DonationReserveBalanceTitle" xml:space="preserve">
+    <value>Donation reserve balance of $0.5Mn or above</value>
+  </data>
+  <data name="EMinA" xml:space="preserve">
+    <value>(F)=(E)-(A)</value>
+  </data>
+  <data name="FirstApr" xml:space="preserve">
+    <value>1 Apr</value>
+  </data>
+  <data name="GMinD" xml:space="preserve">
+    <value>(H)=(G)-(D)</value>
+  </data>
+  <data name="parE" xml:space="preserve">
+    <value>(E)</value>
+  </data>
+  <data name="parG" xml:space="preserve">
+    <value>(G)</value>
+  </data>
+  <data name="ReceiptDate" xml:space="preserve">
+    <value>Receipt Date</value>
+  </data>
+  <data name="ReserveBalanceAs" xml:space="preserve">
+    <value>Reserve Balance as at</value>
+  </data>
+  <data name="ReserveBalancePerGL" xml:space="preserve">
+    <value>Reserve Balance per GL as at</value>
+  </data>
+  <data name="ReserveBalanceTitleAbove500K" xml:space="preserve">
+    <value>(I) Reserve Balance equal to or more than $500K</value>
+  </data>
+  <data name="ReserveBalanceVariance" xml:space="preserve">
+    <value>Reserve Balance Variance as at</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="SelectRecord" xml:space="preserve">
+    <value>Please select a record:</value>
+  </data>
+  <data name="NoRecordFoundCurrentYr" xml:space="preserve">
+    <value>No record is found in current year.</value>
+  </data>
+  <data name="DonationUpload" xml:space="preserve">
+    <value>Upload Donation</value>
+  </data>
+  <data name="DonationUploadStep1" xml:space="preserve">
+    <value>1. Fill in the donation information in the</value>
+  </data>
+  <data name="DonationUploadStep2" xml:space="preserve">
+    <value>2. Save the file in csv format. (Warning message may display when saving the file, press Yes to continue the saving process.)</value>
+  </data>
+  <data name="DonationUploadStep3" xml:space="preserve">
+    <value>3. Open the file in a text editor such as notepad.</value>
+  </data>
+  <data name="DonationUploadStep4" xml:space="preserve">
+    <value>4. Copy the whole contents of the file and paste into the text box below.</value>
+  </data>
+  <data name="DonationUploadStep5" xml:space="preserve">
+    <value>5. Click the "Upload" button.</value>
+  </data>
+  <data name="DonationUploadStepTitle" xml:space="preserve">
+    <value>Steps for uploading donation:</value>
+  </data>
+  <data name="ExcelTemplate" xml:space="preserve">
+    <value>Excel Template</value>
+  </data>
+  <data name="InvalidRecordTitle" xml:space="preserve">
+    <value>The following records are invalid</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="COANotInDonBalInCurMon" xml:space="preserve">
+    <value>COA not in donation balance in current month</value>
+  </data>
+  <data name="DonationDateFutureNotAllowed" xml:space="preserve">
+    <value>Future Donation Date is not allowed</value>
+  </data>
+  <data name="DonationDescMustNotEmpty" xml:space="preserve">
+    <value>Donation Description must not be empty</value>
+  </data>
+  <data name="DonationNotInCurMon" xml:space="preserve">
+    <value>Donation not in current month</value>
+  </data>
+  <data name="DonationNotInCurYear" xml:space="preserve">
+    <value>Donation not in current year</value>
+  </data>
+  <data name="FundShouldBe212252" xml:space="preserve">
+    <value>Fund should be 21, 22 or 52</value>
+  </data>
+  <data name="HospitalNotHaveTrust" xml:space="preserve">
+    <value>Hospital does not have trust</value>
+  </data>
+  <data name="InvalidAnalytical" xml:space="preserve">
+    <value>Invalid Analytical</value>
+  </data>
+  <data name="InvalidDonationCM" xml:space="preserve">
+    <value>Invalid Donation CM</value>
+  </data>
+  <data name="InvalidDonationDate" xml:space="preserve">
+    <value>Invalid Donation Date</value>
+  </data>
+  <data name="InvalidDonPurpose" xml:space="preserve">
+    <value>Invalid Don Purpose</value>
+  </data>
+  <data name="InvalidDonType" xml:space="preserve">
+    <value>Invalid Don Type</value>
+  </data>
+  <data name="InvalidHospital" xml:space="preserve">
+    <value>Invalid Hospital</value>
+  </data>
+  <data name="InvalidMajorDonation1" xml:space="preserve">
+    <value>Invalid Major Donation 1</value>
+  </data>
+  <data name="InvalidMajorDonation2" xml:space="preserve">
+    <value>Invalid Major Donation 2</value>
+  </data>
+  <data name="InvalidMajorDonation3" xml:space="preserve">
+    <value>Invalid Major Donation 3</value>
+  </data>
+  <data name="InvalidOutstandCommitment" xml:space="preserve">
+    <value>Invalid Outstand Commitment</value>
+  </data>
+  <data name="InvalidRecurrentCost" xml:space="preserve">
+    <value>Invalid Recurrent Cost</value>
+  </data>
+  <data name="InvalidSection" xml:space="preserve">
+    <value>Invalid Section</value>
+  </data>
+  <data name="InvalidSpecificDonation" xml:space="preserve">
+    <value>Invalid Specific Donation</value>
+  </data>
+  <data name="InvalidSubCat1" xml:space="preserve">
+    <value>Invalid Sub-Cat 1</value>
+  </data>
+  <data name="InvalidSubCat2" xml:space="preserve">
+    <value>Invalid Sub-Cat 2</value>
+  </data>
+  <data name="InvalidSubCat3" xml:space="preserve">
+    <value>Invalid Sub-Cat 3</value>
+  </data>
+  <data name="ReceiverAndDonorAreTrust" xml:space="preserve">
+    <value>Both receiver and donor are trust</value>
+  </data>
+  <data name="DonationInCurMonNotNegative" xml:space="preserve">
+    <value>Donation in current month cannot be negative</value>
+  </data>
+  <data name="DonRecOrExpNotLessThanOutstandingAmtForCurMon" xml:space="preserve">
+    <value>The donation received or exp not less than the outstanding amount for current month</value>
+  </data>
+  <data name="ExpenditureInCurMonNotPositive" xml:space="preserve">
+    <value>Expenditure in current month cannot be positive</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Income</value>
+  </data>
+  <data name="InvalidIncomeExpenditure" xml:space="preserve">
+    <value>Invalid Income/Expenditure</value>
+  </data>
+  <data name="AboveRecordsAreInvalid" xml:space="preserve">
+    <value>The above records are invalid.</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DisplayAllRecord" xml:space="preserve">
+    <value>Display All Records</value>
+  </data>
+  <data name="DisplayInvalidRecords" xml:space="preserve">
+    <value>Display Invalid Records Only</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Hosp" xml:space="preserve">
+    <value>Hosp</value>
+  </data>
+  <data name="IncomeExp" xml:space="preserve">
+    <value>Income/ Exp</value>
+  </data>
+  <data name="MajorDonation1" xml:space="preserve">
+    <value>Major Donation 1</value>
+  </data>
+  <data name="MajorDonation2" xml:space="preserve">
+    <value>Major Donation 2</value>
+  </data>
+  <data name="MajorDonation3" xml:space="preserve">
+    <value>Major Donation 3</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>Others</value>
+  </data>
+  <data name="Row" xml:space="preserve">
+    <value>Row</value>
+  </data>
+  <data name="SubCat1" xml:space="preserve">
+    <value>Sub-Cat 1</value>
+  </data>
+  <data name="SubCat2" xml:space="preserve">
+    <value>Sub-Cat 2</value>
+  </data>
+  <data name="SubCat3" xml:space="preserve">
+    <value>Sub-Cat 3</value>
+  </data>
+  <data name="TotalBlankLineCnt" xml:space="preserve">
+    <value>Total Number of Blank Lines in the File:</value>
+  </data>
+  <data name="TotalInvalidRecordCnt" xml:space="preserve">
+    <value>Total Number of Invalid Records:</value>
+  </data>
+  <data name="TotalRejectRecordCnt" xml:space="preserve">
+    <value>Total number of records rejected:</value>
+  </data>
+  <data name="TotalUploadRecordCnt" xml:space="preserve">
+    <value>Total number of records uploaded:</value>
+  </data>
+  <data name="TotalValidRecordCnt" xml:space="preserve">
+    <value>Total Number of Valid Records:</value>
+  </data>
+  <data name="UpdatingDonation" xml:space="preserve">
+    <value>Updating Donation</value>
+  </data>
+  <data name="UploadAgain" xml:space="preserve">
+    <value>Upload Again</value>
+  </data>
+  <data name="UploadDonationRecord" xml:space="preserve">
+    <value>Upload Donation Record</value>
+  </data>
+  <data name="UploadValidRecords" xml:space="preserve">
+    <value>Upload Valid Records</value>
+  </data>
+  <data name="Analytical" xml:space="preserve">
+    <value>Analytical</value>
+  </data>
+  <data name="DonorName" xml:space="preserve">
+    <value>Donor Name</value>
+  </data>
+  <data name="GenerateReport" xml:space="preserve">
+    <value>Generate Report</value>
+  </data>
+  <data name="PrintReport" xml:space="preserve">
+    <value>Print Report</value>
+  </data>
+  <data name="ExportToExcel" xml:space="preserve">
+    <value>Export to Excel</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="AllBatch" xml:space="preserve">
+    <value>All Batch</value>
+  </data>
+  <data name="Batch" xml:space="preserve">
+    <value>Batch</value>
+  </data>
+  <data name="BatchNo" xml:space="preserve">
+    <value>Batch No</value>
+  </data>
+  <data name="By" xml:space="preserve">
+    <value>By</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="CommentReportStatus" xml:space="preserve">
+    <value>Comment Report Status</value>
+  </data>
+  <data name="EndMth" xml:space="preserve">
+    <value>End Mth</value>
+  </data>
+  <data name="Industry" xml:space="preserve">
+    <value>Industry</value>
+  </data>
+  <data name="ProjectType" xml:space="preserve">
+    <value>Project Type</value>
+  </data>
+  <data name="ShowAllPeriod" xml:space="preserve">
+    <value>Show All Period</value>
+  </data>
+  <data name="Snapshot" xml:space="preserve">
+    <value>Snapshot</value>
+  </data>
+  <data name="StartMth" xml:space="preserve">
+    <value>Start Mth</value>
+  </data>
+  <data name="Tenderer" xml:space="preserve">
+    <value>Tenderer</value>
+  </data>
+  <data name="WorkAgent" xml:space="preserve">
+    <value>Work Agent</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="ByFund" xml:space="preserve">
+    <value>By Fund</value>
+  </data>
+  <data name="ByHospital" xml:space="preserve">
+    <value>By Hospital</value>
+  </data>
+  <data name="Consolidate" xml:space="preserve">
+    <value>Consolidate</value>
+  </data>
+  <data name="QMH" xml:space="preserve">
+    <value>QMH</value>
+  </data>
+  <data name="QMHExcludeTYH" xml:space="preserve">
+    <value>QMH (excluding TYH)</value>
+  </data>
+  <data name="TYH" xml:space="preserve">
+    <value>TYH</value>
+  </data>
+  <data name="Drugs" xml:space="preserve">
+    <value>Drugs</value>
+  </data>
+  <data name="HospitalSupplies" xml:space="preserve">
+    <value>Hospital Supplies</value>
+  </data>
+  <data name="RentAndRates" xml:space="preserve">
+    <value>Rent and Rates</value>
+  </data>
+  <data name="TransportAndTravelling" xml:space="preserve">
+    <value>Transport and Travelling</value>
+  </data>
+  <data name="Utilities" xml:space="preserve">
+    <value>Utilities</value>
+  </data>
+  <data name="Accrual" xml:space="preserve">
+    <value>Accrual</value>
+  </data>
+  <data name="AllDonationType" xml:space="preserve">
+    <value>All Donation Type</value>
+  </data>
+  <data name="BothCashAndAccrual" xml:space="preserve">
+    <value>Both Cash &amp; Accrual</value>
+  </data>
+  <data name="BreakdownOfCapitalProjectsAccruedCharges" xml:space="preserve">
+    <value>Breakdown of Capital Projects' Accrued Charges</value>
+  </data>
+  <data name="CapitalisedExpenses" xml:space="preserve">
+    <value>Capitalised expenses</value>
+  </data>
+  <data name="Cash" xml:space="preserve">
+    <value>Cash</value>
+  </data>
+  <data name="CurrentYear" xml:space="preserve">
+    <value>Current Year</value>
+  </data>
+  <data name="DeletedRecordsOnly" xml:space="preserve">
+    <value>Deleted Records Only</value>
+  </data>
+  <data name="Depreciation" xml:space="preserve">
+    <value>Depreciation</value>
+  </data>
+  <data name="ListOfPrepayments" xml:space="preserve">
+    <value>List of Prepayments</value>
+  </data>
+  <data name="MovementOnly" xml:space="preserve">
+    <value>Movement Only</value>
+  </data>
+  <data name="NextYear" xml:space="preserve">
+    <value>Next Year</value>
+  </data>
+  <data name="NonSARS" xml:space="preserve">
+    <value>Non-SARS</value>
+  </data>
+  <data name="SARS" xml:space="preserve">
+    <value>SARS</value>
+  </data>
+  <data name="AllCategory" xml:space="preserve">
+    <value>All Category</value>
+  </data>
+  <data name="NonTrust" xml:space="preserve">
+    <value>Non-Trust</value>
+  </data>
+  <data name="TrustOnly" xml:space="preserve">
+    <value>Trust Only</value>
+  </data>
+  <data name="AllCorp" xml:space="preserve">
+    <value>All Corp</value>
+  </data>
+  <data name="HAHO" xml:space="preserve">
+    <value>HAHO</value>
+  </data>
+  <data name="ALLCap" xml:space="preserve">
+    <value>ALL</value>
+  </data>
+  <data name="ClusterHospitalProjectType" xml:space="preserve">
+    <value>Cluster,Hospital,Project Type</value>
+  </data>
+  <data name="FE" xml:space="preserve">
+    <value>FE</value>
+  </data>
+  <data name="HAOnly" xml:space="preserve">
+    <value>HA Only</value>
+  </data>
+  <data name="MaintenanceProjects" xml:space="preserve">
+    <value>Maintenance Projects</value>
+  </data>
+  <data name="MajEng" xml:space="preserve">
+    <value>Maj-Eng</value>
+  </data>
+  <data name="MajMed" xml:space="preserve">
+    <value>Maj-Med</value>
+  </data>
+  <data name="MinEng" xml:space="preserve">
+    <value>Min-Eng</value>
+  </data>
+  <data name="MinLum" xml:space="preserve">
+    <value>Min-Lum</value>
+  </data>
+  <data name="MinMed" xml:space="preserve">
+    <value>Min-Med</value>
+  </data>
+  <data name="OtherWorkAgent" xml:space="preserve">
+    <value>Other Work Agent</value>
+  </data>
+  <data name="ProjectTypeClusterHospital" xml:space="preserve">
+    <value>Project Type,Cluster,Hospital</value>
+  </data>
+  <data name="SH8100MXImprovementProjects" xml:space="preserve">
+    <value>SH8100MX Improvement Projects</value>
+  </data>
+  <data name="Top10byReportingCategory" xml:space="preserve">
+    <value>Top 10 by Reporting Category</value>
+  </data>
+  <data name="WEPProjects" xml:space="preserve">
+    <value>WEP Projects</value>
+  </data>
+  <data name="WorkAgentProjectTypeClusterHospital" xml:space="preserve">
+    <value>Work Agent,Project Type,Cluster,Hospital</value>
+  </data>
+  <data name="Works" xml:space="preserve">
+    <value>Works</value>
+  </data>
+  <data name="ALLProjects" xml:space="preserve">
+    <value>ALL Projects</value>
+  </data>
+  <data name="AllProjectsExceptClosedAtPriorYears" xml:space="preserve">
+    <value>All Projects Except Closed at Prior Years</value>
+  </data>
+  <data name="AllProjectsIncludedClosedAtPriorYears" xml:space="preserve">
+    <value>All Projects Included Closed at Prior Years</value>
+  </data>
+  <data name="AllProjectsNotYetClosed" xml:space="preserve">
+    <value>All projects not yet closed</value>
+  </data>
+  <data name="APE" xml:space="preserve">
+    <value>APE</value>
+  </data>
+  <data name="Cashflow" xml:space="preserve">
+    <value>Cashflow</value>
+  </data>
+  <data name="ClosedAtPriorYears" xml:space="preserve">
+    <value>Closed at Prior Years</value>
+  </data>
+  <data name="EMR" xml:space="preserve">
+    <value>EMR</value>
+  </data>
+  <data name="IMP" xml:space="preserve">
+    <value>IMP</value>
+  </data>
+  <data name="InDollar" xml:space="preserve">
+    <value>In $</value>
+  </data>
+  <data name="InMillion" xml:space="preserve">
+    <value>In $Million</value>
+  </data>
+  <data name="OneLineNo" xml:space="preserve">
+    <value>One Line = No</value>
+  </data>
+  <data name="PMNT" xml:space="preserve">
+    <value>PMNT</value>
+  </data>
+  <data name="ProjectClosedWithinCurrentFinancialYear" xml:space="preserve">
+    <value>Project closed within current financial year</value>
+  </data>
+  <data name="ProjectsNotYetClosedOrClosedWithinCurrentFinancialYear" xml:space="preserve">
+    <value>Projects not yet closed or closed within current financial year</value>
+  </data>
+  <data name="RecType1" xml:space="preserve">
+    <value>IMP Projects for Schedule I Hospitals (&gt;$0.5M)</value>
+  </data>
+  <data name="RecType2" xml:space="preserve">
+    <value>IMP Projects for Schedule I Hospitals (&lt;$0.5M)</value>
+  </data>
+  <data name="RecType3" xml:space="preserve">
+    <value>IMP Projects for Schedule II Hospitals (&gt;$0.5M)</value>
+  </data>
+  <data name="RecType4" xml:space="preserve">
+    <value>IMP Projects for Schedule II Hospitals (&lt;$0.5M)</value>
+  </data>
+  <data name="RecType5" xml:space="preserve">
+    <value>PMNT Projects for Schedule I Hospitals</value>
+  </data>
+  <data name="RecType6" xml:space="preserve">
+    <value>EMR Projects for Schedule I Hospitals</value>
+  </data>
+  <data name="SatisfyAnyoftheTwoCriteria" xml:space="preserve">
+    <value>Satisfy Any of the Two Criteria</value>
+  </data>
+  <data name="SortByCluster" xml:space="preserve">
+    <value>sort by cluster</value>
+  </data>
+  <data name="SortByHARefNo" xml:space="preserve">
+    <value>sort by HA Ref No</value>
+  </data>
+  <data name="SortByYearOfApproval" xml:space="preserve">
+    <value>sort by Year of Approval</value>
+  </data>
+  <data name="UpToDated" xml:space="preserve">
+    <value>Up to Dated</value>
+  </data>
+  <data name="UpToLastMonth" xml:space="preserve">
+    <value>up to last month</value>
+  </data>
+  <data name="VsFullYearForcastLastMonth" xml:space="preserve">
+    <value>Vs Full Year Forcast Last Month</value>
+  </data>
+  <data name="VsRevisedCashflowProjection" xml:space="preserve">
+    <value>Vs Revised Cashflow Projection</value>
+  </data>
+  <data name="AllEquipments" xml:space="preserve">
+    <value>All Equipments</value>
+  </data>
+  <data name="EngineeringEquipment" xml:space="preserve">
+    <value>Engineering Equipment</value>
+  </data>
+  <data name="LastYearEnd" xml:space="preserve">
+    <value>Last Year End</value>
+  </data>
+  <data name="MedicalEquipment" xml:space="preserve">
+    <value>Medical Equipment</value>
+  </data>
+  <data name="MinorLumpSum" xml:space="preserve">
+    <value>Minor Lump Sum</value>
+  </data>
+  <data name="ScheduleIIMaintenaceWorksProjects" xml:space="preserve">
+    <value>Schedule II Maintenace Works Projects</value>
+  </data>
+  <data name="CBVEngineeringEquipment" xml:space="preserve">
+    <value>CBV (Engineering Equipment)</value>
+  </data>
+  <data name="CBVNonEngineeringEquipment" xml:space="preserve">
+    <value>CBV (non-Engineering Equipment)</value>
+  </data>
+  <data name="CWRFFE" xml:space="preserve">
+    <value>CWRF - F&amp;E</value>
+  </data>
+  <data name="CWRFWORKS" xml:space="preserve">
+    <value>CWRF WORKS</value>
+  </data>
+  <data name="DonationExpPaidByHAHO" xml:space="preserve">
+    <value>Donation exp paid by HAHO</value>
+  </data>
+  <data name="EMRnIMPnPMNT" xml:space="preserve">
+    <value>EMR, IMP &amp; PMNT</value>
+  </data>
+  <data name="X8100MX" xml:space="preserve">
+    <value>8100MX</value>
+  </data>
+  <data name="AllMinorWorksProjects" xml:space="preserve">
+    <value>All Minor Works Projects</value>
+  </data>
+  <data name="IWEPProjectsForSchInIIHospitals" xml:space="preserve">
+    <value>IWEP Projects for Sch I &amp; II Hospitals</value>
+  </data>
+  <data name="MaintenanceBlockVoteForScheduleIIHospitals" xml:space="preserve">
+    <value>Maintenance Block Vote for Schedule II Hospitals</value>
+  </data>
+  <data name="EMSTFSLAFeesNGEEquipmentMaintenance" xml:space="preserve">
+    <value>EMSTF SLA Fees &amp; GE Equipment Maintenance</value>
+  </data>
+  <data name="FinancialAnalysisDataExtractionSummary" xml:space="preserve">
+    <value>3. Financial Analysis Data Extraction Summary</value>
+  </data>
+  <data name="IndustryLeverageRatioAnalysisReport" xml:space="preserve">
+    <value>2. Industry Leverage Ratio Analysis report</value>
+  </data>
+  <data name="TransactionVolumeOfFV" xml:space="preserve">
+    <value>1. Transaction volume of FV</value>
+  </data>
+  <data name="Generate" xml:space="preserve">
+    <value>Generate</value>
+  </data>
+  <data name="ReportNotReady" xml:space="preserve">
+    <value>This report is under maintanence and will be availiable soon.</value>
+  </data>
+  <data name="AccountGroup" xml:space="preserve">
+    <value>Account Group</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="DonationFund" xml:space="preserve">
+    <value>Donation Fund</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="DonationRemark" xml:space="preserve">
+    <value>Donation Remark</value>
+  </data>
+  <data name="RemarkFor" xml:space="preserve">
+    <value>Remark for</value>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Remark</value>
+  </data>
+  <data name="ReconOfDonationExp" xml:space="preserve">
+    <value>Recon. of Donation Exp.</value>
+  </data>
+  <data name="ReconOfDonationReceipts" xml:space="preserve">
+    <value>Recon. of Donation Receipts</value>
+  </data>
+  <data name="ReconOfDonationExpTitle" xml:space="preserve">
+    <value>Reconciliation of Donation Expenditure between FMRS and Oracle GL for</value>
+  </data>
+  <data name="ReconOfDonationReceiptsTitle" xml:space="preserve">
+    <value>Reconciliation of Donation Receipts between FMRS and Oracle GL for</value>
+  </data>
+  <data name="AccountNo" xml:space="preserve">
+    <value>Account No.</value>
+  </data>
+  <data name="AMinB" xml:space="preserve">
+    <value>(A)-(B)</value>
+  </data>
+  <data name="DonationBalancePerOracleGL" xml:space="preserve">
+    <value>Donation balance per Oracle GL</value>
+  </data>
+  <data name="DonationExpenditureDuringTheYearPerFMRS" xml:space="preserve">
+    <value>Donation Expenditure during the year per FMRS</value>
+  </data>
+  <data name="DonationReceivedDuringTheYearPerFMRS" xml:space="preserve">
+    <value>Donation received (including interest) during the year per FMRS</value>
+  </data>
+  <data name="GrandTotal" xml:space="preserve">
+    <value>Grand total</value>
+  </data>
+  <data name="HKDollar" xml:space="preserve">
+    <value>HK $</value>
+  </data>
+  <data name="LedgerMovementsCashBook" xml:space="preserve">
+    <value>Ledger Movements (Cash Book)</value>
+  </data>
+  <data name="OracleGLMovementDuringTheYear" xml:space="preserve">
+    <value>Oracle GL Movement during the year</value>
+  </data>
+  <data name="VarianceBetweenOracleGLAndFMRS" xml:space="preserve">
+    <value>Variance between Oracle GL and FMRS</value>
+  </data>
+  <data name="Received" xml:space="preserve">
+    <value>Received</value>
+  </data>
+  <data name="AsAt" xml:space="preserve">
+    <value>As at</value>
+  </data>
+  <data name="Basis" xml:space="preserve">
+    <value>Basis</value>
+  </data>
+  <data name="BudgetCluster" xml:space="preserve">
+    <value>Budget Cluster</value>
+  </data>
+  <data name="ClosedOnly" xml:space="preserve">
+    <value>Closed Only</value>
+  </data>
+  <data name="CostDepr" xml:space="preserve">
+    <value>Cost Depr</value>
+  </data>
+  <data name="Criteria" xml:space="preserve">
+    <value>Criteria</value>
+  </data>
+  <data name="ExpType" xml:space="preserve">
+    <value>Exp Type</value>
+  </data>
+  <data name="FundGroup" xml:space="preserve">
+    <value>Fund Group</value>
+  </data>
+  <data name="OneLine" xml:space="preserve">
+    <value>One Line</value>
+  </data>
+  <data name="RecType" xml:space="preserve">
+    <value>Rec Type</value>
+  </data>
+  <data name="ReportFormat" xml:space="preserve">
+    <value>Report Format</value>
+  </data>
+  <data name="ReportYear" xml:space="preserve">
+    <value>Report Year</value>
+  </data>
+  <data name="RptItem" xml:space="preserve">
+    <value>Rpt Item</value>
+  </data>
+  <data name="SortBy" xml:space="preserve">
+    <value>Sort By</value>
+  </data>
+  <data name="UpTo" xml:space="preserve">
+    <value>Up To</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Input" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="LastLogin" xml:space="preserve">
+    <value>Last Login</value>
+  </data>
+  <data name="LoginID" xml:space="preserve">
+    <value>Login ID</value>
+  </data>
+  <data name="UserAdmin" xml:space="preserve">
+    <value>User Admin</value>
+  </data>
+  <data name="EnquireUser" xml:space="preserve">
+    <value>Enquire User</value>
+  </data>
+  <data name="NewUser" xml:space="preserve">
+    <value>New User</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EditAfterEndorsed" xml:space="preserve">
+    <value>Edit after endorsed</value>
+  </data>
+  <data name="EditAndInterface" xml:space="preserve">
+    <value>Edit and Interface</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ProjectManagementReportDetail" xml:space="preserve">
+    <value>Project Management Report Detail</value>
+  </data>
+  <data name="ReadOnly" xml:space="preserve">
+    <value>Read Only</value>
+  </data>
+  <data name="UserGroup" xml:space="preserve">
+    <value>User Group</value>
+  </data>
+  <data name="UserID" xml:space="preserve">
+    <value>User ID</value>
+  </data>
+  <data name="UserInstitution" xml:space="preserve">
+    <value>User Institution</value>
+  </data>
+  <data name="Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="ClusterApprover" xml:space="preserve">
+    <value>Cluster Approver</value>
+  </data>
+  <data name="ClusterUser" xml:space="preserve">
+    <value>Cluster User</value>
+  </data>
+  <data name="HOApprover" xml:space="preserve">
+    <value>HO Approver</value>
+  </data>
+  <data name="HOUser" xml:space="preserve">
+    <value>HO User</value>
+  </data>
+  <data name="AnnexByCWD" xml:space="preserve">
+    <value>Annex by CWD</value>
+  </data>
+  <data name="AnnexByHOFD" xml:space="preserve">
+    <value>Annex by HOFD</value>
+  </data>
+  <data name="ASOIInput" xml:space="preserve">
+    <value>ASOI Input</value>
+  </data>
+  <data name="ASOIReport" xml:space="preserve">
+    <value>ASOI Report</value>
+  </data>
+  <data name="CapitalProjectFundingApprovalStatus" xml:space="preserve">
+    <value>Capital Project Funding &amp; Approval Status</value>
+  </data>
+  <data name="CapitalProjects" xml:space="preserve">
+    <value>Capital Projects</value>
+  </data>
+  <data name="CBVGovernmentFunding" xml:space="preserve">
+    <value>CBV Government Funding</value>
+  </data>
+  <data name="CBVOriginalDateUpdate" xml:space="preserve">
+    <value>CBV Original Date Update</value>
+  </data>
+  <data name="CBVProjects" xml:space="preserve">
+    <value>CBV Projects</value>
+  </data>
+  <data name="CreateHPDForm" xml:space="preserve">
+    <value>Create HPD Form</value>
+  </data>
+  <data name="FAREditType" xml:space="preserve">
+    <value>FAR edit type</value>
+  </data>
+  <data name="FVCluster" xml:space="preserve">
+    <value>FV Cluster</value>
+  </data>
+  <data name="FVInput" xml:space="preserve">
+    <value>FV Input</value>
+  </data>
+  <data name="FVUserAdmin" xml:space="preserve">
+    <value>FV User Admin</value>
+  </data>
+  <data name="UpdateProjectStatus" xml:space="preserve">
+    <value>Update Project Status</value>
+  </data>
+  <data name="YearEndClosing" xml:space="preserve">
+    <value>Year End Closing</value>
+  </data>
+  <data name="ClusterAdministration" xml:space="preserve">
+    <value>Cluster Administration</value>
+  </data>
+  <data name="ClickToEdit" xml:space="preserve">
+    <value>Click to edit</value>
+  </data>
+  <data name="AlertAssignClusterAdmin" xml:space="preserve">
+    <value>You are assigning Cluster Admin, Please contact ITD to complete the user setting.</value>
+  </data>
+  <data name="AlertInputLoginID" xml:space="preserve">
+    <value>Please input login ID!</value>
+  </data>
+  <data name="AlertSelectUserInstitution" xml:space="preserve">
+    <value>Please select User Institution</value>
+  </data>
+  <data name="ConfirmDeleteUser" xml:space="preserve">
+    <value>Are you sure you want to delete this user?</value>
+  </data>
+  <data name="AccessRight" xml:space="preserve">
+    <value>Access Right</value>
+  </data>
+  <data name="ProjectManagementReport" xml:space="preserve">
+    <value>Project Management Report</value>
+  </data>
+  <data name="ProjectVoteManagementReport" xml:space="preserve">
+    <value>Project Vote Management Report</value>
+  </data>
+  <data name="RemoveUserSuccess" xml:space="preserve">
+    <value>The selected user has been removed successfully.</value>
+  </data>
+  <data name="UpdateUserSuccess" xml:space="preserve">
+    <value>The user info has been updated successfully.</value>
+  </data>
+  <data name="InsertUserFail" xml:space="preserve">
+    <value>User {0} already exist, insert failed!</value>
+  </data>
+  <data name="ListOfASOIProgrammes" xml:space="preserve">
+    <value>List Of ASOI Programmes</value>
+  </data>
+  <data name="ASOICat1" xml:space="preserve">
+    <value>Cat. 1 Canteen</value>
+  </data>
+  <data name="ASOICat10" xml:space="preserve">
+    <value>Cat. 10 Personal Datan</value>
+  </data>
+  <data name="ASOICat10Desc" xml:space="preserve">
+    <value>(Privacy) Ordinance</value>
+  </data>
+  <data name="ASOICat2" xml:space="preserve">
+    <value>Cat. 2 Car Park</value>
+  </data>
+  <data name="ASOICat3" xml:space="preserve">
+    <value>Cat. 3</value>
+  </data>
+  <data name="ASOICat3Desc" xml:space="preserve">
+    <value>Mobile Communication</value>
+  </data>
+  <data name="ASOICat4" xml:space="preserve">
+    <value>Cat. 4 Special </value>
+  </data>
+  <data name="ASOICat4Desc" xml:space="preserve">
+    <value>Accommodation Ward</value>
+  </data>
+  <data name="ASOICat5" xml:space="preserve">
+    <value>Cat. 5 Co-op Shop /   </value>
+  </data>
+  <data name="ASOICat5Desc" xml:space="preserve">
+    <value>Outward Scheme</value>
+  </data>
+  <data name="ASOICat6" xml:space="preserve">
+    <value>Cat. 6 Training</value>
+  </data>
+  <data name="ASOICat7" xml:space="preserve">
+    <value>Cat. 7 Medical Services</value>
+  </data>
+  <data name="ASOICat8" xml:space="preserve">
+    <value>Cat. 8 Vending Machine /</value>
+  </data>
+  <data name="ASOICat8Desc" xml:space="preserve">
+    <value>Coin Phone</value>
+  </data>
+  <data name="ASOICat9" xml:space="preserve">
+    <value>Cat. 9 Others</value>
+  </data>
+  <data name="AnalyticalBeginNotBlank" xml:space="preserve">
+    <value>Analytical (Begin) should not be blank.</value>
+  </data>
+  <data name="AnalyticalBeginNotNumber" xml:space="preserve">
+    <value>Analytical (Begin) must be number or ZZZZZ.</value>
+  </data>
+  <data name="AnalyticalUntilNotBlank" xml:space="preserve">
+    <value>Analytical (Until) should not be blank.</value>
+  </data>
+  <data name="AnalyticalUntilNotNumber" xml:space="preserve">
+    <value>Analytical (Until) must be number or ZZZZZ.</value>
+  </data>
+  <data name="Any" xml:space="preserve">
+    <value>Any</value>
+  </data>
+  <data name="Cat" xml:space="preserve">
+    <value>Cat</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="NatureOfIncome" xml:space="preserve">
+    <value>Nature of Income</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="NoOfProjects" xml:space="preserve">
+    <value>No. of projects</value>
+  </data>
+  <data name="ProgramCode" xml:space="preserve">
+    <value>Program Code</value>
+  </data>
+  <data name="ProgramDescriptionLocation" xml:space="preserve">
+    <value>Program Description / Location</value>
+  </data>
+  <data name="ProgramOrganizerDepartment" xml:space="preserve">
+    <value>Program Organizer / Department</value>
+  </data>
+  <data name="ProgramSubCat" xml:space="preserve">
+    <value>Program Sub Cat.</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchAllcategories" xml:space="preserve">
+    <value>Search all categories</value>
+  </data>
+  <data name="SectionNotNumber" xml:space="preserve">
+    <value>Section must be number or ZZZZZZZ.</value>
+  </data>
+  <data name="ServiceProvidedToCollaboratedWith" xml:space="preserve">
+    <value>Service Provided to / Collaborated with</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="StartDateBeginFormat" xml:space="preserve">
+    <value>Start Date (Begin) should be in DD/MM/YYYY format.</value>
+  </data>
+  <data name="StartDateNotBlank" xml:space="preserve">
+    <value>Both Start Date should not be blank.</value>
+  </data>
+  <data name="StartDateOrder" xml:space="preserve">
+    <value>Start Date should be in correct order.</value>
+  </data>
+  <data name="StartDateUntilFormat" xml:space="preserve">
+    <value>Start Date (Until) should be in DD/MM/YYYY format.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Detail" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="AddItems" xml:space="preserve">
+    <value>Add Items</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>Close Window</value>
+  </data>
+  <data name="ConfirmDeleteProject" xml:space="preserve">
+    <value>Are you sure to delete this project?</value>
+  </data>
+  <data name="ContractSignedSelect" xml:space="preserve">
+    <value>Contract Signed with 3rd Party must be selected.</value>
+  </data>
+  <data name="ContractSignedWith3rdParty" xml:space="preserve">
+    <value>Contract Signed with 3rd Party</value>
+  </data>
+  <data name="CurrentYearProjection" xml:space="preserve">
+    <value>Current Year Projection</value>
+  </data>
+  <data name="CypIncomeNotBlank" xml:space="preserve">
+    <value>Current Year Projection Income should not be blank.</value>
+  </data>
+  <data name="CypIncomeNotNumber" xml:space="preserve">
+    <value>Current Year Projection Income must be number and within 2 decimal places.</value>
+  </data>
+  <data name="CypOCNotBlank" xml:space="preserve">
+    <value>Current Year Projection OC should not be blank.</value>
+  </data>
+  <data name="CypOCNotNumber" xml:space="preserve">
+    <value>Current Year Projection OC must be number and within 2 decimal places.</value>
+  </data>
+  <data name="CypPENotBlank" xml:space="preserve">
+    <value>Current Year Projection PE should not be blank.</value>
+  </data>
+  <data name="CypPENotNumber" xml:space="preserve">
+    <value>Current Year Projection PE must be number and within 2 decimal places.</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="EndDateFormat" xml:space="preserve">
+    <value>End Date should be in DD/MM/YYYY format.</value>
+  </data>
+  <data name="ERPGLPeriod" xml:space="preserve">
+    <value>*YTD figures are interfaced from ERP-GL up to Period</value>
+  </data>
+  <data name="HKD" xml:space="preserve">
+    <value>HKD</value>
+  </data>
+  <data name="HKDpa" xml:space="preserve">
+    <value>HKD p.a.</value>
+  </data>
+  <data name="IncomeNotNumber" xml:space="preserve">
+    <value>Income must be number and within 2 decimal places.</value>
+  </data>
+  <data name="NatureIncomeSelect" xml:space="preserve">
+    <value>Nature of Income must be selected.</value>
+  </data>
+  <data name="NoOfProjectNotBlank" xml:space="preserve">
+    <value>No. of project should not be blank.</value>
+  </data>
+  <data name="NoOfProjectNotNumber" xml:space="preserve">
+    <value>No. of project must be number.</value>
+  </data>
+  <data name="OC" xml:space="preserve">
+    <value>OC</value>
+  </data>
+  <data name="OCNotNumber" xml:space="preserve">
+    <value>OC must be number and within 2 decimal places.</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="PE" xml:space="preserve">
+    <value>PE</value>
+  </data>
+  <data name="PENotNumber" xml:space="preserve">
+    <value>PE must be number and within 2 decimal places.</value>
+  </data>
+  <data name="PoaIncomeNotBlank" xml:space="preserve">
+    <value>Projection on Application Income should not be blank.</value>
+  </data>
+  <data name="PoaIncomeNotNumber" xml:space="preserve">
+    <value>Projection on Application Income must be number and within 2 decimal places.</value>
+  </data>
+  <data name="PoaOCNotBlank" xml:space="preserve">
+    <value>Projection on Application OC should not be blank.</value>
+  </data>
+  <data name="PoaOCNotNumber" xml:space="preserve">
+    <value>Projection on Application OC must be number and within 2 decimal places.</value>
+  </data>
+  <data name="PoaPENotBlank" xml:space="preserve">
+    <value>Projection on Application PE should not be blank.</value>
+  </data>
+  <data name="PoaPENotNumber" xml:space="preserve">
+    <value>Projection on Application PE must be number and within 2 decimal places.</value>
+  </data>
+  <data name="ProgDescNotBlank" xml:space="preserve">
+    <value>Program Description / Location should not be blank.</value>
+  </data>
+  <data name="ProgOrganizerNotBlank" xml:space="preserve">
+    <value>Program Organizer / Department should not be blank.</value>
+  </data>
+  <data name="ProgramSubCatSelect" xml:space="preserve">
+    <value>Program Sub Cat. must be selected.</value>
+  </data>
+  <data name="ProjectInformationRollOverToNextPeriod" xml:space="preserve">
+    <value>Project information roll over to next period</value>
+  </data>
+  <data name="ProjectionOnApplication" xml:space="preserve">
+    <value>Projection on Application</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>Remarks</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveNComplete" xml:space="preserve">
+    <value>Save &amp; Complete</value>
+  </data>
+  <data name="SectionNotBlank" xml:space="preserve">
+    <value>Section should not be blank.</value>
+  </data>
+  <data name="ServiceProvidedSelect" xml:space="preserve">
+    <value>Service Provided to / Collaborated with must be selected.</value>
+  </data>
+  <data name="StartDateEndDateOrder" xml:space="preserve">
+    <value>Start Date and End Date should be in correct order.</value>
+  </data>
+  <data name="StartDateFormat" xml:space="preserve">
+    <value>Start Date should be in DD/MM/YYYY format.</value>
+  </data>
+  <data name="SurplusDeficit" xml:space="preserve">
+    <value>Surplus/(Deficit)</value>
+  </data>
+  <data name="YTD" xml:space="preserve">
+    <value>YTD</value>
+  </data>
+  <data name="YTDIncomeNotBlank" xml:space="preserve">
+    <value>YTD Income should not be blank.</value>
+  </data>
+  <data name="YTDIncomeNotNumber" xml:space="preserve">
+    <value>YTD Income must be number and within 2 decimal places.</value>
+  </data>
+  <data name="YTDOCNotBlank" xml:space="preserve">
+    <value>YTD OC should not be blank.</value>
+  </data>
+  <data name="YTDOCNotNumber" xml:space="preserve">
+    <value>YTD OC must be number and within 2 decimal places.</value>
+  </data>
+  <data name="YTDPENotBlank" xml:space="preserve">
+    <value>YTD PE should not be blank.</value>
+  </data>
+  <data name="YTDPENotNumber" xml:space="preserve">
+    <value>YTD PE must be number and within 2 decimal places.</value>
+  </data>
+</root>

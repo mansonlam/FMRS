@@ -1,0 +1,59 @@
+﻿@{ 
+    var Curr_Y = "";
+    var Curr_M = "";
+    var Curr_D = "";
+    switch (HttpContextAccessor.HttpContext.Session.GetString("current_sys")) {
+        case "Y":
+            Curr_Y = "active";
+            break;
+        case "M":
+            Curr_M = "active";
+            break;
+        case "D":
+            Curr_D = "active";
+            break;
+    }
+}
+    <ul class="nav navbar-nav">
+        @if (!String.IsNullOrEmpty(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "FMRS_SYS_Y")) && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "FMRS_SYS_Y") == "Y")
+        {
+            <li class="@Curr_Y"><a asp-area="" asp-controller="FinancialClosing" asp-action="Index" title="@Resource.FinancialClosingDesc" id="Y" onclick = "return Confirm_Change_System('Y');"><span style="font-size:medium">@Resource.FinancialClosing </span></a></li>
+        }
+        @if (!String.IsNullOrEmpty(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "FMRS_SYS_M")) && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "FMRS_SYS_M") == "Y")
+        {
+            <li class="@Curr_M"><a asp-area="" asp-controller="ProjectManagement" asp-action="Index" title=@Resource.ProjectManagementDesc id="M" onclick = "return Confirm_Change_System('M');"><span style="font-size:medium">@Resource.ProjectManagement </span></a></li>
+        }
+        @if (!String.IsNullOrEmpty(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "FMRS_SYS_D")) && UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "FMRS_SYS_M") == "Y")
+        { 
+            <li class="@Curr_D"><a asp-area="" asp-controller="Donation" asp-action="Index" title=@Resource.DonationDescription id="D" onclick = "return Confirm_Change_System('D');"><span style="font-size:medium">@Resource.Donation </span></a></li>
+        }
+    </ul>
+
+<script type='text/javascript'>
+    function Sys_Desc(x) {
+        var sys_desc = "";
+        switch (x) {
+            case "Y":
+                sys_desc = "@Resource.FinancialClosing";
+                break;
+            case "M":
+                sys_desc = "@Resource.ProjectManagement";
+                break;
+            case "D":
+                sys_desc = "@Resource.Donation";
+                break;
+        }
+        return sys_desc;
+    }
+
+    function Confirm_Change_System(n_sys) {
+        o_sys = document.getElementsByName("current_sys")[0].value;
+        var confirmation = confirm("You are about to leave " + Sys_Desc(o_sys) + " and go to " + Sys_Desc(n_sys) + ". \nHave you saved your changes? (if any)");
+        if (!confirmation) {
+            return false;
+        }
+        return true;
+    }
+
+    
+</script>

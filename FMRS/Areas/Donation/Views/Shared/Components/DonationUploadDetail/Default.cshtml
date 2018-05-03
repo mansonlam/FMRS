@@ -1,0 +1,103 @@
+﻿@using System.Globalization;
+@model FMRS.Model.DTO.DonationUploadViewModel
+@{ 
+    var numberFormat = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+    numberFormat.CurrencyNegativePattern = 2;
+
+}
+<style type="text/css">
+    .rec_valid {
+        background-color:powderblue;
+    }
+
+    .rec_invalid {
+        background-color:lightpink;
+    }
+</style>
+
+<table class="table table-bordered" style="width:130%;max-width:300%;margin-bottom:0px;">
+    <thead>
+        <tr>
+            <th class="bg-purple">@Resource.Row</th>
+            <th class="bg-purple">@Resource.Hosp</th>
+            <th class="bg-purple">@Resource.Fund</th>
+            <th class="bg-purple">@Resource.Section</th>
+            <th class="bg-purple">@Resource.Analytical</th>
+            <th class="bg-purple">@Resource.DonorName</th>
+            <th class="bg-purple">@Resource.IncomeExp</th>
+            <th class="bg-purple">@Resource.DonationType</th>
+            <th class="bg-purple">@Resource.DonationDate</th>
+            <th class="bg-purple">@Resource.DonationPurpose</th>
+            <th class="bg-purple">@Resource.SpecificDonations</th>
+            <th class="bg-purple">@Resource.SubCat1</th>
+            <th class="bg-purple">@Resource.SubCat2</th>
+            <th class="bg-purple">@Resource.SubCat3</th>
+            <th class="bg-purple">@Resource.Others</th>
+            <th class="bg-purple">@Resource.MajorDonation1</th>
+            <th class="bg-purple">@Resource.MajorDonation2</th>
+            <th class="bg-purple">@Resource.MajorDonation3</th>
+            <th class="bg-purple">@Resource.OnReimbursementBasis</th>
+            <th class="bg-purple">@Resource.Description</th>
+            <th class="bg-purple">@Resource.DonationReceived</th>
+            <th class="bg-purple">@Resource.Error</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Record_list.Count; i++)
+        {
+            var Rec_Valid = "";
+            if (Model.Record_list[i].Record_error != 0)
+            {
+                if (Model.Valid_only == 0 || Model.Valid_only == -1)
+                { Rec_Valid = "rec_invalid"; }
+            }
+            else
+            {
+                if (Model.Valid_only == 0 || Model.Valid_only == 1)
+                { Rec_Valid = "rec_valid"; }
+            }
+
+            var display_valid = "";
+            if (Model.Valid_only == -1)
+            {
+                if (Model.Record_list[i].Record_error == 0)
+                {
+                    display_valid = "none";
+                }
+            }
+            else if (Model.Valid_only == 1)
+            {
+                if (Model.Record_list[i].Record_error != 0)
+                {
+                    display_valid = "none";
+                }
+            }
+
+            <tr class="@Rec_Valid" style="display:@display_valid">
+                <td>@(i + 1)</td>
+                <td>@Model.Record_list[i].Hospital</td>
+                <td>@Model.Record_list[i].Fund</td>
+                <td>@Model.Record_list[i].Section</td>
+                <td>@Model.Record_list[i].Analytical</td>
+                <td>@Model.Record_list[i].Donor_name</td>
+                <td>@(Model.Record_list[i].Don_inc_exp=="I"?Resource.Income:( Model.Record_list[i].Don_inc_exp == "E"?Resource.Expenditure: Model.Record_list[i].Don_inc_exp))</td>
+                <td>@Model.Record_list[i].Don_type_c</td>
+                <td>@Model.Record_list[i].Don_date.ToString("yyyyMMdd")</td>
+                <td>@Html.Raw(Model.Record_list[i].Don_purpose_c)</td>
+                <td>@Html.Raw(Model.Record_list[i].Don_super_cat_desc) </td>
+                <td>@Html.Raw(Model.Record_list[i].Don_cat_desc) </td>
+                <td>@Html.Raw(Model.Record_list[i].Don_subcat_desc) </td>
+                <td>@Html.Raw(Model.Record_list[i].Don_subsubcat_desc) </td>
+                <td>@Html.Raw(Model.Record_list[i].Don_specific)</td>
+                <td>@Model.Record_list[i].Maj_don1</td>
+                <td>@Model.Record_list[i].Maj_don2</td>
+                <td>@Model.Record_list[i].Maj_don3</td>
+                <td>@Model.Record_list[i].Reimb</td>
+                <td>@Html.Raw(Model.Record_list[i].Don_kind_desc)</td>
+                <td align="right">@(((decimal)Model.Record_list[i].Don_cur_mth).ToString("N2", numberFormat))</td>
+                <td>@Model.Record_list[i].Err_msg</td>
+            </tr>
+        }
+        
+    </tbody>
+</table>

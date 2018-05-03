@@ -1,0 +1,56 @@
+﻿@model FMRS.Model.DTO.DonationRemarkModel
+@{
+    ViewBag.Title = Resource.DonationRemark;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title 
+</h4>
+
+<div class="box box-default" style="overflow:auto;">
+    <div class="box-header" style="padding-bottom:0;">
+
+    </div>
+    <div class="box-body">
+        <div style="padding:0 15px;line-height:1.5;">
+            <b>
+                @Resource.RemarkFor @ViewBag.HospDesc<br />
+            </b>
+        </div>
+        <div class="form-group" style="padding:20px;margin-bottom:0;">
+            <form id="Donation" asp-action="UploadDonationRemark" asp-controller="DonationRemark">
+                <input type="hidden" asp-for="Inst_code" value="@Model.Inst_code" />
+                @if (ViewBag.DonationPeriod == "Y" && ViewBag.PrivilegeDonation == "I")
+                {
+                    <textarea asp-for="Remark" class="form-control" rows="20" cols="100"></textarea>
+                }
+                else
+                {
+                    <textarea asp-for="Remark" class="form-control" rows="20" cols="100" disabled></textarea>
+                }
+            </form>
+        </div>
+        
+    </div>
+    <div class="box-footer">
+        <div class="dt-buttons">
+            @if (ViewBag.DonationPeriod == "Y" && ViewBag.PrivilegeDonation == "I")
+            {
+                <input type="button" id="btnUpload" class="dt-button btn btn-primary" onclick="form_submit();" value="@Resource.Update">
+            }
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function form_submit() { 
+        if ($("#Remark").val().trim().length > 0)
+            $('#Donation').submit();
+        else { 
+            alert("Please input remark before submit.")
+            return false;
+        }
+    }
+</script>

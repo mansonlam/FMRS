@@ -1,0 +1,559 @@
+﻿@model FMRS.Model.DTO.EnquireUserViewModel
+@{
+    ViewBag.Title = Resource.EnquireUser;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var display_admin_login_id = Model.AdminUserInfo.LoginId.Replace("/", "\\");
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+    <br />
+</h4>
+
+
+<div class="box box-default">
+    <form id="FormUserAdmin" asp-action="UpdateUser" asp-controller="Admin">
+        <div class="box-header"  style="padding:0 10px;">
+            <h5>@(Model.Function_type == "U" ? Model.AdminUserInfo.LoginId : Resource.NewUser)</h5>
+        </div>
+        <div class="box-body">
+            <input type="hidden" asp-for="Modules" value="@Model.Modules" />
+            <input type="hidden" asp-for="Function_type"  value="@Model.Function_type" />
+            <table class="table">
+                <tr>
+                    <td style="width:15%;"><b>@Resource.UserID</b></td>
+                    <td style="width:15%;">
+                        <input type="hidden" asp-for="AdminUserInfo.LoginId" value="@Model.AdminUserInfo.LoginId" />
+                        @if (display_admin_login_id.IndexOf("\\") > 0 && ViewBag.LoginId.IndexOf("\\") > 0)
+                        {
+                            <a href='javascript:doEditUser()'>
+                                <div id='admin_login_id'>
+                                    @display_admin_login_id
+                                    </div>
+                            </a>
+                        }
+                        else
+                        {
+                            <div id='admin_login_id'>
+                                @display_admin_login_id
+                            </div>
+                        }
+
+                    </td>
+                    
+                    <td style="width:15%;"><b>@Resource.UserName</b></td>
+                    <td style="width:55%;">
+                        <input type="text" asp-for="AdminUserInfo.UserName" class="form-control" value="@Model.AdminUserInfo.UserName" />
+                    </td>
+                </tr>
+                </table>
+            @if(! (ViewBag.PeBySpecInd == "Y" && ViewBag.PrivilegeAdmin == "I"))
+            { 
+                <input type="hidden" asp-for="All_specialty" value="on" />
+            }
+            <table class="table">
+                @if (ViewBag.PrivilegeAdmin == "I" || ViewBag.FvUserAdmin == "edit")
+                {
+                    <tr id="user_inst_code_row">
+                        <td><b>@Resource.UserInstitution</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminUserInfo.InstCode" class="form-control" asp-items="@(new SelectList(ViewBag.UserGroup=="ALL"?ViewBag.HospitalList:ViewBag.HospitalExHAHOList, "Value", "Text",(Model.AdminUserInfo.InstCode != ""?Model.AdminUserInfo.InstCode: ViewBag.UserInstCode)))"></select>
+                        </td>
+                    </tr>
+                }
+                @if (ViewBag.UserGroup == "ALL" || ViewBag.UserGroup != "HOSP")
+                {
+                    <tr>
+                        <td><b>@Resource.UserGroup</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminUserInfo.UserGroup" class="form-control" asp-items="@(new SelectList(ViewBag.UserGroupList, "Value", "Text",Model.AdminUserInfo.UserGroup))" onchange="update_hospital_list(this.value);"></select>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td><b>@Resource.Hospital</b></td>
+                    <td colspan="3">
+                        <div id='access_hospital'>
+
+                        </div>
+                        <div id="hosp_div">
+                            <select asp-for="AdminUserHospital" class="form-control" asp-items="@(new SelectList(ViewBag.HospitalExHAHOList, "Value", "Text"))" style="display:none;"></select>
+                        </div>
+                    </td>
+                </tr>
+                @if (ViewBag.PeBySpecInd == "Y" && ViewBag.PrivilegeAdmin == "I")
+                {
+                    <tr>
+                        <td><div id='specialty_list_desc'></div></td>
+                        <td colspan="3">
+                            <div id='specialty_list_checkbox'></div><br>
+                            <div id='specialty_list_droplist'>
+                                <input type="hidden" asp-for="UserSpecCode" /></div><br>
+                            <div id='specialty_list_selected'></div>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Modules == "Y")
+                {
+                    <tr>
+                        <td><b>@Resource.YearEndClosing</b></td>
+                        <td>
+                            <select asp-for="AdminRightY.Closing" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_Closing, "Value", "Text",Model.AdminRightY.Closing??"N"))"></select>
+                        </td>
+                        @*</tr>
+                    <tr>*@
+                        <td><b>@Resource.FAREditType</b></td>
+                        <td>
+                            <select asp-for="AdminRightY.FarAccess" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_FarAccess, "Value", "Text",Model.AdminRightY.FarAccess??"N"))"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>@Resource.ASOIInput</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminRightY.AsoiInput" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_ASOIInput, "Value", "Text",Model.AdminRightY.AsoiInput??"N"))"></select>
+                        </td>
+                    </tr>
+                }
+                else if (Model.Modules == "M")
+                {
+                    if (ViewBag.PrivilegeAdmin == "I")
+                    {
+                        <tr>
+                            <td><b>@Resource.ClusterAdministration</b></td>
+                            <td>
+                                <input type="hidden" name="cluster_admin_right_ori" value="@Model.AdminRightM.ClusterAdminM??''" />
+                                <select class="form-control" asp-for="AdminRightM.ClusterAdminM" asp-items="@(new SelectList(new[] {
+                                    new SelectListItem{ Value = "I", Text = Resource.Yes },
+                                    new SelectListItem{ Value = "N", Text = Resource.No }
+                                    }, "Value", "Text", (Model.AdminRightM.ClusterAdminM == "I" ? "I" : "N")))"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.CapitalProjects</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.Cwrf" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CWRF, "Value", "Text", Model.AdminRightM.Cwrf??"N"))" onchange="change_cwrf_option();"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.CreateHPDForm</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfHpd" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CerfHpd, "Value", "Text", Model.AdminRightM.CwrfHpd??"R"))"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.ProjectType</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfSubmenu" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfSubmenu, "Value", "Text", Model.AdminRightM.CwrfSubmenu??"N"))"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.AnnexByCWD</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfCwd" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfCwd, "Value", "Text", Model.AdminRightM.CwrfCwd??"R"))"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.AnnexByHOFD</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfHo" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfHo, "Value", "Text", Model.AdminRightM.CwrfHo??"R"))"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.UpdateProjectStatus</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfStatus" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfStatus, "Value", "Text", Model.AdminRightM.CwrfStatus??"N"))"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.CapitalProjectFundingApprovalStatus</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfFunding" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfFunding, "Value", "Text", Model.AdminRightM.CwrfFunding??"N"))"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.CBVProjects</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.Cbv" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_Cbv, "Value", "Text", Model.AdminRightM.Cbv??"N"))"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.CBVOriginalDateUpdate</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CbvOriUpdate" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CbvOriUpdate, "Value", "Text", Model.AdminRightM.CbvOriUpdate??"N"))"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.CBVGovernmentFunding</b></td>
+                            <td colspan="3">
+                                <select asp-for="AdminRightM.CbvFunding" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CbvFunding, "Value", "Text", Model.AdminRightM.CbvFunding??"N"))"></select>
+                            </td>
+                        </tr>
+                    }
+                    else if (ViewBag.PrivilegeClusterAdmin == "I")
+                    {
+                        <tr>
+                            <td><b>@Resource.CapitalProjects</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.Cwrf" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CWRF_cluster, "Value", "Text", Model.AdminRightM.Cwrf??"N"))" onchange="change_cwrf_option();"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.CreateHPDForm</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfHpd" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CerfHpd_cluster, "Value", "Text", Model.AdminRightM.CwrfHpd??"R"))"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.ProjectType</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfSubmenu" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfSubmenu, "Value", "Text", Model.AdminRightM.CwrfSubmenu??"N"))"></select>
+                            </td>
+                            @*</tr>
+                        <tr>*@
+                            <td><b>@Resource.CapitalProjectFundingApprovalStatus</b></td>
+                            <td>
+                                <select asp-for="AdminRightM.CwrfFunding" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_CwrfFunding_cluster, "Value", "Text", Model.AdminRightM.CwrfFunding??"N"))"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>@Resource.CBVProjects</b></td>
+                            <td colspan="3">
+                                <select asp-for="AdminRightM.Cbv" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_Cbv_cluster, "Value", "Text", Model.AdminRightM.Cbv??"N"))"></select>
+                            </td>
+                        </tr>
+                    }
+                }
+                else if (Model.Modules == "D")
+                {
+                    <tr>
+                        <td><b>@Resource.Donation</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminRightD.Donation" class="form-control" asp-items="@(new SelectList(ViewBag.RightD_Donation, "Value", "Text", Model.AdminRightD.Donation??"N"))"></select>
+                        </td>
+                    </tr>
+                }
+                @if (Model.Modules == "M")
+                {
+                    <tr>
+                        <td><b>@Resource.Report</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminRightM.ReportM" class="form-control" asp-items="@(new SelectList(ViewBag.RightM_ReportM, "Value", "Text", Model.AdminRightM.ReportM??"N"))" onchange="('@ViewBag.PrivilegeAdmin' == 'I'?pm_report_option_change():'')"></select>
+                        </td>
+                    </tr>
+                    <tr id='pm_report_detail' style='display:none'>
+                        <td><b>@Resource.ProjectManagementReportDetail</b></td>
+                        <td colspan="3"><a href="javascript:project_report('@Model.AdminUserInfo.LoginId',9)">@Resource.ClickToEdit</a></td>
+                    </tr>
+                }
+                else if (Model.Modules == "Y")
+                {
+                    <tr>
+                        <td><b>@Resource.Report</b></td>
+                        <td>
+                            <select asp-for="AdminRightY.ReportY" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_ReportY, "Value", "Text", Model.AdminRightY.ReportY??"N"))"></select>
+                        </td>
+                        @*</tr>
+                    <tr>*@
+                        <td><b>@Resource.ASOIReport</b></td>
+                        <td>
+                            <select asp-for="AdminRightY.AsoiRpt" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_AsoiRpt, "Value", "Text", Model.AdminRightY.AsoiRpt??"N"))"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>@Resource.FVInput</b></td>
+                        <td>
+                            <select asp-for="AdminRightY.FvInput" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_FvInput, "Value", "Text", Model.FV_User.FV_user_role??"N"))"></select>
+                        </td>
+                        @*</tr>
+                    <tr>*@
+                        <td><b>@Resource.FVCluster</b></td>
+                        <td>
+                            <select asp-for="AdminRightY.FvCluster" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_FvCluster, "Value", "Text", (Model.AdminFV_User.FV_user_cluster!=Model.FV_User.FV_user_cluster?Model.FV_User.FV_user_cluster: Model.AdminFV_User.FV_user_cluster)))"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>@Resource.FVUserAdmin</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminRightY.FvUserAdmin" class="form-control" asp-items="@(new SelectList(ViewBag.RightY_FvUserAdmin, "Value", "Text", (Model.FV_User.FV_user_admin2=="edit"?"edit":"N")))"></select>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td><b>@Resource.Report</b></td>
+                        <td colspan="3">
+                            <select asp-for="AdminRightD.ReportD" class="form-control" asp-items="@(new SelectList(ViewBag.RightD_ReportD, "Value", "Text", Model.AdminRightD.ReportD??"N"))"></select>
+                        </td>
+                    </tr>
+                }
+            </table>
+            @if (Model.Modules == "Y")
+            {
+                <input type="hidden" asp-for="@Model.AdminRightY.AdminY" value="@Model.AdminRightY.AdminY" />
+            }
+            else if (Model.Modules == "M")
+            {
+                <input type="hidden" asp-for="@Model.AdminRightM.AdminM" value="@Model.AdminRightM.AdminM" />
+            }
+            else if (Model.Modules == "D")
+            {
+                <input type="hidden" asp-for="@Model.AdminRightD.AdminD" value="@Model.AdminRightD.AdminD" />
+            }
+            <div class="box-footer">
+                <div class="dt-buttons">
+                    @if (ViewBag.PrivilegeAdmin == "I" || ViewBag.PrivilegeClusterAdmin == "I" || ViewBag.FvUserAdmin == "edit")
+                    {
+                        if (Model.Function_type == "U" || ViewBag.FvUserAdmin == "edit")
+                        {
+                            if (Model.AdminUserInfo.LoginId != ViewBag.LoginId)
+                            {
+                                if (Model.AdminUserInfo.DomainUser == "Y" || ViewBag.FvUserAdmin == "edit")
+                                {
+                                    <input type="button" id="Update" class="dt-button btn btn-primary" onclick="update_user();" value="@Resource.Update">
+                                }
+                                <input type="button" id="Delete" class="dt-button btn btn-primary" onclick="delete_user();" value="@Resource.Delete">
+                            }
+                        }
+                        else
+                        {
+                            <input type="button" id="Insert" class="dt-button btn btn-primary" onclick="insert_user();" value="@Resource.Insert">
+                        }
+                    }
+                    <input type="button" id="Cancel" class="dt-button btn btn-primary" onclick="cancel();" value="@Resource.Cancel">
+                </div>
+            </div>
+        </div>
+     </form>
+</div>
+
+<script type="text/javascript">
+    specialty_choose_list_desc = "<b>Specialty</b><br>(Press \"Ctrl\" while selecting to select more than 1 specialty)";
+    specialty_choose_list_checkbox = "<input type=checkbox name=all_specialty checked onClick=\"change_all_specialty();\">All Specialty<br>";
+    specialty_choose_list_droplist = "<select class=small name='user_spec_code' size=5 multiple onchange=\"change_select_spec();\"></select>";
+
+    $(document).ready(function () {
+        update_hospital_list('@Model.AdminUserInfo.UserGroup');
+        if ('@Model.Modules' == "M") {
+            if ('@ViewBag.PrivilegeAdmin' == "I"){
+                pm_report_option_change();
+            }
+        }
+
+        if ('@ViewBag.UserInstCode' != "HAHO" && '@ViewBag.PeBySpecInd' == "Y" && '@ViewBag.PrivilegeAdmin' == "I") {
+            $("#specialty_list_desc").html(specialty_choose_list_desc);
+            if ('@Model.Specialty_list' == "**ALL**") {
+                $("#specialty_list_checkbox").html(specialty_choose_list_checkbox);
+            }
+            $("#specialty_list_droplist").html(specialty_choose_list_droplist);
+            UpdateUserSpecialty();
+         }
+
+    });
+
+    function update_hospital_list(user_group) {
+        if ($("#AdminUserInfo_UserGroup").val() == "HOSP") {
+            $("#hospital").show();
+            $('#access_hospital').hide();
+            if (user_group != "") {
+                $("#hospital").val(user_group);
+            }
+            if ($("#user_inst_code_row").length) {
+                $("#user_inst_code_row").hide();
+            }
+        }
+        else {
+            $.ajax({
+                dataType: "text",
+                url: '@Url.Action("GetUserGroupHospList", "Admin")',
+                data: { user_group: user_group },
+                success: function (data) {
+                    $("#hospital").hide();
+                    $('#access_hospital').show();
+                    $('#access_hospital').empty();
+                    $('#access_hospital').append(data);
+                    if ($("#user_inst_code_row").length) {
+                        $('#AdminUserInfo_InstCode').empty();
+                        var hosp_list = data.split(",");
+                        $.each(hosp_list, function (i) {
+                            var optionhtml = '<option value="' + hosp_list[i] + '">' + hosp_list[i] + '</option>';
+                            $('#AdminUserInfo_InstCode').append(optionhtml);
+                        });
+                        if ('@ViewBag.UserGroup' == "ALL") {
+                            $('#AdminUserInfo_InstCode').append("<option value='HAHO'>HAHO</option>");
+                        }
+                        if ('@Model.AdminUserInfo.InstCode' != "") {
+                            $('#AdminUserInfo_InstCode').val('@Model.AdminUserInfo.InstCode');
+                        }
+                        else {
+                            $('#AdminUserInfo_InstCode').val('@ViewBag.UserInstCode');
+                        }
+                        $("#user_inst_code_row").show();
+                    }
+                },
+                error: function (response) {
+                    alert('Error: ' + response.responseText);
+                }
+            });
+        }
+    }
+
+    function insert_user() {
+        if ($("#AdminUserInfo_UserName").val() == "") {
+            alert('@Resource.AlertInputLoginID');
+            return;
+        }
+        if ($("#user_inst_code_row").length){
+            if ($("#user_inst_code_row").is(":visible")) {
+                if ($("#AdminUserInfo_InstCode").pop('selectedIndex') == -1 || $("#AdminUserInfo_InstCode option:selected").text() == '') {
+                    alert('@Resource.AlertSelectUserInstitution');
+                    return;
+                }
+            }
+        }
+        if ($("#AdminRightM_ClusterAdminM").val() == "I") {
+            alert('@Resource.AlertAssignClusterAdmin');
+        }
+        if ($("#user_spec_code").length) {
+            if ($("#user_spec_code").is(":visible")) {
+                $("#UserSpecCode").val($("#user_spec_code").val());
+            }
+        }
+
+        $("#Function_type").val("I");
+        $("#FormUserAdmin").submit();
+    }
+
+    function update_user() {
+        if ($("#AdminUserInfo_UserName").val() == "") {
+            alert('@Resource.AlertInputLoginID');
+            return;
+        }
+        if ($("#user_inst_code_row").length){
+            if ($("#user_inst_code_row").is(":visible")) {
+                if ($("#AdminUserInfo_InstCode").pop('selectedIndex') == -1 || $("#AdminUserInfo_InstCode option:selected").text() == '') {
+                    alert('@Resource.AlertSelectUserInstitution');
+                    return;
+                }
+            }
+        }
+        if ($("#AdminRightM_ClusterAdminM").length) {
+            var ori = $("#cluster_admin_right_ori").val();
+            var cur = $("#AdminRightM_ClusterAdminM").val();
+            if (cur == "I" && cur != ori) {
+                alert('@Resource.AlertAssignClusterAdmin');
+            }
+        }
+        if ($("#user_spec_code").length) {
+            if ($("#user_spec_code").is(":visible")) {
+                $("#UserSpecCode").val($("#user_spec_code").val());
+            }
+        }
+        $("#Function_type").val("U");
+        $("#FormUserAdmin").submit();
+    }
+
+    function cancel(action, admin_login_id) {
+        var url = '@Url.Action("Index", "Admin")';
+        url = url + "?modules=" + '@Model.Modules';
+        location.href = url;
+    }
+
+    function delete_user() {
+        if (confirm('@Resource.ConfirmDeleteUser')) {
+            $("#Function_type").val("D");
+            $("#FormUserAdmin").submit();
+        }
+        else {
+            return;
+        }
+    }
+
+    function pm_report_option_change() {
+        if ($("#AdminRightM_ReportM option:selected").text() == "Generate") {
+            $("#pm_report_detail").show();
+        }
+        else {
+            $("#pm_report_detail").hide();
+        }
+    }
+
+    var remote = null;
+    function rs(n, u, w, h, x, resizeable, scrollbars) {
+        args = "left=0 width=" + w + ",height=" + h + ",resizable=" + resizeable + ",scrollbars=" + scrollbars + ",status=0";
+        remote = window.open(u, n, args);
+        if (remote != null) {
+            if (remote.opener == null)
+                remote.opener = self;
+        }
+        if (x == 1) { return remote; }
+    }
+
+    function project_report(admin_login_id, group_id){
+        var url = '@Url.Action("ProjectReport", "Admin")';
+        url = url + "?modules=" + '@Model.Modules';
+        url = url + "&admin_login_id=" + admin_login_id;
+        url = url + "&group_Id=" + group_id;
+        awnd = rs('', url, 450, 600, 1, "no", "yes");
+        awnd.focus();
+    }
+
+    //Specialty
+    function UpdateUserSpecialty() {
+        var count, spec_code_list, selected_cnt, selected_list;
+        selected_cnt = 0;
+        selected_list = '';
+        spec_code_list = new Array("''");//new Object(eval('table_costcentre_<%=user_inst_code%>'));
+        $("#user_spec_code").length = 0;
+        if ('@Model.Specialty_list' == "**ALL**") {
+            $("#all_specialty").prop('checked', true);
+            change_all_specialty();
+        }
+        for (count = 0; count < spec_code_list.length; count++) {
+            $("#user_spec_code").options[count] = new Option(spec_code_list[count], spec_code_list[count], 0, 0);
+            if ('@Model.Specialty_list' != '**ALL**') {
+                if ('@Model.Specialty_list'.indexOf('*' + spec_code_list[count] + '*') >= 0) {
+                    $("#user_spec_code").options[count].selected = true;
+                    selected_cnt++
+                    if (selected_cnt > 1) {
+                        selected_list += ', ';
+                    }
+                    selected_list += spec_code_list[count];
+                }
+            }
+        }
+        $("#specialty_list_selected").html(selected_list);
+    }
+
+    function change_select_spec() {
+        var count, selected_cnt, selected_list;
+        selected_cnt = 0;
+        selected_list = '';
+        spec_code_list = new Array("''");//new Object(eval('table_costcentre_<%=user_inst_code%>'));
+        for (count = 0; count < spec_code_list.length; count++) {
+            if ($("#user_spec_code").options[count].selected) {
+                selected_cnt++;
+                if (selected_cnt > 1) {
+                    selected_list += ', ';
+                }
+                selected_list += spec_code_list[count];
+            }
+        }
+        $("#specialty_list_selected").html(selected_list);
+    }
+
+    function change_all_specialty() {
+        if ($("#all_specialty").is(':checked')) {
+            $("#specialty_list_droplist").hide();
+            $("#specialty_list_desc").html('<b>Specialty</b>');
+            for (count = 0; count < spec_code_list.length; count++) {
+                $("#user_spec_code").options[count].selected = false;
+            }
+            $("#specialty_list_selected").html('');
+        }
+        else {
+            $("#specialty_list_droplist").show();
+            $("#specialty_list_desc").html('<b>Specialty</b><br>(Press \'Ctrl\' while selecting to select more than 1 specialty)');
+        }
+    }
+</script>

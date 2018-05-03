@@ -1,0 +1,152 @@
+﻿@model FMRS.Model.DTO.GenReportModel
+@using Microsoft.Extensions.Options;
+@inject IOptions<AppConfiguration> AppConfiguration
+@{
+    ViewBag.Title = Resource.Report;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title
+</h4>
+<div class="box box-default">
+    <div style="padding:30px;">
+        Report Generating....Please wait.
+        <br /><br />
+        <!-- table for checking only -->
+        <table class="table" style="table-layout:fixed;">
+            <tr>
+                <td width="10%">Parm_no</td>
+                <td>@Model.Parm_no</td>
+            </tr>
+            <tr>
+                <td>Parm_value</td>
+                <td style="word-wrap:break-word">@Model.Parm_value</td>
+            </tr>
+            <tr>
+                <td>Report_type</td>
+                <td>@Model.Report_type</td>
+            </tr>
+            <tr>
+                <td>Report_format</td>
+                <td>@Model.Report_format</td>
+            </tr>
+            <tr>
+                <td>Report_name</td>
+                <td>@Model.Report_name</td>
+            </tr>
+            <tr>
+                <td>Rpt_name</td>
+                <td>@Model.Rpt_name</td>
+            </tr>
+            <tr>
+                <td>Report_group</td>
+                <td>@Model.Report_group</td>
+            </tr>
+            <tr>
+                <td>Rpt_group</td>
+                <td>@Model.Rpt_group</td>
+            </tr>
+            <tr>
+                <td>URL</td>
+                <td style="word-wrap:break-word"><span id="url"></span></td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+<!-- Report Not Ready Section -->
+<div class="modal fade" id="reportNotReady" tabindex="-1" style="display:none;padding-top:120px;">
+    <div class="modal-dialog box box-default" style="width:40%;">
+
+        <div class="box-header">
+        </div>
+        <div class="box-body">
+            <h4>
+                @Resource.ReportNotReady
+            </h4>
+        </div>
+    </div>
+</div>
+<script>
+    $.wait = function (callback, seconds) {
+        return window.setTimeout(callback, seconds * 1000);
+    }
+    var remote = null;
+    function rs(n, u, w, h, x, resizeable, scrollbars, centre_pos) {
+        args = "left=10, width=" + w + ",height=" + h + ",resizable=" + resizeable + ",scrollbars=" + scrollbars + ",status=0,menubar=1";
+        if (centre_pos == 1)
+            args += ",top=200,left=300";
+        remote = window.open(u, n, args);
+        if (remote != null) {
+            if (remote.opener == null)
+                remote.opener = self;
+        }
+        if (x == 1) { return remote; }
+    }
+    var awnd = null;
+    function open_report(link) {
+        awnd = rs('', link, 1024, 768, 1, "yes", "yes", 0);
+        awnd.focus();
+    }
+    if ('@Model.Report_type' == "X") {
+        $('#reportNotReady').modal('show');
+        $.wait(function () {
+            var url = '@Url.Action("Index", "Report")';
+            url = url + "?modules=" + '@ViewBag.Modules';
+            url = url + "&rpt_name=" + '@Html.Raw(Model.Rpt_name)';
+            url = url + "&rpt_group=" + '@Html.Raw(Model.Rpt_group)';
+            location.href = url;
+        }, 3);
+
+    }
+    else {
+	    if('@Model.Parm_no' != "-1"){
+            if ("@Model.Rpt_name" == 160 || "@Model.Rpt_name" == 297 || "@Model.Rpt_name" == 162 || "@Model.Rpt_name" == 159
+                || "@Model.Rpt_name" == 113 || "@Model.Rpt_name" == 161 || "@Model.Rpt_name" == 170 || "@Model.Rpt_name" == 171
+                || "@Model.Rpt_name" == 173 || "@Model.Rpt_name" == 247 || "@Model.Rpt_name" == 249 || "@Model.Rpt_name" == 278
+            //project management
+                || "@Model.Rpt_name" == 54 || "@Model.Rpt_name" == 155  || "@Model.Rpt_name" == 158 || "@Model.Rpt_name" == 270
+                || "@Model.Rpt_name" == 196 || "@Model.Rpt_name" == 232 || "@Model.Rpt_name" == 214 || "@Model.Rpt_name" == 180
+                || "@Model.Rpt_name" == 138 || "@Model.Rpt_name" == 141 || "@Model.Rpt_name" == 142 || "@Model.Rpt_name" == 122
+                || "@Model.Rpt_name" == 123 || "@Model.Rpt_name" == 125 || "@Model.Rpt_name" == 194 || "@Model.Rpt_name" == 284
+                || "@Model.Rpt_name" == 285 || "@Model.Rpt_name" == 280 || "@Model.Rpt_name" == 215 || "@Model.Rpt_name" == 216
+                || "@Model.Rpt_name" == 217 || "@Model.Rpt_name" == 221 || "@Model.Rpt_name" == 222 || "@Model.Rpt_name" == 212
+                || "@Model.Rpt_name" == 213 || "@Model.Rpt_name" == 220 || "@Model.Rpt_name" == 219 || "@Model.Rpt_name" == 190
+                || "@Model.Rpt_name" == 308
+            //Financial Vetting
+                || "@Model.Rpt_name" == 1111 || "@Model.Rpt_name" == 2222 || "@Model.Rpt_name" == 3333) {
+
+                if ("@Model.Rpt_group" == 12 || "@Model.Rpt_group" == 9 || "@Model.Rpt_group" == 19 || "@Model.Rpt_group" == 17) {
+                    file_name = "@Html.Raw(AppConfiguration.Value.SSRS_folder)"
+                }
+
+                if (@string.IsNullOrEmpty(Model.Parm_value)){
+                    open_report("http://@Html.Raw(AppConfiguration.Value.SSRSSERVER)/?%2f" + file_name + "%2f" + '@Html.Raw(Model.Report_name)' + "&rs:Format=" + '@Html.Raw(Model.Report_format)' + "&rs:Command=Render&rc:Parameters=false");
+                    $("#url").html("http://@Html.Raw(AppConfiguration.Value.SSRSSERVER)/?%2f" + file_name + "%2f" + '@Html.Raw(Model.Report_name)' + "&rs:Format=" + '@Html.Raw(Model.Report_format)' + "&rs:Command=Render&rc:Parameters=false");
+                }
+                else {
+                    open_report("http://@Html.Raw(AppConfiguration.Value.SSRSSERVER)/?%2f" + file_name + "%2f" + '@Html.Raw(Model.Report_name)' + "&rs:Format=" + '@Html.Raw(Model.Report_format)' + "&rs:Command=Render&rc:Parameters=false&" + '@Html.Raw(Model.Parm_value)');
+                    $("#url").html("http://@Html.Raw(AppConfiguration.Value.SSRSSERVER)/?%2f" + file_name + "%2f" + '@Html.Raw(Model.Report_name)' + "&rs:Format=" + '@Html.Raw(Model.Report_format)' + "&rs:Command=Render&rc:Parameters=false&" + '@Html.Raw(Model.Parm_value)');
+                }
+            }
+            else {
+                //Generate Excel
+                //alert("https://<%=Request.ServerVariables("SERVER_NAME")%>/"+'@Html.Raw(AppConfiguration.Value.Report_folder)'+"/report.asp?rpt_name="+'@Html.Raw(Model.Report_type)'+"&"+'@Html.Raw(Model.Parm_value)'+"parm_no="+'@Html.Raw(Model.Parm_no)'+"&reportFormat=Excel");
+                //open_report("https://<%=Request.ServerVariables("SERVER_NAME")%>/"+'@Html.Raw(AppConfiguration.Value.Report_folder)'+"/report.asp?rpt_name="+'@Html.Raw(Model.Report_type)'+"&"+'@Html.Raw(Model.Parm_value)'+"parm_no="+'@Html.Raw(Model.Parm_no)'+"&reportFormat=Excel");
+            }
+        }
+        else {
+            url ='http://@Html.Raw(AppConfiguration.Value.SSRSSERVER)/?%2f'+'@Html.Raw(AppConfiguration.Value.SSRS_folder)'+"%2f"+'@Html.Raw(Model.Report_name)'+"&rs:Format=EXCEL&rs:Command=Render&rc:Parameters=false&"+'@Html.Raw(Model.Parm_value)';
+            open_report(url);
+            $("#url").html(url);
+        }
+
+        var url = '@Url.Action("Index", "Report")';
+        url = url + "?modules=" + '@ViewBag.Modules';
+        url = url + "&rpt_name=" + '@Html.Raw(Model.Rpt_name)';
+        url = url + "&rpt_group=" + '@Html.Raw(Model.Rpt_group)';
+        location.href = url;
+    }
+</script>

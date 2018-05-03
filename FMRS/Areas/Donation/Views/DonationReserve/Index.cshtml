@@ -1,0 +1,204 @@
+﻿@using System.Globalization;
+@model FMRS.Model.DTO.DonationReserveModelCollectionSet
+@{
+    ViewBag.Title = Resource.DonationReserve;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var value_date2 = DateTime.ParseExact(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Value_Date2"), "yyyyMMdd", CultureInfo.GetCultureInfo("en-US"));
+    var value_date2_mmmyy = DateTime.ParseExact(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Value_Date2"), "yyyyMMdd", CultureInfo.GetCultureInfo("en-US")).ToString("MMM yy");
+    var financial_year = Convert.ToInt32(UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Financial_Year"));
+    var gl_end_day = UserHelper.UserInfo(((ClaimsIdentity)User.Identity), "Gl_End_Day");
+}
+
+<style type="text/css">
+    .link {
+        cursor: pointer;
+        color: darkblue;
+        text-decoration: underline;
+    }
+    .link:hover {
+        color: red;
+    }
+</style>
+
+<h4 style="padding:20px 0 5px;">
+    @ViewBag.Title (@ViewBag.HospDesc)
+</h4>
+
+<div class="box box-default" style="overflow:auto;">
+    <div class="box-header" style="padding-bottom:0;">
+        <b>@Resource.DonationReserveBalanceTitle</b>
+    </div>
+    <div class="box-body">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered" style="width:130%;max-width:300%;margin-bottom:0px;margin-right:-10px;">
+                        <thead style="display:block;">
+                            <tr role="row">
+                                <th class="bg-purple" tabindex="0" style="width:60px;">@Resource.Hospital</th>
+                                <th class="bg-purple" tabindex="0" style="width:40px;">@Resource.FundCode</th>
+                                <th class="bg-purple" tabindex="0" style="width:80px;">@Resource.Section</th>
+                                <th class="bg-purple" tabindex="0" style="width:80px;">@Resource.AnalyticalCode</th>
+                                <th class="bg-purple" tabindex="0" style="width:160px;">@Resource.DonationDesc</th>
+                                <th class="bg-purple" tabindex="0" style="width:100px;">@Resource.Donor</th>
+                                <th class="bg-purple" tabindex="0" style="width:60px;">@Resource.ReceiptDate</th>
+                                <th class="bg-purple" tabindex="0" style="width:90px;">@Resource.DonationCategory</th>
+                                <th class="bg-purple" tabindex="0" style="width:100px;">@Resource.ReserveBalanceAs <br />@Resource.FirstApr @financial_year.ToString().Substring(2)</th>
+                                <th class="bg-purple" tabindex="0" style="width:100px;">@Resource.CYReceipt</th>
+                                <th class="bg-purple" tabindex="0" style="width:100px;">@Resource.CYExpenditure</th>
+                                <th class="bg-purple" tabindex="0" style="width:100px;">@Resource.CalculatedReserveBalanceAs <br />@gl_end_day @value_date2_mmmyy</th>
+                                <th class="bg-gray-active" tabindex="0" style="width:100px;">@Resource.ReserveBalancePerGL <br />@Resource.FirstApr @financial_year.ToString().Substring(2)</th>
+                                <th class="bg-gray-active" tabindex="0" style="width:100px;">@Resource.ReserveBalanceVariance <br />@Resource.FirstApr @financial_year.ToString().Substring(2)</th>
+                                <th class="bg-gray-active" tabindex="0" style="width:100px;">@Resource.ReserveBalancePerGL<br />@gl_end_day @value_date2_mmmyy</th>
+                                <th class="bg-gray-active" tabindex="0" style="width:100px;">@Resource.ReserveBalanceVariance<br />@gl_end_day @value_date2_mmmyy</th>
+                            </tr>
+                            <tr>
+                                <td colspan="8" class="bg-purple-gradient"></td>
+                                <td class="bg-purple-gradient">@Resource.parA</td>
+                                <td class="bg-purple-gradient">@Resource.parB</td>
+                                <td class="bg-purple-gradient">@Resource.parC</td>
+                                <td class="bg-purple-gradient" style="font-size:10px;">@Resource.APlusBPlusC</td>
+                                <td class="bg-gray-active">@Resource.parE</td>
+                                <td class="bg-gray-active" style="font-size:10.5px;">@Resource.EMinA</td>
+                                <td class="bg-gray-active">@Resource.parG</td>
+                                <td class="bg-gray-active" style="font-size:10.5px;">@Resource.GMinD</td>
+                            </tr>
+                            <tr>
+                                <td colspan="16">@Resource.ReserveBalanceTitleAbove500K</td>
+                            </tr>
+                        </thead>
+                        <tbody style="display:block;height:570px;overflow-y:auto;overflow-x:hidden;">
+                            @foreach (var set in Model.Set)
+                            {
+                                @foreach (var r in set.Collection)
+                                {
+                                    if (set.Record_cnt > 1)
+                                    {
+                                        <tr>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:60px;">@r.Hospital</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:40px;">@r.Fund</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:80px;">@r.Section</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:80px;">@r.Analytical</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:160px;">@r.Don_desc</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:100px;">@r.Donor_name</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:60px;">@r.Receive_dt</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:90px;">@r.Don_cat</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:100px;text-align:right;">@(((decimal)r.Reserve_bal_begin).ToString("N2", CultureInfo.InvariantCulture))</td>
+                                            <td class="bg-light-blue-gradient link" style="vertical-align:middle;width:100px;text-align:right;" 
+                                                onclick="javascript:load_reserve_record('@r.Hospital', '@r.Fund', '@r.Analytical','@r.Section','@financial_year', '@financial_year','@value_date2', '@r.Detail_id','I','@r.Don_desc.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Donor_name.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Don_cat_id');">
+                                                @(((decimal)r.Income).ToString("N2", CultureInfo.InvariantCulture))</td>
+                                            <td class="bg-light-blue-gradient link" style="vertical-align:middle;width:100px;text-align:right;"
+                                                onclick="javascript:load_reserve_record('@r.Hospital', '@r.Fund', '@r.Analytical','@r.Section','@financial_year', '@financial_year','@value_date2', '@r.Detail_id','E','@r.Don_desc.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Donor_name.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Don_cat_id');">
+                                                @(((decimal)r.Expenditure).ToString("N2", CultureInfo.InvariantCulture))</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:100px;text-align:right;">@(((decimal)r.Reserve_bal_begin + r.Income + r.Expenditure).ToString("N2", CultureInfo.InvariantCulture)) </td>
+                                            <td style="width:100px;"></td>
+                                            <td style="width:100px;"></td>
+                                            <td style="width:100px;"></td>
+                                            <td style="width:100px;"></td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:60px;">@r.Hospital</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:40px;">@r.Fund</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:80px;">@r.Section</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:80px;">@r.Analytical</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:160px;">@r.Don_desc</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:100px;">@r.Donor_name</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:60px;">@r.Receive_dt</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:90px;">@r.Don_cat</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:100px;text-align:right;">@(((decimal)r.Reserve_bal_begin).ToString("N2", CultureInfo.InvariantCulture))</td>
+                                            <td class="bg-light-blue-gradient link" style="vertical-align:middle;width:100px;text-align:right;" 
+                                                onclick="javascript:load_reserve_record('@r.Hospital', '@r.Fund', '@r.Analytical','@r.Section','@financial_year', '@financial_year','@value_date2', '@r.Detail_id','I','@r.Don_desc.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Donor_name.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Don_cat_id');">
+                                                @(((decimal)r.Income).ToString("N2", CultureInfo.InvariantCulture))</td>
+                                            <td class="bg-light-blue-gradient link" style="vertical-align:middle;width:100px;text-align:right;" 
+                                                onclick="javascript:load_reserve_record('@r.Hospital', '@r.Fund', '@r.Analytical','@r.Section','@financial_year', '@financial_year','@value_date2', '@r.Detail_id','E','@r.Don_desc.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Donor_name.Replace(" ","").Replace("&","").Replace("'","").Replace("#","")', '@r.Don_cat_id');">
+                                                @(((decimal)r.Expenditure).ToString("N2", CultureInfo.InvariantCulture))</td>
+                                            <td class="bg-light-blue-gradient" style="vertical-align:middle;width:100px;text-align:right;">@(((decimal)r.Reserve_bal_begin + r.Income + r.Expenditure).ToString("N2", CultureInfo.InvariantCulture)) </td>
+                                            <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Gl_bal_begin).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                            <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Reserve_bal_var_begin_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                            <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Gl_bal_end).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                            <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Reserve_bal_var_end_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        </tr>
+                                            <tr style="height:3px;"><td style="padding:0px; margin:0px;"></td></tr>
+                                    }
+
+                                }
+
+                                if (set.Record_cnt > 1)
+                                {
+                                    <!-- Subtotal -->
+                                    <tr>
+                                        <td class="bg-light-blue-gradient"><b>@set.Coa.Hospital</b></td>
+                                        <td class="bg-light-blue-gradient"><b>@set.Coa.Fund</b></td>
+                                        <td class="bg-light-blue-gradient"><b>@set.Coa.Section</b></td>
+                                        <td class="bg-light-blue-gradient"><b>@set.Coa.Analytical</b></td>
+                                        <td class="bg-light-blue-gradient"></td>
+                                        <td class="bg-light-blue-gradient"></td>
+                                        <td class="bg-light-blue-gradient"></td>
+                                        <td class="bg-light-blue-gradient" style="text-align:right;"><b>@Resource.Subtotal</b></td>
+                                        <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)set.Reserve_bal_begin_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)set.Income_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)set.Expenditure_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)set.Cal_reserve_bal_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Gl_bal_begin).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Reserve_bal_var_begin_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Gl_bal_end).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                        <td class="bg-gray" style="text-align:right;"><b>@(((decimal)set.Reserve_bal_var_end_sub).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                    </tr>
+                                    <tr style="height:3px;"><td style="padding:0px; margin:0px;"></td></tr>
+                                }
+                            }
+                            <!-- Total -->
+                            <tr>
+                                <td colspan="8" class="bg-light-blue-gradient" style="text-align:right;"><b>@Resource.Total</b></td>
+                                <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)Model.Total_reserve_bal_begin).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)Model.Total_income).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)Model.Total_expenditure).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-light-blue-gradient" style="text-align:right;"><b>@(((decimal)Model.Total_cal_reserve_bal).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-gray" style="text-align:right;"><b>@(((decimal)Model.Total_gl_bal_begin).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-gray" style="text-align:right;"><b>@(((decimal)Model.Total_reserve_bal_var_begin).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-gray" style="text-align:right;"><b>@(((decimal)Model.Total_gl_bal_end).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                                <td class="bg-gray" style="text-align:right;"><b>@(((decimal)Model.Total_reserve_bal_var_end).ToString("N2", CultureInfo.InvariantCulture))</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Donation Reserve Record start -->
+<div class="modal fade" id="donationReserveRecord" tabindex="-1" style="display:none;padding-top:120px;">
+    <div class="modal-dialog box box-default" id="ReserveSubList" style="width:70%;">
+    </div>
+</div>
+<!-- Donation Reserve Record End -->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('body').addClass("sidebar-collapse");
+    });
+    
+    function load_reserve_record(hospital, fund, analytical, section, financial_year, curr_financial_year, current_date, oid, don_inc_exp, don_desc, donor_name, don_cat) {
+        $("#ReserveSubList").load("GetDonationReserveRecord", {
+            inst_code: hospital,
+            fund_code: fund,
+            analytical_code: analytical,
+            section_code: section,
+            financial_year: financial_year,
+            curr_financial_year: curr_financial_year,
+            current_date: current_date,
+            oid: oid,
+            don_inc_exp: don_inc_exp,
+            don_desc: don_desc,
+            donor_name: donor_name,
+            don_cat: don_cat
+        });
+        $('#donationReserveRecord').modal('show');
+    }
+</script>
+

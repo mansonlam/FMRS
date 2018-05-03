@@ -1,0 +1,52 @@
+﻿@using FMRS.Common.Resources;
+
+<!DOCTYPE html>
+<html style="height:auto;min-height:100%">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>@Resource.FMRSTitle</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+    <!-- Bootstrap 3.3.7-->
+    <link rel="~/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/font-awesome/css/font-awesome.min.css" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/Ionicons/css/ionicons.min.css" />
+    <!-- bootstrap datepicker -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" />
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/AdminLTE/bower_components/select2/dist/css/select2.min.css" />
+    <!-- Theme Style -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/AdminLTE.min.css" />
+    <!-- AdminLTE Skins -->
+    <link rel="stylesheet" href="~/AdminLTE/dist/css/skins/_all-skins.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/AdminLTE/bower_components/jquery/dist/jquery.min.js"></script>
+</head>
+<body class="skin-purple" style=" padding:0px;height:auto;min-height:100%">
+    <div style="height:auto;min-height:100%;">
+        <header class="main-header">
+        </header>
+
+        <div >
+            @RenderBody()
+        </div>
+
+    </div>
+    @*<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>*@
+    <script src="~/AdminLTE/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/AdminLTE/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <!-- bootstrap datepicker -->
+    <script src="~/AdminLTE/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/AdminLTE/dist/js/adminlte.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
