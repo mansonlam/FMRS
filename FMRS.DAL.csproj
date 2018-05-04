@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="\FMRS.Common\FMRS.Common.csproj" />
+    <ProjectReference Include="\FMRS.Model\FMRS.Model.csproj" />
+  </ItemGroup>
+
+</Project>

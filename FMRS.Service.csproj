@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="6.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="\FMRS.Common\FMRS.Common.csproj" />
+    <ProjectReference Include="\FMRS.DAL\FMRS.DAL.csproj" />
+    <ProjectReference Include="\FMRS.Model\FMRS.Model.csproj" />
+  </ItemGroup>
+
+</Project>
